@@ -1,7 +1,21 @@
 import { motion } from "framer-motion";
-import { useQuery } from "@tanstack/react-query";
-import { Camera, MessageSquare, Stethoscope, UtensilsCrossed, HeartPulse, Clock, ChevronDown, ChevronUp } from "lucide-react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { Camera, MessageSquare, Stethoscope, UtensilsCrossed, HeartPulse, Clock, ChevronDown, ChevronUp, Trash2, Trash } from "lucide-react";
 import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { apiRequest } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 interface ActivityLog {
   id: number;
@@ -46,7 +60,7 @@ function DetailRow({ label, value }: { label: string; value: string }) {
   );
 }
 
-function ActivityCard({ activity }: { activity: ActivityLog }) {
+function ActivityCard({ activity, onDelete }: { activity: ActivityLog; onDelete: (id: number) => void }) {
   const [expanded, setExpanded] = useState(false);
   const config = activityConfig[activity.activityType] || activityConfig.emotion_scan;
   const Icon = config.icon;
@@ -56,6 +70,7 @@ function ActivityCard({ activity }: { activity: ActivityLog }) {
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, x: -20 }}
       className="bg-white dark:bg-gray-900 rounded-2xl border border-gray-100 dark:border-gray-800 overflow-hidden"
     >
       <div
@@ -75,7 +90,17 @@ function ActivityCard({ activity }: { activity: ActivityLog }) {
           </div>
           <p className="text-sm text-muted-foreground mt-0.5 line-clamp-2">{activity.summary}</p>
         </div>
-        <div className="shrink-0 mt-1">
+        <div className="shrink-0 mt-1 flex items-center gap-1">
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              onDelete(activity.id);
+            }}
+            className="p-1.5 rounded-lg text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+            title="Delete this entry"
+          >
+            <Trash2 className="w-4 h-4" />
+          </button>
           {expanded ? (
             <ChevronUp className="w-4 h-4 text-muted-foreground" />
           ) : (
@@ -140,9 +165,33 @@ function ActivityCard({ activity }: { activity: ActivityLog }) {
 
 export default function History() {
   const [filter, setFilter] = useState<string>("all");
+  const queryClient = useQueryClient();
+  const { toast } = useToast();
 
   const { data: activities = [], isLoading } = useQuery<ActivityLog[]>({
     queryKey: ["/api/activity-history"],
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: (id: number) => apiRequest("DELETE", `/api/activity-history/${id}`),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/activity-history"] });
+      toast({ title: "Entry deleted" });
+    },
+    onError: () => {
+      toast({ title: "Failed to delete", variant: "destructive" });
+    },
+  });
+
+  const clearAllMutation = useMutation({
+    mutationFn: () => apiRequest("DELETE", "/api/activity-history/all"),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/activity-history"] });
+      toast({ title: "History cleared", description: "All activity history has been deleted." });
+    },
+    onError: () => {
+      toast({ title: "Failed to clear history", variant: "destructive" });
+    },
   });
 
   const filtered = filter === "all" ? activities : activities.filter((a) => a.activityType === filter);
@@ -162,9 +211,43 @@ export default function History() {
       animate={{ opacity: 1 }}
       className="max-w-2xl mx-auto space-y-6"
     >
-      <div>
-        <h1 className="text-2xl font-bold font-display text-foreground">Activity History</h1>
-        <p className="text-sm text-muted-foreground mt-1">Everything you've done with Happy Tail</p>
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold font-display text-foreground">Activity History</h1>
+          <p className="text-sm text-muted-foreground mt-1">Everything you've done with Happy Tail</p>
+        </div>
+
+        {activities.length > 0 && (
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <Button
+                variant="outline"
+                size="sm"
+                className="shrink-0 border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300 dark:border-red-900 dark:text-red-400 dark:hover:bg-red-950"
+              >
+                <Trash className="w-3.5 h-3.5 mr-1.5" />
+                Clear All
+              </Button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Clear all history?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  This will permanently delete all your activity history. This action cannot be undone.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction
+                  onClick={() => clearAllMutation.mutate()}
+                  className="bg-red-600 hover:bg-red-700 text-white"
+                >
+                  Clear All
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        )}
       </div>
 
       <div className="flex gap-2 flex-wrap">
@@ -212,7 +295,11 @@ export default function History() {
       ) : (
         <div className="space-y-3">
           {filtered.map((activity) => (
-            <ActivityCard key={activity.id} activity={activity} />
+            <ActivityCard
+              key={activity.id}
+              activity={activity}
+              onDelete={(id) => deleteMutation.mutate(id)}
+            />
           ))}
         </div>
       )}

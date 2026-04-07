@@ -28,7 +28,6 @@ interface TranslationResult {
 function extractFramesFromVideo(videoSrc: string, numFrames: number = 6): Promise<string[]> {
   return new Promise((resolve, reject) => {
     const video = document.createElement("video");
-    video.crossOrigin = "anonymous";
     video.muted = true;
     video.playsInline = true;
     video.src = videoSrc;
@@ -89,16 +88,16 @@ export default function BarkTranslator() {
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      if (file.size > 10 * 1024 * 1024) {
-        toast({ title: "File too large", description: "Please upload a video smaller than 10MB.", variant: "destructive" });
+      if (file.size > 50 * 1024 * 1024) {
+        toast({ title: "File too large", description: "Please upload a video smaller than 50MB.", variant: "destructive" });
         return;
       }
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setVideoSrc(reader.result as string);
-        setResult(null);
-      };
-      reader.readAsDataURL(file);
+      if (videoSrc && videoSrc.startsWith("blob:")) {
+        URL.revokeObjectURL(videoSrc);
+      }
+      const url = URL.createObjectURL(file);
+      setVideoSrc(url);
+      setResult(null);
     }
   };
 
@@ -192,7 +191,11 @@ export default function BarkTranslator() {
           )}
 
           {videoSrc && result && (
-            <Button data-testid="button-upload-another" variant="outline" onClick={() => {setVideoSrc(null); setResult(null);}} className="w-full py-6 rounded-xl">
+            <Button data-testid="button-upload-another" variant="outline" onClick={() => {
+              if (videoSrc.startsWith("blob:")) URL.revokeObjectURL(videoSrc);
+              setVideoSrc(null);
+              setResult(null);
+            }} className="w-full py-6 rounded-xl">
               {t.barkTranslator.tryAnother}
             </Button>
           )}

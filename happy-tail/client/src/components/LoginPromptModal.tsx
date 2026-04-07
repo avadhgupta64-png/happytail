@@ -34,10 +34,10 @@ export function LoginPromptModal() {
                 <Sparkles className="w-8 h-8 text-white" />
               </div>
 
-              <h2 className="text-2xl font-bold font-display text-foreground mb-2">
+              <h2 className="text-2xl font-bold font-display text-gray-900 mb-2">
                 Login required
               </h2>
-              <p className="text-muted-foreground text-sm mb-6 leading-relaxed">
+              <p className="text-gray-500 text-sm mb-6 leading-relaxed">
                 AI features require a free account. Log in to unlock all features, save your results, and get personalized insights for your dog.
               </p>
 

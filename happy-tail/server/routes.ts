@@ -8,7 +8,7 @@ import { insertBreedSchema, insertLocationSchema, dogProfiles, visitorLogs, inse
 import { users } from "@shared/models/auth";
 import { setupAuth, registerAuthRoutes, isAuthenticated, getSession } from "./replit_integrations/auth";
 import { db } from "./db";
-import { eq, count, sql, desc } from "drizzle-orm";
+import { eq, count, sql, desc, and } from "drizzle-orm";
 import { setupWebSocket } from "./ws";
 import { runBackup, listBackups, getBackupPath } from "./backup";
 import fs from "fs";
@@ -261,6 +261,30 @@ Important:
     } catch (err) {
       console.error("Failed to fetch activity history:", err);
       res.status(500).json({ message: "Failed to fetch activity history" });
+    }
+  });
+
+  app.delete("/api/activity-history/all", isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      await db.delete(activityLogs).where(eq(activityLogs.userId, userId));
+      res.json({ message: "All history cleared" });
+    } catch (err) {
+      console.error("Failed to clear history:", err);
+      res.status(500).json({ message: "Failed to clear history" });
+    }
+  });
+
+  app.delete("/api/activity-history/:id", isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const id = parseInt(req.params.id);
+      if (isNaN(id)) return res.status(400).json({ message: "Invalid ID" });
+      await db.delete(activityLogs).where(and(eq(activityLogs.id, id), eq(activityLogs.userId, userId)));
+      res.json({ message: "Entry deleted" });
+    } catch (err) {
+      console.error("Failed to delete history entry:", err);
+      res.status(500).json({ message: "Failed to delete entry" });
     }
   });
 
@@ -667,7 +691,7 @@ Rules:
   });
 
   // === Admin Routes (locked to admin emails) ===
-  const ADMIN_EMAILS = ["avannu48@gmail.com", "avadhgupta64@gmail.com"];
+  const ADMIN_EMAILS = ["avannu48@gmail.com"];
 
   const isAdmin = async (req: any, res: any, next: any) => {
     try {
