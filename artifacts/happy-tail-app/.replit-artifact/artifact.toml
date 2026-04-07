@@ -1,0 +1,22 @@
+kind = "web"
+previewPath = "/"
+title = "Happy Tail"
+version = "1.0.0"
+id = "artifacts/happy-tail-app"
+router = "path"
+
+[[integratedSkills]]
+name = "react-vite"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 24183
+
+[services.development]
+run = "cd /home/runner/workspace/happy-tail && PORT=24183 npm run dev"
+
+[services.env]
+PORT = "24183"
+BASE_PATH = "/"
