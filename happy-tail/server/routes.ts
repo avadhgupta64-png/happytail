@@ -874,6 +874,31 @@ Rules:
   });
 
   // === Admin CSV Exports ===
+  // Helper: format date cleanly without any timezone text
+  const fmtDate = (raw: any): string => {
+    if (!raw) return "—";
+    const d = new Date(raw);
+    const mo = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][d.getMonth()];
+    const hh = String(d.getHours()).padStart(2, "0");
+    const mm = String(d.getMinutes()).padStart(2, "0");
+    return `${String(d.getDate()).padStart(2,"0")} ${mo} ${d.getFullYear()}  ${hh}:${mm}`;
+  };
+
+  // Helper: display name with email-prefix fallback
+  const displayName = (u: { firstName?: string | null; lastName?: string | null; email?: string | null }): string => {
+    const n = [u.firstName, u.lastName].filter(Boolean).join(" ").trim();
+    if (n) return n;
+    return u.email ? u.email.split("@")[0] : "Unknown";
+  };
+
+  const activityTypeLabel: Record<string, string> = {
+    emotion_scan: "Emotion Scan",
+    bark_translation: "Bark Translation",
+    health_scan: "Health Scan",
+    diet_plan: "Diet Plan",
+    vet_chat: "Vet Chat",
+  };
+
   app.get("/api/admin/export/users", isAuthenticated, isAdmin, async (_req: any, res) => {
     try {
       const allUsers = await db.select().from(users).orderBy(users.createdAt);
@@ -883,9 +908,7 @@ Rules:
 
       const rows = allUsers.map((u, i) => {
         const custId = `CUST-${String(i + 1).padStart(3, "0")}`;
-        const fullName = [u.firstName, u.lastName].filter(Boolean).join(" ") || "—";
-        const joinDate = u.createdAt ? new Date(u.createdAt).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" }) : "—";
-        return [i + 1, custId, fullName, u.email || "—", activityCounts[u.id] || 0, joinDate];
+        return [i + 1, custId, displayName(u), u.email || "—", activityCounts[u.id] || 0, fmtDate(u.createdAt)];
       });
 
       const csv = toCsv(
@@ -903,40 +926,71 @@ Rules:
   app.get("/api/admin/export/all-activities", isAuthenticated, isAdmin, async (_req: any, res) => {
     try {
       const allUsers = await db.select().from(users).orderBy(users.createdAt);
-      const userIndexMap: Record<string, { custId: string; name: string; email: string }> = {};
-      allUsers.forEach((u, i) => {
-        userIndexMap[u.id] = {
-          custId: `CUST-${String(i + 1).padStart(3, "0")}`,
-          name: [u.firstName, u.lastName].filter(Boolean).join(" ") || "—",
-          email: u.email || "—",
-        };
-      });
 
       const allActivities = await db.select().from(activityLogs).orderBy(activityLogs.createdAt);
 
-      const activityTypeLabel: Record<string, string> = {
-        emotion_scan: "Emotion Scan",
-        bark_translation: "Bark Translation",
-        health_scan: "Health Scan",
-        diet_plan: "Diet Plan",
-        vet_chat: "Vet Chat",
-      };
-
-      const rows = allActivities.map((a, i) => {
-        const user = userIndexMap[a.userId] || { custId: "—", name: "—", email: "—" };
-        const d = a.details as Record<string, any> || {};
-        const result = d.breed ? `Breed: ${d.breed}` + (d.emotion ? `, Emotion: ${d.emotion}` : "") + (d.message ? `, Message: ${d.message}` : "") + (d.summary ? `, ${d.summary}` : "") : a.summary;
-        const date = a.createdAt ? new Date(a.createdAt).toLocaleString("en-IN", { day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" }) : "—";
-        return [i + 1, user.custId, user.name, user.email, activityTypeLabel[a.activityType] || a.activityType, a.title, result, date];
+      // Build user index: userId → { custId, name, email, activities[] }
+      const userOrder: string[] = [];
+      const userMap: Record<string, { custId: string; name: string; email: string; activities: (typeof allActivities)[number][] }> = {};
+      allUsers.forEach((u, i) => {
+        userOrder.push(u.id);
+        userMap[u.id] = {
+          custId: `CUST-${String(i + 1).padStart(3, "0")}`,
+          name: displayName(u),
+          email: u.email || "—",
+          activities: [],
+        };
       });
 
-      const csv = toCsv(
-        ["S.No", "Customer ID", "Customer Name", "Gmail ID", "Activity Type", "Title", "Result / Summary", "Date & Time"],
-        rows
-      );
+      // Group activities by user
+      for (const a of allActivities) {
+        if (!userMap[a.userId]) {
+          userMap[a.userId] = { custId: "UNKNOWN", name: "Unknown", email: "—", activities: [] };
+          userOrder.push(a.userId);
+        }
+        userMap[a.userId].activities.push(a);
+      }
+
+      const escape = (s: any): string => {
+        const str = String(s ?? "");
+        return str.includes(",") || str.includes('"') || str.includes("\n") ? `"${str.replace(/"/g, '""')}"` : str;
+      };
+
+      const lines: string[] = [];
+      const colHeaders = ["S.No", "Activity Type", "Title", "Result / Summary", "Date & Time"];
+
+      for (const uid of userOrder) {
+        const u = userMap[uid];
+        if (!u || u.activities.length === 0) continue;
+
+        // User section header
+        lines.push(`USER: ${escape(u.name)} (${u.custId})  |  Gmail: ${escape(u.email)}`);
+        lines.push(colHeaders.join(","));
+
+        u.activities.forEach((a, idx) => {
+          const d = (a.details as Record<string, any>) || {};
+          const result = d.breed
+            ? `Breed: ${d.breed}` +
+              (d.emotion ? ` | Emotion: ${d.emotion}` : "") +
+              (d.message ? ` | Message: ${d.message}` : "") +
+              (d.summary ? ` | ${d.summary}` : "")
+            : (a.summary || "—");
+          const row = [
+            idx + 1,
+            activityTypeLabel[a.activityType] || a.activityType,
+            a.title,
+            result,
+            fmtDate(a.createdAt),
+          ];
+          lines.push(row.map(escape).join(","));
+        });
+
+        lines.push(""); // blank row between users
+      }
+
       res.setHeader("Content-Type", "text/csv");
       res.setHeader("Content-Disposition", "attachment; filename=HappyTail-Activities.csv");
-      res.send(csv);
+      res.send(lines.join("\n"));
     } catch (err) {
       res.status(500).json({ message: "Failed to export activities" });
     }
