@@ -876,13 +876,24 @@ Rules:
   // === Admin CSV Exports ===
   app.get("/api/admin/export/users", isAuthenticated, isAdmin, async (_req: any, res) => {
     try {
-      const allUsers = await db.select().from(users).orderBy(desc(users.createdAt));
+      const allUsers = await db.select().from(users).orderBy(users.createdAt);
+      const allActivities = await db.select({ userId: activityLogs.userId }).from(activityLogs);
+      const activityCounts: Record<string, number> = {};
+      for (const a of allActivities) activityCounts[a.userId] = (activityCounts[a.userId] || 0) + 1;
+
+      const rows = allUsers.map((u, i) => {
+        const custId = `CUST-${String(i + 1).padStart(3, "0")}`;
+        const fullName = [u.firstName, u.lastName].filter(Boolean).join(" ") || "—";
+        const joinDate = u.createdAt ? new Date(u.createdAt).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" }) : "—";
+        return [i + 1, custId, fullName, u.email || "—", activityCounts[u.id] || 0, joinDate];
+      });
+
       const csv = toCsv(
-        ["ID", "Email", "First Name", "Last Name", "Bio", "Profile Image", "Created At", "Updated At"],
-        allUsers.map(u => [u.id, u.email || "", u.firstName || "", u.lastName || "", u.bio || "", u.profileImageUrl || "", u.createdAt, u.updatedAt])
+        ["S.No", "Customer ID", "Full Name", "Gmail ID", "Total Activities", "Join Date"],
+        rows
       );
       res.setHeader("Content-Type", "text/csv");
-      res.setHeader("Content-Disposition", "attachment; filename=all-users.csv");
+      res.setHeader("Content-Disposition", "attachment; filename=HappyTail-Users.csv");
       res.send(csv);
     } catch (err) {
       res.status(500).json({ message: "Failed to export users" });
@@ -891,13 +902,40 @@ Rules:
 
   app.get("/api/admin/export/all-activities", isAuthenticated, isAdmin, async (_req: any, res) => {
     try {
-      const allActivities = await db.select().from(activityLogs).orderBy(desc(activityLogs.createdAt));
+      const allUsers = await db.select().from(users).orderBy(users.createdAt);
+      const userIndexMap: Record<string, { custId: string; name: string; email: string }> = {};
+      allUsers.forEach((u, i) => {
+        userIndexMap[u.id] = {
+          custId: `CUST-${String(i + 1).padStart(3, "0")}`,
+          name: [u.firstName, u.lastName].filter(Boolean).join(" ") || "—",
+          email: u.email || "—",
+        };
+      });
+
+      const allActivities = await db.select().from(activityLogs).orderBy(activityLogs.createdAt);
+
+      const activityTypeLabel: Record<string, string> = {
+        emotion_scan: "Emotion Scan",
+        bark_translation: "Bark Translation",
+        health_scan: "Health Scan",
+        diet_plan: "Diet Plan",
+        vet_chat: "Vet Chat",
+      };
+
+      const rows = allActivities.map((a, i) => {
+        const user = userIndexMap[a.userId] || { custId: "—", name: "—", email: "—" };
+        const d = a.details as Record<string, any> || {};
+        const result = d.breed ? `Breed: ${d.breed}` + (d.emotion ? `, Emotion: ${d.emotion}` : "") + (d.message ? `, Message: ${d.message}` : "") + (d.summary ? `, ${d.summary}` : "") : a.summary;
+        const date = a.createdAt ? new Date(a.createdAt).toLocaleString("en-IN", { day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" }) : "—";
+        return [i + 1, user.custId, user.name, user.email, activityTypeLabel[a.activityType] || a.activityType, a.title, result, date];
+      });
+
       const csv = toCsv(
-        ["ID", "User ID", "Activity Type", "Title", "Summary", "Details", "Date"],
-        allActivities.map(a => [a.id, a.userId, a.activityType, a.title, a.summary, JSON.stringify(a.details || {}), a.createdAt])
+        ["S.No", "Customer ID", "Customer Name", "Gmail ID", "Activity Type", "Title", "Result / Summary", "Date & Time"],
+        rows
       );
       res.setHeader("Content-Type", "text/csv");
-      res.setHeader("Content-Disposition", "attachment; filename=all-activities.csv");
+      res.setHeader("Content-Disposition", "attachment; filename=HappyTail-Activities.csv");
       res.send(csv);
     } catch (err) {
       res.status(500).json({ message: "Failed to export activities" });

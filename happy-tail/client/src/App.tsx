@@ -209,16 +209,16 @@ function AuthenticatedApp() {
                       <ChevronDown className="w-3 h-3 shrink-0 opacity-60" />
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-56">
+                  <DropdownMenuContent align="end" className="w-56 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 shadow-xl">
                     <div className="px-3 py-2">
-                      <p className="text-xs font-medium text-foreground truncate">
+                      <p className="text-xs font-medium text-gray-900 dark:text-gray-100 truncate">
                         {user.firstName ? `${user.firstName} ${user.lastName || ""}`.trim() : "Account"}
                       </p>
-                      <p className="text-xs text-muted-foreground truncate mt-0.5">{user.email}</p>
+                      <p className="text-xs text-gray-500 dark:text-gray-400 truncate mt-0.5">{user.email}</p>
                     </div>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem asChild>
-                      <Link href="/profile" className="flex items-center gap-2 cursor-pointer" data-testid="link-profile">
+                      <Link href="/profile" className="flex items-center gap-2 cursor-pointer text-gray-700 dark:text-gray-200" data-testid="link-profile">
                         <UserCircle className="w-4 h-4" /> My Profile
                       </Link>
                     </DropdownMenuItem>

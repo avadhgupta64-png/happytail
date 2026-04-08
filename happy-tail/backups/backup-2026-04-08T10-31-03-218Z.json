@@ -1,0 +1,479 @@
+{
+  "createdAt": "2026-04-08T10:31:03.704Z",
+  "counts": {
+    "users": 1,
+    "activityLogs": 9,
+    "emotionLogs": 2,
+    "dogProfiles": 0,
+    "visitorLogs": 7,
+    "locations": 7,
+    "breeds": 10
+  },
+  "data": {
+    "users": [
+      {
+        "id": "51336772",
+        "email": "avannu48@gmail.com",
+        "firstName": "Avadh",
+        "lastName": null,
+        "profileImageUrl": "https://lh3.googleusercontent.com/a/ACg8ocJKTo4DoGFh5BWOrjKc568HAAERsvx82_0Hvlrp-y-JmD5DkA=s96-c",
+        "bio": null,
+        "createdAt": "2026-04-07T16:56:17.281Z",
+        "updatedAt": "2026-04-07T16:56:17.281Z"
+      }
+    ],
+    "activityLogs": [
+      {
+        "id": 1,
+        "userId": "51336772",
+        "activityType": "emotion_scan",
+        "title": "Emotion Scan",
+        "summary": "Unknown - Sad (Dejected)",
+        "details": {
+          "mood": "Dejected",
+          "breed": "Unknown",
+          "emotion": "Sad",
+          "suggestion": "Spend time interacting with the dog to identify its needs and reassure it. Consulting a veterinarian or animal behaviorist may help if the behavior persists."
+        },
+        "createdAt": "2026-04-07T16:57:56.455Z"
+      },
+      {
+        "id": 2,
+        "userId": "51336772",
+        "activityType": "emotion_scan",
+        "title": "Emotion Scan",
+        "summary": "Jack Russell Terrier - Neutral (Calm)",
+        "details": {
+          "mood": "Calm",
+          "breed": "Jack Russell Terrier",
+          "emotion": "Neutral",
+          "suggestion": "Provide positive interaction such as petting or playing to maintain its calm demeanor."
+        },
+        "createdAt": "2026-04-07T16:58:23.453Z"
+      },
+      {
+        "id": 3,
+        "userId": "51336772",
+        "activityType": "diet_plan",
+        "title": "Diet Plan",
+        "summary": "Labrador , 2 years, 22kg - A balanced Indian diet plan suitable for a 2-year-old, 22 kg healthy Labrador.",
+        "details": {
+          "age": "2 years",
+          "tips": [
+            "Stick to the same meal timings every day for better digestion.",
+            "Avoid overfeeding as Labradors are prone to obesity.",
+            "Feed in a calm environment to prevent gulping and bloat issues.",
+            "Rotate the types of protein (chicken, fish, eggs) weekly for variety."
+          ],
+          "breed": "Labrador ",
+          "meals": [
+            {
+              "name": "Breakfast",
+              "time": "8:00 AM",
+              "foods": [
+                "Rice (cooked, no seasoning)",
+                "Boiled chicken (boneless)",
+                "Mashed boiled carrots",
+                "Small spoon of ghee (clarified butter)"
+              ],
+              "portion": "1.5 cups of rice, 1 cup chicken, 2 tbsp carrots, 1 tsp ghee"
+            },
+            {
+              "name": "Lunch",
+              "time": "1:00 PM",
+              "foods": [
+                "Chapati (no salt or spices)",
+                "Curd (unsweetened)",
+                "Boiled and mashed pumpkin"
+              ],
+              "portion": "1 chapati, 3 tbsp curd, 2 tbsp pumpkin"
+            },
+            {
+              "name": "Dinner",
+              "time": "7:00 PM",
+              "foods": [
+                "Rice (cooked, no seasoning)",
+                "Boiled fish (deboned, like rohu or katla)",
+                "Grated boiled beetroot"
+              ],
+              "portion": "1 cup rice, 1 cup fish, 2 tbsp beetroot"
+            }
+          ],
+          "weight": "22",
+          "summary": "A balanced Indian diet plan suitable for a 2-year-old, 22 kg healthy Labrador.",
+          "conditions": "None ",
+          "supplements": [
+            "Omega-3 fish oil for a healthy coat",
+            "Calcium tablets (if recommended by a vet)",
+            "Multivitamins (specific to large-sized breeds)"
+          ],
+          "water_intake": "800-1000 ml",
+          "weekly_treats": [
+            "Boiled egg (2-3 times a week)",
+            "Small piece of paneer (unsalted, 1-2 times a week)",
+            "Apple slices (seeds removed)",
+            "Banana slices (in moderation)"
+          ],
+          "daily_calories": "1200-1400 kcal",
+          "foods_to_avoid": [
+            "Chocolate",
+            "Onions and garlic",
+            "Grapes and raisins",
+            "Avocado",
+            "Excess salt and spices"
+          ]
+        },
+        "createdAt": "2026-04-07T17:03:35.525Z"
+      },
+      {
+        "id": 4,
+        "userId": "51336772",
+        "activityType": "health_scan",
+        "title": "Health Scan",
+        "summary": "Bulldog - EMERGENCY - 5 condition(s) found",
+        "details": {
+          "breed": "Bulldog",
+          "home_remedy": "While immediate veterinary care should be sought, you can apply a diluted chlorhexidine solution to clean the affected areas. Avoid creams or treatments without veterinary approval to prevent worsening or masking the condition.",
+          "is_emergency": true,
+          "detailed_analysis": "The images show significant redness, patches of hair loss, and visible irritation on the dog's skin, which raises concerns for multiple possible skin conditions including demodectic mange caused by mites, bacterial or fungal infections, or allergies. Given the extent of the symptoms, this could be painful for the dog and might lead to secondary infections or more severe conditions without professional intervention. It is recommended to seek immediate veterinary care to diagnose the exact cause, potentially perform skin scrapings or lab tests, and initiate proper treatment with prescribed medications. Early treatment is essential, as leaving skin issues untreated could result in systemic infections or long-term skin damage.",
+          "possible_conditions": [
+            "Skin infection (dermatitis)",
+            "Demodectic mange",
+            "Allergic reaction (possibly environmental or food allergy)",
+            "Fungal infection (ringworm)",
+            "Bacterial infection"
+          ]
+        },
+        "createdAt": "2026-04-07T17:13:47.382Z"
+      },
+      {
+        "id": 5,
+        "userId": "51336772",
+        "activityType": "vet_chat",
+        "title": "AI Vet Chat",
+        "summary": "Asked: \"My pitbull has died, how to bury the body?...\"",
+        "details": {
+          "reply": "Oh, I'm so sorry for your loss. Losing a beloved pet is heartbreaking, and I truly understand how difficult this must be for you. Let’s go through the steps to help you respectfully lay your pitbull to rest.\n\n### Things to Consider Before Burial\n1. **Check Local Laws**: Many places have regulations ",
+          "question": "My pitbull has died, how to bury the body?"
+        },
+        "createdAt": "2026-04-07T17:14:22.317Z"
+      },
+      {
+        "id": 6,
+        "userId": "51336772",
+        "activityType": "vet_chat",
+        "title": "AI Vet Chat",
+        "summary": "Asked: \"Remember that whenever any time I ask you anything don't put hashtags...\"",
+        "details": {
+          "reply": "Understood! I'll make sure not to use hashtags in my responses from now on. If there's anything else you'd like me to adjust or anything you need help with—I'm here for you! Thank you for letting me know. 😊",
+          "question": "Remember that whenever any time I ask you anything don't put hashtags"
+        },
+        "createdAt": "2026-04-07T17:14:49.872Z"
+      },
+      {
+        "id": 7,
+        "userId": "51336772",
+        "activityType": "vet_chat",
+        "title": "AI Vet Chat",
+        "summary": "Asked: \"My dog has pimples...\"",
+        "details": {
+          "reply": "It’s not uncommon for dogs to get pimples, and they’re usually harmless, but they can sometimes be a sign of an underlying issue, depending on the location, severity, and whether there’s any irritation or infection. Let’s go over what might be causing them and what you can do to help your pup.\n\n### ",
+          "question": "My dog has pimples"
+        },
+        "createdAt": "2026-04-07T17:15:18.511Z"
+      },
+      {
+        "id": 8,
+        "userId": "51336772",
+        "activityType": "vet_chat",
+        "title": "AI Vet Chat",
+        "summary": "Asked: \"See, now also you added hashtags...\"",
+        "details": {
+          "reply": "Oh no! You're absolutely right—I slipped up there, and I really appreciate you catching that. I promise I’ll stay mindful moving forward and avoid using hashtags entirely. Thank you for pointing it out! Let me know if there's anything else you'd like help with—I’m here for you. 😊",
+          "question": "See, now also you added hashtags"
+        },
+        "createdAt": "2026-04-07T17:15:33.650Z"
+      },
+      {
+        "id": 9,
+        "userId": "51336772",
+        "activityType": "vet_chat",
+        "title": "AI Vet Chat",
+        "summary": "Asked: \"My dog has cancer...\"",
+        "details": {
+          "reply": "I'm so sorry to hear about your dog’s diagnosis. Hearing that your beloved pup has cancer can be overwhelming, and I know this must be a very difficult time for you. I’d like to walk you through some information that may help you understand what’s happening and provide guidance on how to best suppor",
+          "question": "My dog has cancer"
+        },
+        "createdAt": "2026-04-07T17:16:10.439Z"
+      }
+    ],
+    "emotionLogs": [
+      {
+        "id": 1,
+        "imageUrl": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBwgIDQsICAgJCQgJCQoHBwcIBw8ICQcKFREWIiAdH...",
+        "detectedEmotion": "Sad",
+        "detectedBreed": "Unknown",
+        "mood": "Dejected",
+        "suggestion": "Spend time interacting with the dog to identify its needs and reassure it. Consulting a veterinarian or animal behaviorist may help if the behavior persists.",
+        "explanation": "The dog appears curled up in a corner, looking down, which could indicate feelings of sadness or anxiety. Common causes might include separation anxiety, fear, or discomfort in the current environment.",
+        "treatment": "Provide comfort by gently approaching and speaking softly to the dog. Offer a safe and cozy space with some toys or a blanket.",
+        "deviceId": "0othml4dbwztbmpz",
+        "createdAt": "2026-04-07T16:57:56.451Z"
+      },
+      {
+        "id": 2,
+        "imageUrl": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD//gAfQ29tcHJlc3NlZCBieSBqcGVnLXJlY29tcHJlc3P/2wCEA...",
+        "detectedEmotion": "Neutral",
+        "detectedBreed": "Jack Russell Terrier",
+        "mood": "Calm",
+        "suggestion": "Provide positive interaction such as petting or playing to maintain its calm demeanor.",
+        "explanation": "The dog appears to have a relaxed posture with no apparent signs of distress or anxiety.",
+        "treatment": "No treatment is necessary as the dog is not displaying negative emotions.",
+        "deviceId": "0othml4dbwztbmpz",
+        "createdAt": "2026-04-07T16:58:23.448Z"
+      }
+    ],
+    "dogProfiles": [],
+    "visitorLogs": [
+      {
+        "id": 1,
+        "userId": "51336772",
+        "visitedAt": "2026-04-07T16:56:27.381Z"
+      },
+      {
+        "id": 2,
+        "userId": "51336772",
+        "visitedAt": "2026-04-07T17:02:15.076Z"
+      },
+      {
+        "id": 3,
+        "userId": "51336772",
+        "visitedAt": "2026-04-07T17:02:54.861Z"
+      },
+      {
+        "id": 4,
+        "userId": "51336772",
+        "visitedAt": "2026-04-07T17:12:07.934Z"
+      },
+      {
+        "id": 5,
+        "userId": "51336772",
+        "visitedAt": "2026-04-07T17:12:53.783Z"
+      },
+      {
+        "id": 6,
+        "userId": "51336772",
+        "visitedAt": "2026-04-07T17:16:47.288Z"
+      },
+      {
+        "id": 7,
+        "userId": "51336772",
+        "visitedAt": "2026-04-07T17:18:05.669Z"
+      }
+    ],
+    "locations": [
+      {
+        "id": 1,
+        "name": "Lodhi Gardens (Dog Friendly)",
+        "type": "park",
+        "description": "Historic park with expansive greens. One of the best places for morning walks with dogs in Delhi.",
+        "address": "Lodhi Road, New Delhi, 110003",
+        "latitude": 28.5933,
+        "longitude": 77.2189,
+        "rules": "Leash required at all times. Please clean up after your pet. Avoid main heritage areas."
+      },
+      {
+        "id": 2,
+        "name": "Sunder Nursery Park",
+        "type": "park",
+        "description": "A heritage park complex with massive open lawns where dogs are welcome on leashes.",
+        "address": "Opposite Humayun's Tomb, Nizamuddin, New Delhi",
+        "latitude": 28.5911,
+        "longitude": 77.245,
+        "rules": "Leash strictly required. No pets near heritage structures."
+      },
+      {
+        "id": 3,
+        "name": "Puppychino Pet Cafe",
+        "type": "cafe",
+        "description": "Delhi's first dedicated pet cafe. Offers a special 'woof' menu for your furry friends.",
+        "address": "Shahpur Jat, Siri Fort, New Delhi",
+        "latitude": 28.5492,
+        "longitude": 77.2135,
+        "rules": "Well-behaved dogs allowed. Vaccination records may be requested for entry."
+      },
+      {
+        "id": 4,
+        "name": "Hauz Khas Deer Park",
+        "type": "park",
+        "description": "Lush green space perfect for long walks. Very popular among South Delhi pet parents.",
+        "address": "Hauz Khas Village, New Delhi",
+        "latitude": 28.5555,
+        "longitude": 77.1935,
+        "rules": "Dogs must be leashed. Strictly no entry into the deer enclosure area."
+      },
+      {
+        "id": 5,
+        "name": "Pet Clinic South Delhi - Dr. Kapoor",
+        "type": "vet",
+        "description": "Specialized small animal veterinary care. Emergency services available on call.",
+        "address": "B-21, Green Park Main, New Delhi",
+        "latitude": 28.5588,
+        "longitude": 77.2028,
+        "rules": "Appointment preferred. Emergency walk-ins accepted 24/7."
+      },
+      {
+        "id": 6,
+        "name": "Bark Street Cafe",
+        "type": "cafe",
+        "description": "A cozy pet-friendly cafe with an outdoor play area for dogs.",
+        "address": "Noida-Delhi Border area",
+        "latitude": 28.5355,
+        "longitude": 77.3411,
+        "rules": "Dogs can be off-leash in the designated play zone only."
+      },
+      {
+        "id": 7,
+        "name": "The Blue Door Cafe (Pet Friendly)",
+        "type": "cafe",
+        "description": "European-style cafe that welcomes small to medium pets in their outdoor seating.",
+        "address": "Khan Market, New Delhi",
+        "latitude": 28.6001,
+        "longitude": 77.2274,
+        "rules": "Pets allowed in outdoor seating area only. Must be leashed."
+      }
+    ],
+    "breeds": [
+      {
+        "id": 1,
+        "name": "Indian Pariah Dog",
+        "description": "The native landrace of the Indian subcontinent. Highly resilient, intelligent, and fiercely loyal. They are perfectly adapted to the Indian climate and are excellent watchdogs for any home. They are one of the oldest and healthiest dog breeds in the world, with a natural immunity to many local diseases.",
+        "traits": [
+          "Resilient",
+          "Alert",
+          "Loyal",
+          "Social"
+        ],
+        "imageUrl": "https://images.unsplash.com/photo-1628151523491-a188f5573420?auto=format&fit=crop&q=80",
+        "careGuide": "Low maintenance. Needs mental stimulation and socialization. Excellent watchdogs for Delhi homes. They require minimal grooming and have remarkably few genetic health issues."
+      },
+      {
+        "id": 2,
+        "name": "Golden Retriever",
+        "description": "Intelligent, friendly, and devoted. Famous for their golden coat and gentle temperament. They are world-renowned family pets and excel in various canine activities including therapy and service work.",
+        "traits": [
+          "Gentle",
+          "Intelligent",
+          "Playful",
+          "Affectionate"
+        ],
+        "imageUrl": "https://images.unsplash.com/photo-1552053831-71594a27632d?auto=format&fit=crop&q=80",
+        "careGuide": "Requires daily exercise and weekly grooming. Prone to heat exhaustion in Delhi summers, so keep them indoors during peak heat hours. They thrive on human companionship."
+      },
+      {
+        "id": 3,
+        "name": "German Shepherd",
+        "description": "Confident, courageous, and smart. Versatile working dogs often used in security, search and rescue, and as service dogs. They are deeply loyal to their family and protective by nature.",
+        "traits": [
+          "Courageous",
+          "Obedient",
+          "Watchful",
+          "Smart"
+        ],
+        "imageUrl": "https://images.unsplash.com/photo-1589941013453-ec89f33b5e95?auto=format&fit=crop&q=80",
+        "careGuide": "Needs consistent training and intense physical activity. High shedding breed, requires frequent brushing. They need mental challenges to prevent boredom."
+      },
+      {
+        "id": 4,
+        "name": "Beagle",
+        "description": "Merry, friendly, and curious. Small hound with a big personality and an incredible sense of smell. They are sturdy, compact dogs with a distinctively loud voice.",
+        "traits": [
+          "Curious",
+          "Merry",
+          "Friendly",
+          "Stubborn"
+        ],
+        "imageUrl": "https://images.unsplash.com/photo-1506755855567-92ff770e8d00?auto=format&fit=crop&q=80",
+        "careGuide": "Scent-driven, keep on leash as they might follow their nose anywhere. Prone to obesity, monitor diet closely. They love social interaction and the company of other dogs."
+      },
+      {
+        "id": 5,
+        "name": "Labrador Retriever",
+        "description": "Friendly, active, and outgoing. One of the most popular breeds worldwide for families. They are known for their stable temperament and absolute love for water and retrieving.",
+        "traits": [
+          "Outgoing",
+          "Kind",
+          "Agile",
+          "Trusting"
+        ],
+        "imageUrl": "https://images.unsplash.com/photo-1553736026-ff14d1f8d72c?auto=format&fit=crop&q=80",
+        "careGuide": "High energy, needs long walks and swimming. Very food-motivated; obesity is a common health risk. Excellent with children and usually very welcoming."
+      },
+      {
+        "id": 6,
+        "name": "Pug",
+        "description": "Charming, mischievous, and loving. Compact breed with a wrinkled face and curled tail. They were bred as companion dogs for royalty and still live up to that role today.",
+        "traits": [
+          "Charming",
+          "Dignified",
+          "Docile",
+          "Loving"
+        ],
+        "imageUrl": "https://images.unsplash.com/photo-1517423440428-a5a00ad493e8?auto=format&fit=crop&q=80",
+        "careGuide": "Extremely sensitive to high humidity and heat (critical for Delhi summers). Minimal exercise needed. Clean facial folds regularly to prevent infections."
+      },
+      {
+        "id": 7,
+        "name": "Boxer",
+        "description": "Bright, fun-loving, and active. Known for their 'boxing' play style and patient nature. They are powerful, athletic dogs that remain puppy-like well into adulthood.",
+        "traits": [
+          "Playful",
+          "Devoted",
+          "Energetic",
+          "Fearless"
+        ],
+        "imageUrl": "https://images.unsplash.com/photo-1541364983171-a8ba01d95cfc?auto=format&fit=crop&q=80",
+        "careGuide": "Requires lots of physical and mental stimulation. Very protective of their family. Good apartment dogs if they receive adequate daily exercise."
+      },
+      {
+        "id": 8,
+        "name": "Shih Tzu",
+        "description": "Affectionate, playful, and outgoing. Small, sturdy dog with a long, flowing coat. They were bred to be companions and excel at providing love and warmth.",
+        "traits": [
+          "Affectionate",
+          "Playful",
+          "Clever",
+          "Lively"
+        ],
+        "imageUrl": "https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?auto=format&fit=crop&q=80",
+        "careGuide": "High grooming needs; requires daily brushing. Gentle house dog. Susceptible to eye issues; keep facial hair trimmed or tied back."
+      },
+      {
+        "id": 9,
+        "name": "Dachshund",
+        "description": "Clever, stubborn, and courageous. Distinctive long body and short legs. Originally bred for hunting, they have a surprisingly large bark and brave spirit.",
+        "traits": [
+          "Spunky",
+          "Brave",
+          "Clever",
+          "Persistent"
+        ],
+        "imageUrl": "https://images.unsplash.com/photo-1612195583950-b8fd34c87093?auto=format&fit=crop&q=80",
+        "careGuide": "Protect their long backs—strictly prevent jumping from furniture. Intelligent but notoriously stubborn to train. Moderate exercise and mental games."
+      },
+      {
+        "id": 10,
+        "name": "Rottweiler",
+        "description": "Loyal, loving, and confident guardian. Powerful breed with a soft heart for their family. They are calm, confident protectors who need a clear leader.",
+        "traits": [
+          "Loyal",
+          "Confident",
+          "Good-natured",
+          "Fearless"
+        ],
+        "imageUrl": "https://images.unsplash.com/photo-1567171466295-4afa58141217?auto=format&fit=crop&q=80",
+        "careGuide": "Needs firm, consistent training and early socialization. Powerful but surprisingly calm indoors if properly exercised. They are intensely devoted to their family."
+      }
+    ]
+  }
+}
