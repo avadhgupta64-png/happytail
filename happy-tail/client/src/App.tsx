@@ -23,7 +23,8 @@ import Profile from "@/pages/Profile";
 import History from "@/pages/History";
 import ExportData from "@/pages/ExportData";
 import AdminDashboard from "@/pages/AdminDashboard";
-import { HeartPulse, MessageSquare, ShieldAlert, BookOpen, Moon, Sun, Home as HomeIcon, MapPin, Users, Dog, Stethoscope, LogOut, LogIn, UserCircle, Clock, FileSpreadsheet, Shield, RefreshCw, ChevronDown } from "lucide-react";
+import About from "@/pages/About";
+import { HeartPulse, MessageSquare, ShieldAlert, BookOpen, Moon, Sun, Home as HomeIcon, MapPin, Users, Dog, Stethoscope, LogOut, LogIn, UserCircle, Clock, FileSpreadsheet, Shield, RefreshCw, ChevronDown, Info } from "lucide-react";
 import { useTheme } from "./hooks/use-theme";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
@@ -72,6 +73,7 @@ function AppSidebar() {
     { title: t.nav.community, url: "/community", icon: Users },
     { title: t.nav.emergency, url: "/emergency", icon: ShieldAlert },
     { title: "History", url: "/history", icon: Clock },
+    { title: "About", url: "/about", icon: Info },
     ...(adminCheck?.isAdmin ? [{ title: "Admin", url: "/admin", icon: Shield }] : []),
   ];
 
@@ -138,6 +140,7 @@ function Router() {
       <Route path="/export" component={ExportData} />
       <Route path="/admin" component={AdminDashboard} />
       <Route path="/profile" component={Profile} />
+      <Route path="/about" component={About} />
       <Route component={NotFound} />
     </Switch>
   );
@@ -182,6 +185,11 @@ function AuthenticatedApp() {
               </div>
             </div>
             <div className="flex items-center gap-1">
+              <Link href="/about">
+                <Button variant="ghost" size="icon" className="rounded-xl text-muted-foreground hover:text-primary" title="About Happy Tail" data-testid="button-about">
+                  <Info className="w-4 h-4" />
+                </Button>
+              </Link>
               <LanguageSwitcher />
               <ThemeToggle />
               {isGuest && (
