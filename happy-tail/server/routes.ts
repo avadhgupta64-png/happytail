@@ -707,7 +707,7 @@ Rules:
   });
 
   // === Admin Routes (locked to admin emails) ===
-  const ADMIN_EMAILS = ["avannu48@gmail.com"];
+  const ADMIN_EMAILS = ["pawcare.tech@gmail.com"];
 
   const isAdmin = async (req: any, res: any, next: any) => {
     try {

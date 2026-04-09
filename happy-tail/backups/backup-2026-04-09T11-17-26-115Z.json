@@ -1,274 +1,159 @@
 {
-  "createdAt": "2026-04-08T10:26:26.850Z",
+  "createdAt": "2026-04-09T11:17:26.598Z",
   "counts": {
     "users": 1,
-    "activityLogs": 9,
-    "emotionLogs": 2,
+    "activityLogs": 3,
+    "emotionLogs": 1,
     "dogProfiles": 0,
-    "visitorLogs": 7,
+    "visitorLogs": 1,
     "locations": 7,
     "breeds": 10
   },
   "data": {
     "users": [
       {
-        "id": "51336772",
-        "email": "avannu48@gmail.com",
-        "firstName": "Avadh",
-        "lastName": null,
-        "profileImageUrl": "https://lh3.googleusercontent.com/a/ACg8ocJKTo4DoGFh5BWOrjKc568HAAERsvx82_0Hvlrp-y-JmD5DkA=s96-c",
-        "bio": null,
-        "createdAt": "2026-04-07T16:56:17.281Z",
-        "updatedAt": "2026-04-07T16:56:17.281Z"
+        "id": "57381831",
+        "email": "pawcare.tech@gmail.com",
+        "firstName": "Avadh ",
+        "lastName": "Guota",
+        "profileImageUrl": "https://lh3.googleusercontent.com/a/ACg8ocIGsn6U6f_r_rMk6Xvw2Et5UCzer1NQI97YZtOyIb2EOL2LOA=s96-c",
+        "bio": "Founder and Developer- Happy Tail ",
+        "createdAt": "2026-04-09T11:03:48.776Z",
+        "updatedAt": "2026-04-09T11:07:01.230Z"
       }
     ],
     "activityLogs": [
       {
         "id": 1,
-        "userId": "51336772",
+        "userId": "57381831",
         "activityType": "emotion_scan",
         "title": "Emotion Scan",
-        "summary": "Unknown - Sad (Dejected)",
+        "summary": "Border Collie mix - Sad (Melancholic)",
         "details": {
-          "mood": "Dejected",
-          "breed": "Unknown",
+          "mood": "Melancholic",
+          "breed": "Border Collie mix",
           "emotion": "Sad",
-          "suggestion": "Spend time interacting with the dog to identify its needs and reassure it. Consulting a veterinarian or animal behaviorist may help if the behavior persists."
+          "suggestion": "Engage the dog with play, a walk, or mental stimulation such as training or puzzle toys to uplift its mood."
         },
-        "createdAt": "2026-04-07T16:57:56.455Z"
+        "createdAt": "2026-04-09T11:04:15.832Z"
       },
       {
         "id": 2,
-        "userId": "51336772",
-        "activityType": "emotion_scan",
-        "title": "Emotion Scan",
-        "summary": "Jack Russell Terrier - Neutral (Calm)",
+        "userId": "57381831",
+        "activityType": "health_scan",
+        "title": "Health Scan",
+        "summary": "English Bulldog - EMERGENCY - 5 condition(s) found",
         "details": {
-          "mood": "Calm",
-          "breed": "Jack Russell Terrier",
-          "emotion": "Neutral",
-          "suggestion": "Provide positive interaction such as petting or playing to maintain its calm demeanor."
+          "breed": "English Bulldog",
+          "home_remedy": "While awaiting veterinary care, gently clean affected areas with diluted povidone-iodine solution. Avoid harsh soaps or detergents. Apply cool compresses to soothe irritation. Ensure the dog is kept in a clean and dry environment to prevent further infection.",
+          "is_emergency": true,
+          "detailed_analysis": "The dog appears to have significant redness, hair loss, and scaly patches indicative of a skin condition. Skin infections could be bacterial, fungal, or parasitic in nature. Allergies or underlying health issues such as mange or dermatitis may be contributing factors. The extent of the irritation suggests immediate veterinary consultation to diagnose the cause and initiate proper treatment. Home remedies can provide temporary relief but are not a substitute for professional care.",
+          "possible_conditions": [
+            "Allergic dermatitis",
+            "Demodectic mange (Demodicosis)",
+            "Fungal or bacterial skin infection",
+            "Skin irritation due to parasites or environmental factors",
+            "Hot spots or localized infections"
+          ]
         },
-        "createdAt": "2026-04-07T16:58:23.453Z"
+        "createdAt": "2026-04-09T11:04:56.845Z"
       },
       {
         "id": 3,
-        "userId": "51336772",
+        "userId": "57381831",
         "activityType": "diet_plan",
         "title": "Diet Plan",
-        "summary": "Labrador , 2 years, 22kg - A balanced Indian diet plan suitable for a 2-year-old, 22 kg healthy Labrador.",
+        "summary": "LABRADOR, 2, 22kg - Balanced daily diet plan for a 2-year-old Labrador weighing 22 kg with portioned homemade meals and hydration.",
         "details": {
-          "age": "2 years",
+          "age": "2",
           "tips": [
-            "Stick to the same meal timings every day for better digestion.",
-            "Avoid overfeeding as Labradors are prone to obesity.",
-            "Feed in a calm environment to prevent gulping and bloat issues.",
-            "Rotate the types of protein (chicken, fish, eggs) weekly for variety."
+            "Divide meals into 2-3 portions per day to prevent bloating risks.",
+            "Ensure the protein-to-carb ratio in homemade meals remains balanced.",
+            "Stick to unsalted, unspiced, boiled, or steamed homemade food options.",
+            "Labradors are prone to obesity; monitor portions and avoid overfeeding."
           ],
-          "breed": "Labrador ",
+          "breed": "LABRADOR",
           "meals": [
             {
               "name": "Breakfast",
-              "time": "8:00 AM",
+              "time": "7:00 AM",
               "foods": [
-                "Rice (cooked, no seasoning)",
                 "Boiled chicken (boneless)",
-                "Mashed boiled carrots",
-                "Small spoon of ghee (clarified butter)"
+                "Cooked white rice",
+                "Steamed carrots"
               ],
-              "portion": "1.5 cups of rice, 1 cup chicken, 2 tbsp carrots, 1 tsp ghee"
+              "portion": "150g chicken + 100g rice + 50g carrots"
             },
             {
               "name": "Lunch",
-              "time": "1:00 PM",
+              "time": "12:30 PM",
               "foods": [
-                "Chapati (no salt or spices)",
-                "Curd (unsweetened)",
-                "Boiled and mashed pumpkin"
+                "Scrambled eggs",
+                "Cooked brown rice",
+                "Steamed pumpkin"
               ],
-              "portion": "1 chapati, 3 tbsp curd, 2 tbsp pumpkin"
+              "portion": "2 eggs + 100g rice + 50g pumpkin"
             },
             {
               "name": "Dinner",
-              "time": "7:00 PM",
+              "time": "7:30 PM",
               "foods": [
-                "Rice (cooked, no seasoning)",
-                "Boiled fish (deboned, like rohu or katla)",
-                "Grated boiled beetroot"
+                "Boiled fish (deboned)",
+                "Mashed sweet potato",
+                "Steamed spinach"
               ],
-              "portion": "1 cup rice, 1 cup fish, 2 tbsp beetroot"
+              "portion": "150g fish + 100g sweet potato + 50g spinach"
             }
           ],
           "weight": "22",
-          "summary": "A balanced Indian diet plan suitable for a 2-year-old, 22 kg healthy Labrador.",
-          "conditions": "None ",
+          "summary": "Balanced daily diet plan for a 2-year-old Labrador weighing 22 kg with portioned homemade meals and hydration.",
+          "conditions": "",
           "supplements": [
-            "Omega-3 fish oil for a healthy coat",
-            "Calcium tablets (if recommended by a vet)",
-            "Multivitamins (specific to large-sized breeds)"
+            "Fish Oil (rich in Omega-3)",
+            "Joint supplements (with glucosamine and chondroitin)",
+            "Probiotics for gut health",
+            "Multivitamins designed for active dogs"
           ],
-          "water_intake": "800-1000 ml",
+          "water_intake": "1200-1800 ml",
           "weekly_treats": [
-            "Boiled egg (2-3 times a week)",
-            "Small piece of paneer (unsalted, 1-2 times a week)",
-            "Apple slices (seeds removed)",
-            "Banana slices (in moderation)"
+            "Banana slices (2-3 pieces per serving)",
+            "Unsweetened yogurt (2 tbsp)",
+            "Boiled egg (1 egg, once per week)",
+            "Homemade peanut butter (1 tsp)"
           ],
-          "daily_calories": "1200-1400 kcal",
+          "daily_calories": "1100-1400 kcal",
           "foods_to_avoid": [
             "Chocolate",
             "Onions and garlic",
             "Grapes and raisins",
             "Avocado",
-            "Excess salt and spices"
+            "Raw or fried fatty foods",
+            "Spicy foods"
           ]
         },
-        "createdAt": "2026-04-07T17:03:35.525Z"
-      },
-      {
-        "id": 4,
-        "userId": "51336772",
-        "activityType": "health_scan",
-        "title": "Health Scan",
-        "summary": "Bulldog - EMERGENCY - 5 condition(s) found",
-        "details": {
-          "breed": "Bulldog",
-          "home_remedy": "While immediate veterinary care should be sought, you can apply a diluted chlorhexidine solution to clean the affected areas. Avoid creams or treatments without veterinary approval to prevent worsening or masking the condition.",
-          "is_emergency": true,
-          "detailed_analysis": "The images show significant redness, patches of hair loss, and visible irritation on the dog's skin, which raises concerns for multiple possible skin conditions including demodectic mange caused by mites, bacterial or fungal infections, or allergies. Given the extent of the symptoms, this could be painful for the dog and might lead to secondary infections or more severe conditions without professional intervention. It is recommended to seek immediate veterinary care to diagnose the exact cause, potentially perform skin scrapings or lab tests, and initiate proper treatment with prescribed medications. Early treatment is essential, as leaving skin issues untreated could result in systemic infections or long-term skin damage.",
-          "possible_conditions": [
-            "Skin infection (dermatitis)",
-            "Demodectic mange",
-            "Allergic reaction (possibly environmental or food allergy)",
-            "Fungal infection (ringworm)",
-            "Bacterial infection"
-          ]
-        },
-        "createdAt": "2026-04-07T17:13:47.382Z"
-      },
-      {
-        "id": 5,
-        "userId": "51336772",
-        "activityType": "vet_chat",
-        "title": "AI Vet Chat",
-        "summary": "Asked: \"My pitbull has died, how to bury the body?...\"",
-        "details": {
-          "reply": "Oh, I'm so sorry for your loss. Losing a beloved pet is heartbreaking, and I truly understand how difficult this must be for you. Let’s go through the steps to help you respectfully lay your pitbull to rest.\n\n### Things to Consider Before Burial\n1. **Check Local Laws**: Many places have regulations ",
-          "question": "My pitbull has died, how to bury the body?"
-        },
-        "createdAt": "2026-04-07T17:14:22.317Z"
-      },
-      {
-        "id": 6,
-        "userId": "51336772",
-        "activityType": "vet_chat",
-        "title": "AI Vet Chat",
-        "summary": "Asked: \"Remember that whenever any time I ask you anything don't put hashtags...\"",
-        "details": {
-          "reply": "Understood! I'll make sure not to use hashtags in my responses from now on. If there's anything else you'd like me to adjust or anything you need help with—I'm here for you! Thank you for letting me know. 😊",
-          "question": "Remember that whenever any time I ask you anything don't put hashtags"
-        },
-        "createdAt": "2026-04-07T17:14:49.872Z"
-      },
-      {
-        "id": 7,
-        "userId": "51336772",
-        "activityType": "vet_chat",
-        "title": "AI Vet Chat",
-        "summary": "Asked: \"My dog has pimples...\"",
-        "details": {
-          "reply": "It’s not uncommon for dogs to get pimples, and they’re usually harmless, but they can sometimes be a sign of an underlying issue, depending on the location, severity, and whether there’s any irritation or infection. Let’s go over what might be causing them and what you can do to help your pup.\n\n### ",
-          "question": "My dog has pimples"
-        },
-        "createdAt": "2026-04-07T17:15:18.511Z"
-      },
-      {
-        "id": 8,
-        "userId": "51336772",
-        "activityType": "vet_chat",
-        "title": "AI Vet Chat",
-        "summary": "Asked: \"See, now also you added hashtags...\"",
-        "details": {
-          "reply": "Oh no! You're absolutely right—I slipped up there, and I really appreciate you catching that. I promise I’ll stay mindful moving forward and avoid using hashtags entirely. Thank you for pointing it out! Let me know if there's anything else you'd like help with—I’m here for you. 😊",
-          "question": "See, now also you added hashtags"
-        },
-        "createdAt": "2026-04-07T17:15:33.650Z"
-      },
-      {
-        "id": 9,
-        "userId": "51336772",
-        "activityType": "vet_chat",
-        "title": "AI Vet Chat",
-        "summary": "Asked: \"My dog has cancer...\"",
-        "details": {
-          "reply": "I'm so sorry to hear about your dog’s diagnosis. Hearing that your beloved pup has cancer can be overwhelming, and I know this must be a very difficult time for you. I’d like to walk you through some information that may help you understand what’s happening and provide guidance on how to best suppor",
-          "question": "My dog has cancer"
-        },
-        "createdAt": "2026-04-07T17:16:10.439Z"
+        "createdAt": "2026-04-09T11:05:16.280Z"
       }
     ],
     "emotionLogs": [
       {
         "id": 1,
-        "imageUrl": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAkGBwgIDQsICAgJCQgJCQoHBwcIBw8ICQcKFREWIiAdH...",
+        "imageUrl": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAYGBgYHBgcICAcKCwoLCg8ODAwODxYQERAREBYiFRkVF...",
         "detectedEmotion": "Sad",
-        "detectedBreed": "Unknown",
-        "mood": "Dejected",
-        "suggestion": "Spend time interacting with the dog to identify its needs and reassure it. Consulting a veterinarian or animal behaviorist may help if the behavior persists.",
-        "explanation": "The dog appears curled up in a corner, looking down, which could indicate feelings of sadness or anxiety. Common causes might include separation anxiety, fear, or discomfort in the current environment.",
-        "treatment": "Provide comfort by gently approaching and speaking softly to the dog. Offer a safe and cozy space with some toys or a blanket.",
-        "deviceId": "0othml4dbwztbmpz",
-        "createdAt": "2026-04-07T16:57:56.451Z"
-      },
-      {
-        "id": 2,
-        "imageUrl": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD//gAfQ29tcHJlc3NlZCBieSBqcGVnLXJlY29tcHJlc3P/2wCEA...",
-        "detectedEmotion": "Neutral",
-        "detectedBreed": "Jack Russell Terrier",
-        "mood": "Calm",
-        "suggestion": "Provide positive interaction such as petting or playing to maintain its calm demeanor.",
-        "explanation": "The dog appears to have a relaxed posture with no apparent signs of distress or anxiety.",
-        "treatment": "No treatment is necessary as the dog is not displaying negative emotions.",
-        "deviceId": "0othml4dbwztbmpz",
-        "createdAt": "2026-04-07T16:58:23.448Z"
+        "detectedBreed": "Border Collie mix",
+        "mood": "Melancholic",
+        "suggestion": "Engage the dog with play, a walk, or mental stimulation such as training or puzzle toys to uplift its mood.",
+        "explanation": "The dog's posture and downturned expression suggest sadness or longing, likely stemming from feeling ignored or waiting for someone.",
+        "treatment": "Provide attention and affection.",
+        "deviceId": "l3e19cboti5ifn6h",
+        "createdAt": "2026-04-09T11:04:15.824Z"
       }
     ],
     "dogProfiles": [],
     "visitorLogs": [
       {
         "id": 1,
-        "userId": "51336772",
-        "visitedAt": "2026-04-07T16:56:27.381Z"
-      },
-      {
-        "id": 2,
-        "userId": "51336772",
-        "visitedAt": "2026-04-07T17:02:15.076Z"
-      },
-      {
-        "id": 3,
-        "userId": "51336772",
-        "visitedAt": "2026-04-07T17:02:54.861Z"
-      },
-      {
-        "id": 4,
-        "userId": "51336772",
-        "visitedAt": "2026-04-07T17:12:07.934Z"
-      },
-      {
-        "id": 5,
-        "userId": "51336772",
-        "visitedAt": "2026-04-07T17:12:53.783Z"
-      },
-      {
-        "id": 6,
-        "userId": "51336772",
-        "visitedAt": "2026-04-07T17:16:47.288Z"
-      },
-      {
-        "id": 7,
-        "userId": "51336772",
-        "visitedAt": "2026-04-07T17:18:05.669Z"
+        "userId": "57381831",
+        "visitedAt": "2026-04-09T11:03:54.117Z"
       }
     ],
     "locations": [
