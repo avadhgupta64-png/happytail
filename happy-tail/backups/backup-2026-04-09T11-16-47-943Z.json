@@ -1,20 +1,161 @@
 {
-  "createdAt": "2026-04-07T16:53:39.953Z",
+  "createdAt": "2026-04-09T11:16:48.451Z",
   "counts": {
-    "users": 0,
-    "activityLogs": 0,
-    "emotionLogs": 0,
+    "users": 1,
+    "activityLogs": 3,
+    "emotionLogs": 1,
     "dogProfiles": 0,
-    "visitorLogs": 0,
+    "visitorLogs": 1,
     "locations": 7,
     "breeds": 10
   },
   "data": {
-    "users": [],
-    "activityLogs": [],
-    "emotionLogs": [],
+    "users": [
+      {
+        "id": "57381831",
+        "email": "pawcare.tech@gmail.com",
+        "firstName": "Avadh ",
+        "lastName": "Guota",
+        "profileImageUrl": "https://lh3.googleusercontent.com/a/ACg8ocIGsn6U6f_r_rMk6Xvw2Et5UCzer1NQI97YZtOyIb2EOL2LOA=s96-c",
+        "bio": "Founder and Developer- Happy Tail ",
+        "createdAt": "2026-04-09T11:03:48.776Z",
+        "updatedAt": "2026-04-09T11:07:01.230Z"
+      }
+    ],
+    "activityLogs": [
+      {
+        "id": 1,
+        "userId": "57381831",
+        "activityType": "emotion_scan",
+        "title": "Emotion Scan",
+        "summary": "Border Collie mix - Sad (Melancholic)",
+        "details": {
+          "mood": "Melancholic",
+          "breed": "Border Collie mix",
+          "emotion": "Sad",
+          "suggestion": "Engage the dog with play, a walk, or mental stimulation such as training or puzzle toys to uplift its mood."
+        },
+        "createdAt": "2026-04-09T11:04:15.832Z"
+      },
+      {
+        "id": 2,
+        "userId": "57381831",
+        "activityType": "health_scan",
+        "title": "Health Scan",
+        "summary": "English Bulldog - EMERGENCY - 5 condition(s) found",
+        "details": {
+          "breed": "English Bulldog",
+          "home_remedy": "While awaiting veterinary care, gently clean affected areas with diluted povidone-iodine solution. Avoid harsh soaps or detergents. Apply cool compresses to soothe irritation. Ensure the dog is kept in a clean and dry environment to prevent further infection.",
+          "is_emergency": true,
+          "detailed_analysis": "The dog appears to have significant redness, hair loss, and scaly patches indicative of a skin condition. Skin infections could be bacterial, fungal, or parasitic in nature. Allergies or underlying health issues such as mange or dermatitis may be contributing factors. The extent of the irritation suggests immediate veterinary consultation to diagnose the cause and initiate proper treatment. Home remedies can provide temporary relief but are not a substitute for professional care.",
+          "possible_conditions": [
+            "Allergic dermatitis",
+            "Demodectic mange (Demodicosis)",
+            "Fungal or bacterial skin infection",
+            "Skin irritation due to parasites or environmental factors",
+            "Hot spots or localized infections"
+          ]
+        },
+        "createdAt": "2026-04-09T11:04:56.845Z"
+      },
+      {
+        "id": 3,
+        "userId": "57381831",
+        "activityType": "diet_plan",
+        "title": "Diet Plan",
+        "summary": "LABRADOR, 2, 22kg - Balanced daily diet plan for a 2-year-old Labrador weighing 22 kg with portioned homemade meals and hydration.",
+        "details": {
+          "age": "2",
+          "tips": [
+            "Divide meals into 2-3 portions per day to prevent bloating risks.",
+            "Ensure the protein-to-carb ratio in homemade meals remains balanced.",
+            "Stick to unsalted, unspiced, boiled, or steamed homemade food options.",
+            "Labradors are prone to obesity; monitor portions and avoid overfeeding."
+          ],
+          "breed": "LABRADOR",
+          "meals": [
+            {
+              "name": "Breakfast",
+              "time": "7:00 AM",
+              "foods": [
+                "Boiled chicken (boneless)",
+                "Cooked white rice",
+                "Steamed carrots"
+              ],
+              "portion": "150g chicken + 100g rice + 50g carrots"
+            },
+            {
+              "name": "Lunch",
+              "time": "12:30 PM",
+              "foods": [
+                "Scrambled eggs",
+                "Cooked brown rice",
+                "Steamed pumpkin"
+              ],
+              "portion": "2 eggs + 100g rice + 50g pumpkin"
+            },
+            {
+              "name": "Dinner",
+              "time": "7:30 PM",
+              "foods": [
+                "Boiled fish (deboned)",
+                "Mashed sweet potato",
+                "Steamed spinach"
+              ],
+              "portion": "150g fish + 100g sweet potato + 50g spinach"
+            }
+          ],
+          "weight": "22",
+          "summary": "Balanced daily diet plan for a 2-year-old Labrador weighing 22 kg with portioned homemade meals and hydration.",
+          "conditions": "",
+          "supplements": [
+            "Fish Oil (rich in Omega-3)",
+            "Joint supplements (with glucosamine and chondroitin)",
+            "Probiotics for gut health",
+            "Multivitamins designed for active dogs"
+          ],
+          "water_intake": "1200-1800 ml",
+          "weekly_treats": [
+            "Banana slices (2-3 pieces per serving)",
+            "Unsweetened yogurt (2 tbsp)",
+            "Boiled egg (1 egg, once per week)",
+            "Homemade peanut butter (1 tsp)"
+          ],
+          "daily_calories": "1100-1400 kcal",
+          "foods_to_avoid": [
+            "Chocolate",
+            "Onions and garlic",
+            "Grapes and raisins",
+            "Avocado",
+            "Raw or fried fatty foods",
+            "Spicy foods"
+          ]
+        },
+        "createdAt": "2026-04-09T11:05:16.280Z"
+      }
+    ],
+    "emotionLogs": [
+      {
+        "id": 1,
+        "imageUrl": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAYGBgYHBgcICAcKCwoLCg8ODAwODxYQERAREBYiFRkVF...",
+        "detectedEmotion": "Sad",
+        "detectedBreed": "Border Collie mix",
+        "mood": "Melancholic",
+        "suggestion": "Engage the dog with play, a walk, or mental stimulation such as training or puzzle toys to uplift its mood.",
+        "explanation": "The dog's posture and downturned expression suggest sadness or longing, likely stemming from feeling ignored or waiting for someone.",
+        "treatment": "Provide attention and affection.",
+        "deviceId": "l3e19cboti5ifn6h",
+        "createdAt": "2026-04-09T11:04:15.824Z"
+      }
+    ],
     "dogProfiles": [],
-    "visitorLogs": [],
+    "visitorLogs": [
+      {
+        "id": 1,
+        "userId": "57381831",
+        "visitedAt": "2026-04-09T11:03:54.117Z"
+      }
+    ],
     "locations": [
       {
         "id": 1,

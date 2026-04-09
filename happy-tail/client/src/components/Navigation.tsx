@@ -3,17 +3,19 @@ import { motion } from "framer-motion";
 import { Dog, MapPin, Activity, ShieldAlert, Home, Camera } from "lucide-react";
 import { cn } from "@/lib/utils";
 import logoImg from "@assets/IMG-20260210-WA0048_1770744211559.jpg";
-
-const navItems = [
-  { href: "/", icon: Home, label: "Home" },
-  { href: "/detector", icon: Camera, label: "Detector" },
-  { href: "/breeds", icon: Dog, label: "Breeds" },
-  { href: "/locations", icon: MapPin, label: "Places" },
-  { href: "/emergency", icon: ShieldAlert, label: "Help", variant: "danger" },
-];
+import { useLanguage } from "@/lib/language-context";
 
 export function Navigation() {
   const [location] = useLocation();
+  const { t } = useLanguage();
+
+  const navItems = [
+    { href: "/", icon: Home, label: t.nav.home },
+    { href: "/detector", icon: Camera, label: t.nav.emotionDetector },
+    { href: "/breeds", icon: Dog, label: t.nav.breedGuide },
+    { href: "/locations", icon: MapPin, label: t.nav.places },
+    { href: "/emergency", icon: ShieldAlert, label: t.nav.emergency, variant: "danger" },
+  ];
 
   return (
     <>
