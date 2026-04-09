@@ -35,7 +35,7 @@ export default function DietPlanner() {
   const [plan, setPlan] = useState<MealPlan | null>(null);
   const { toast } = useToast();
   const { checkGuestAccess } = useGuest();
-  const { lang } = useLanguage();
+  const { lang, t } = useLanguage();
 
   const handleGenerate = async () => {
     if (!breed.trim() || !age.trim() || !weight.trim()) {
@@ -65,9 +65,9 @@ export default function DietPlanner() {
         </Link>
         <div>
           <h1 className="text-2xl md:text-3xl font-display font-bold text-foreground" data-testid="text-diet-title">
-            AI Diet Planner
+            {t.dietPlanner.title}
           </h1>
-          <p className="text-sm text-muted-foreground">Personalized meal plan tailored to your dog</p>
+          <p className="text-sm text-muted-foreground">{t.dietPlanner.subtitle}</p>
         </div>
       </div>
 
@@ -85,14 +85,14 @@ export default function DietPlanner() {
                   <UtensilsCrossed className="w-5 h-5 text-amber-500" />
                 </div>
                 <div>
-                  <h2 className="font-bold text-foreground">Tell us about your dog</h2>
-                  <p className="text-xs text-muted-foreground">We'll create a customized daily meal plan</p>
+                  <h2 className="font-bold text-foreground">{t.dietPlanner.title}</h2>
+                  <p className="text-xs text-muted-foreground">{t.dietPlanner.subtitle}</p>
                 </div>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
                 <div>
-                  <label className="text-sm font-medium text-foreground mb-1.5 block">Breed</label>
+                  <label className="text-sm font-medium text-foreground mb-1.5 block">{t.dietPlanner.breed}</label>
                   <Input
                     placeholder="e.g. Labrador, Indian Spitz"
                     value={breed}
@@ -101,7 +101,7 @@ export default function DietPlanner() {
                   />
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-foreground mb-1.5 block">Age</label>
+                  <label className="text-sm font-medium text-foreground mb-1.5 block">{t.dietPlanner.age}</label>
                   <Input
                     placeholder="e.g. 2 years, 6 months"
                     value={age}
@@ -110,7 +110,7 @@ export default function DietPlanner() {
                   />
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-foreground mb-1.5 block">Weight (kg)</label>
+                  <label className="text-sm font-medium text-foreground mb-1.5 block">{t.dietPlanner.weight} (kg)</label>
                   <Input
                     placeholder="e.g. 25"
                     value={weight}
@@ -119,7 +119,7 @@ export default function DietPlanner() {
                   />
                 </div>
                 <div>
-                  <label className="text-sm font-medium text-foreground mb-1.5 block">Health conditions (optional)</label>
+                  <label className="text-sm font-medium text-foreground mb-1.5 block">{t.dietPlanner.conditions}</label>
                   <Input
                     placeholder="e.g. allergies, joint pain"
                     value={conditions}
@@ -136,9 +136,9 @@ export default function DietPlanner() {
                 data-testid="button-generate-diet"
               >
                 {isLoading ? (
-                  <><Loader2 className="w-4 h-4 animate-spin mr-2" /> Generating Plan...</>
+                  <><Loader2 className="w-4 h-4 animate-spin mr-2" /> {t.dietPlanner.generating}</>
                 ) : (
-                  <><Sparkles className="w-4 h-4 mr-2" /> Generate Meal Plan</>
+                  <><Sparkles className="w-4 h-4 mr-2" /> {t.dietPlanner.generatePlan}</>
                 )}
               </Button>
             </Card>
@@ -154,23 +154,23 @@ export default function DietPlanner() {
             <Card className="p-6">
               <div className="flex items-start justify-between gap-4 flex-wrap mb-4">
                 <div>
-                  <h2 className="text-xl font-bold font-display text-foreground mb-1">Your Dog's Meal Plan</h2>
+                  <h2 className="text-xl font-bold font-display text-foreground mb-1">{t.dietPlanner.mealPlan}</h2>
                   <p className="text-sm text-muted-foreground">{plan.summary}</p>
                 </div>
                 <Button variant="outline" size="sm" onClick={() => setPlan(null)} data-testid="button-new-plan">
-                  New Plan
+                  {t.dietPlanner.generatePlan}
                 </Button>
               </div>
 
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-6">
                 <div className="bg-amber-500/10 rounded-md p-3 text-center">
                   <Flame className="w-4 h-4 text-amber-500 mx-auto mb-1" />
-                  <p className="text-xs text-muted-foreground">Daily Calories</p>
+                  <p className="text-xs text-muted-foreground">Calories</p>
                   <p className="font-bold text-sm text-foreground">{plan.daily_calories}</p>
                 </div>
                 <div className="bg-blue-500/10 rounded-md p-3 text-center">
                   <Droplets className="w-4 h-4 text-blue-500 mx-auto mb-1" />
-                  <p className="text-xs text-muted-foreground">Water Intake</p>
+                  <p className="text-xs text-muted-foreground">Water</p>
                   <p className="font-bold text-sm text-foreground">{plan.water_intake}</p>
                 </div>
                 <div className="bg-emerald-500/10 rounded-md p-3 text-center col-span-2 sm:col-span-1">
@@ -195,7 +195,7 @@ export default function DietPlanner() {
                         </li>
                       ))}
                     </ul>
-                    <p className="text-xs text-primary font-medium mt-2">Portion: {meal.portion}</p>
+                    <p className="text-xs text-primary font-medium mt-2">{meal.portion}</p>
                   </div>
                 ))}
               </div>
@@ -203,7 +203,7 @@ export default function DietPlanner() {
 
             {plan.supplements.length > 0 && (
               <Card className="p-5">
-                <h3 className="font-bold text-foreground text-sm mb-3">Recommended Supplements</h3>
+                <h3 className="font-bold text-foreground text-sm mb-3">Supplements</h3>
                 <div className="flex flex-wrap gap-2">
                   {plan.supplements.map((s, i) => (
                     <span key={i} className="bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 text-xs px-3 py-1 rounded-full font-medium">{s}</span>
@@ -215,7 +215,7 @@ export default function DietPlanner() {
             {plan.foods_to_avoid.length > 0 && (
               <Card className="p-5 border-red-200/50 dark:border-red-900/30">
                 <h3 className="font-bold text-foreground text-sm mb-3 flex items-center gap-2">
-                  <AlertTriangle className="w-4 h-4 text-red-500" /> Foods to Avoid
+                  <AlertTriangle className="w-4 h-4 text-red-500" /> {t.breedGuide.diet}
                 </h3>
                 <div className="flex flex-wrap gap-2">
                   {plan.foods_to_avoid.map((f, i) => (
@@ -227,7 +227,7 @@ export default function DietPlanner() {
 
             {plan.tips.length > 0 && (
               <Card className="p-5">
-                <h3 className="font-bold text-foreground text-sm mb-3">Feeding Tips</h3>
+                <h3 className="font-bold text-foreground text-sm mb-3">{t.breedGuide.care}</h3>
                 <ul className="space-y-2">
                   {plan.tips.map((tip, i) => (
                     <li key={i} className="text-sm text-muted-foreground flex items-start gap-2">
