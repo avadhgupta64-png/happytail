@@ -82,7 +82,7 @@ export default function BarkTranslator() {
   const [result, setResult] = useState<TranslationResult | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
   const { checkGuestAccess } = useGuest();
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -114,7 +114,7 @@ export default function BarkTranslator() {
         return;
       }
       setExtractionStatus(`Analyzing ${frames.length} frames with AI...`);
-      const res = await apiRequest("POST", "/api/bark/translate", { frames });
+      const res = await apiRequest("POST", "/api/bark/translate", { frames, language: lang });
       const data = await res.json();
       setResult(data);
     } catch (err) {

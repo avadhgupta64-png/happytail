@@ -14,7 +14,7 @@ interface Message {
 }
 
 export default function VetChat() {
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -42,6 +42,7 @@ export default function VetChat() {
     try {
       const res = await apiRequest("POST", "/api/health/vet-chat", {
         messages: updatedMessages.map(m => ({ role: m.role, content: m.content })),
+        language: lang,
       });
       const data = await res.json();
       setMessages([...updatedMessages, { role: "assistant", content: data.reply }]);

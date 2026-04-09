@@ -18,7 +18,7 @@ interface HealthResult {
 }
 
 export default function HealthCheckup() {
-  const { t } = useLanguage();
+  const { t, lang } = useLanguage();
   const [images, setImages] = useState<string[]>([]);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [result, setResult] = useState<HealthResult | null>(null);
@@ -52,7 +52,7 @@ export default function HealthCheckup() {
     if (!checkGuestAccess()) return;
     setIsAnalyzing(true);
     try {
-      const res = await apiRequest("POST", "/api/health/checkup", { images });
+      const res = await apiRequest("POST", "/api/health/checkup", { images, language: lang });
       const data = await res.json();
       setResult(data);
     } catch (err) {

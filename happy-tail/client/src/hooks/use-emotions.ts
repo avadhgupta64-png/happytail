@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "@shared/routes";
 import { type AnalyzeEmotionRequest } from "@shared/schema";
 import { getDeviceId } from "@/lib/device-id";
+import { useLanguage } from "@/lib/language-context";
 
 export function useEmotionHistory() {
   const deviceId = getDeviceId();
@@ -18,12 +19,13 @@ export function useEmotionHistory() {
 export function useAnalyzeEmotion() {
   const queryClient = useQueryClient();
   const deviceId = getDeviceId();
+  const { lang } = useLanguage();
   return useMutation({
     mutationFn: async (data: AnalyzeEmotionRequest) => {
       const res = await fetch(api.emotions.analyze.path, {
         method: api.emotions.analyze.method,
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...data, deviceId }),
+        body: JSON.stringify({ ...data, deviceId, language: lang }),
       });
       
       if (!res.ok) {

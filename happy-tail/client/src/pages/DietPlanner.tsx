@@ -8,6 +8,7 @@ import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { Link } from "wouter";
 import { useGuest } from "@/lib/guest-context";
+import { useLanguage } from "@/lib/language-context";
 
 interface MealPlan {
   summary: string;
@@ -34,6 +35,7 @@ export default function DietPlanner() {
   const [plan, setPlan] = useState<MealPlan | null>(null);
   const { toast } = useToast();
   const { checkGuestAccess } = useGuest();
+  const { lang } = useLanguage();
 
   const handleGenerate = async () => {
     if (!breed.trim() || !age.trim() || !weight.trim()) {
@@ -43,7 +45,7 @@ export default function DietPlanner() {
     if (!checkGuestAccess()) return;
     setIsLoading(true);
     try {
-      const res = await apiRequest("POST", "/api/health/diet", { breed, age, weight, conditions });
+      const res = await apiRequest("POST", "/api/health/diet", { breed, age, weight, conditions, language: lang });
       const data = await res.json();
       setPlan(data);
     } catch (err) {
