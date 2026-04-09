@@ -110,6 +110,7 @@ export type InsertActivityLog = z.infer<typeof insertActivityLogSchema>;
 export const analyzeEmotionSchema = z.object({
   image: z.string().describe("Base64 encoded image"),
   deviceId: z.string().optional(),
+  language: z.string().optional(),
 });
 export type AnalyzeEmotionRequest = z.infer<typeof analyzeEmotionSchema>;
 

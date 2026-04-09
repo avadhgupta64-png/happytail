@@ -197,7 +197,7 @@ export default function About() {
               </p>
 
               <p className="text-sm text-muted-foreground leading-relaxed mb-4">
-                At just <strong className="text-foreground">14 years old</strong>, Avadh Gupta conceptualised and built Happy Tail from the ground up — entirely on his own — as part of the prestigious <strong className="text-foreground">Impact Summit 2026</strong>. Driven by a deep love for dogs and a belief that every animal deserves to be heard and cared for, Avadh set out to create a tool that gives a voice to the voiceless.
+                At just <strong className="text-foreground">14 years old</strong>, Avadh Gupta conceptualised and built Happy Tail from the ground up — entirely on his own. Driven by a deep love for dogs and a belief that every animal deserves to be heard and cared for, Avadh set out to create a tool that gives a voice to the voiceless.
               </p>
 
               <p className="text-sm text-muted-foreground leading-relaxed mb-4">
@@ -205,7 +205,7 @@ export default function About() {
               </p>
 
               <div className="flex flex-wrap gap-2 justify-center sm:justify-start">
-                {["Impact Summit 2026", "Age 14", "BPVM School", "AI & Dog Welfare", "Youth Innovator"].map(tag => (
+                {["Age 14", "BPVM School", "AI & Dog Welfare", "Youth Innovator"].map(tag => (
                   <span key={tag} className="text-xs bg-white dark:bg-gray-800 border border-indigo-100 dark:border-indigo-800 text-indigo-700 dark:text-indigo-300 px-2.5 py-1 rounded-full font-medium shadow-sm">
                     {tag}
                   </span>
@@ -219,7 +219,7 @@ export default function About() {
       {/* Footer note */}
       <div className="text-center text-xs text-muted-foreground pt-2 pb-4">
         <p>Made with <Heart className="inline w-3 h-3 text-pink-500 fill-pink-500 mx-0.5" /> for every dog that deserves to be understood.</p>
-        <p className="mt-1 opacity-60">Happy Tail © 2026 · Built by Avadh Gupta for Impact Summit 2026</p>
+        <p className="mt-1 opacity-60">Happy Tail © 2026 · Built by Avadh Gupta</p>
       </div>
     </motion.div>
   );

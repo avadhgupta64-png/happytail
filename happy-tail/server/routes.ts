@@ -19,6 +19,19 @@ const openai = new OpenAI({
   baseURL: process.env.AI_INTEGRATIONS_OPENAI_BASE_URL,
 });
 
+const LANGUAGE_NAMES: Record<string, string> = {
+  en: "English", hi: "Hindi", ta: "Tamil", te: "Telugu", mr: "Marathi",
+  bn: "Bengali", gu: "Gujarati", kn: "Kannada", ml: "Malayalam", pa: "Punjabi",
+  or: "Odia", ur: "Urdu", es: "Spanish", fr: "French", de: "German",
+  ja: "Japanese", zh: "Chinese", ar: "Arabic", pt: "Portuguese", ko: "Korean", ru: "Russian",
+};
+
+function getLangInstruction(lang?: string): string {
+  if (!lang || lang === "en") return "";
+  const name = LANGUAGE_NAMES[lang] || "English";
+  return ` IMPORTANT: You MUST respond entirely in ${name}. Every word of your response, including all field values in the JSON, must be in ${name}.`;
+}
+
 console.log("[OpenAI Init] Using Replit AI Integrations proxy");
 
 export async function registerRoutes(
@@ -293,13 +306,14 @@ Important:
     try {
       const parsed = z.object({
         frames: z.array(z.string()).min(1).max(10),
+        language: z.string().optional(),
       }).safeParse(req.body);
 
       if (!parsed.success) {
         return res.status(400).json({ message: "Please provide video frames for analysis" });
       }
 
-      const { frames } = parsed.data;
+      const { frames, language } = parsed.data;
 
       const imageContent: Array<{ type: "image_url"; image_url: { url: string; detail: "high" } }> = frames.map((frame) => ({
         type: "image_url" as const,
@@ -390,7 +404,7 @@ CRITICAL RULES:
 - The message should sound natural and specific to the situation, not generic.
 - If you cannot clearly identify a dog, still provide your best analysis of whatever animal/subject you see.
 - Never return empty strings for any field.
-- Base your confidence on how clearly you can see the dog's body language cues.`
+- Base your confidence on how clearly you can see the dog's body language cues.${getLangInstruction(language)}`
           },
           {
             role: "user",
@@ -440,7 +454,7 @@ CRITICAL RULES:
   // === Health Checkup Route ===
   app.post("/api/health/checkup", isAuthenticated, async (req: any, res) => {
     try {
-      const { images } = z.object({ images: z.array(z.string()) }).parse(req.body);
+      const { images, language } = z.object({ images: z.array(z.string()), language: z.string().optional() }).parse(req.body);
       
       const response = await openai.chat.completions.create({
         model: "gpt-4o",
@@ -448,7 +462,7 @@ CRITICAL RULES:
           {
             role: "user",
             content: [
-              { type: "text", text: "Examine these photos of a dog. Identify the breed and look for any visible signs of skin infections, diseases, or abnormalities. Tell me the breed, if it's an emergency, possible conditions found, and a recommended home remedy if applicable. Return a JSON object with: breed, is_emergency (boolean), possible_conditions (array), home_remedy, and detailed_analysis." },
+              { type: "text", text: `Examine these photos of a dog. Identify the breed and look for any visible signs of skin infections, diseases, or abnormalities. Tell me the breed, if it's an emergency, possible conditions found, and a recommended home remedy if applicable. Return a JSON object with: breed, is_emergency (boolean), possible_conditions (array), home_remedy, and detailed_analysis.${getLangInstruction(language)}` },
               ...images.map(img => ({
                 type: "image_url" as const,
                 image_url: { url: img.startsWith("data:") ? img : `data:image/jpeg;base64,${img}` }
@@ -491,11 +505,12 @@ CRITICAL RULES:
   // === AI Diet Planner Route ===
   app.post("/api/health/diet", isAuthenticated, async (req: any, res) => {
     try {
-      const { breed, age, weight, conditions } = z.object({
+      const { breed, age, weight, conditions, language } = z.object({
         breed: z.string(),
         age: z.string(),
         weight: z.string(),
         conditions: z.string().optional(),
+        language: z.string().optional(),
       }).parse(req.body);
 
       const response = await openai.chat.completions.create({
@@ -503,7 +518,7 @@ CRITICAL RULES:
         messages: [
           {
             role: "system",
-            content: "You are an expert canine nutritionist. Create detailed, practical diet plans based on breed, age, weight, and health conditions. Always include Indian food options that are safe for dogs. Be specific with portions and timings."
+            content: `You are an expert canine nutritionist. Create detailed, practical diet plans based on breed, age, weight, and health conditions. Always include Indian food options that are safe for dogs. Be specific with portions and timings.${getLangInstruction(language)}`
           },
           {
             role: "user",
@@ -560,11 +575,12 @@ Return ONLY a JSON object with these keys:
   // === AI Vet Chat Route ===
   app.post("/api/health/vet-chat", isAuthenticated, async (req: any, res) => {
     try {
-      const { messages } = z.object({
+      const { messages, language } = z.object({
         messages: z.array(z.object({
           role: z.enum(["user", "assistant"]),
           content: z.string(),
         })),
+        language: z.string().optional(),
       }).parse(req.body);
 
       const response = await openai.chat.completions.create({
@@ -581,7 +597,7 @@ Rules:
 - Be warm and reassuring but honest
 - For non-dog questions, politely redirect to dog-related topics
 - Keep responses conversational and easy to understand
-- Always end serious health advice with a reminder to consult a real vet`
+- Always end serious health advice with a reminder to consult a real vet${getLangInstruction(language)}`
           },
           ...messages.map(m => ({ role: m.role as "user" | "assistant", content: m.content })),
         ],
@@ -611,7 +627,7 @@ Rules:
   // === Emotion Analysis Route ===
   app.post(api.emotions.analyze.path, isAuthenticated, async (req: any, res) => {
     try {
-      const { image, deviceId } = api.emotions.analyze.input.parse(req.body);
+      const { image, deviceId, language } = api.emotions.analyze.input.parse(req.body);
 
       // Call OpenAI for analysis
       const response = await openai.chat.completions.create({
@@ -620,7 +636,7 @@ Rules:
           {
             role: "user",
             content: [
-              { type: "text", text: "Analyze the dog in this image. Detect the breed, its emotion (e.g., Happy, Sad, Anxious), a mood description, an explanation of why it might be feeling this way, and a specific treatment or action to help with negative emotions. Return ONLY a JSON object with keys: breed, emotion, mood, explanation, treatment, suggestion." },
+              { type: "text", text: `Analyze the dog in this image. Detect the breed, its emotion (e.g., Happy, Sad, Anxious), a mood description, an explanation of why it might be feeling this way, and a specific treatment or action to help with negative emotions. Return ONLY a JSON object with keys: breed, emotion, mood, explanation, treatment, suggestion.${getLangInstruction(language)}` },
               {
                 type: "image_url",
                 image_url: {
