@@ -15,7 +15,7 @@ paths = [ "/" ]
 localPort = 24183
 
 [services.development]
-run = "pnpm --filter @workspace/happy-tail-app run dev"
+run = "cd /home/runner/workspace/happy-tail && PORT=24183 npm run dev"
 
 [services.env]
 PORT = "24183"

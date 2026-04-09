@@ -19,14 +19,15 @@ Also contains the **Happy Tail** app (a standalone full-stack Express + React ap
 
 ## Happy Tail App
 
-Located in `happy-tail/`. This is a standalone Express + Vite app (not part of the pnpm workspace).
+Located in `happy-tail/`. This is a standalone Express + Vite full-stack app (not part of the pnpm workspace). It is served via the `artifacts/happy-tail-app: web` workflow.
 
-- **Run**: `cd happy-tail && PORT=5000 npm run dev` (or via the "Happy Tail" workflow)
-- **Port**: 5000
+- **Run**: Served via workflow `artifacts/happy-tail-app: web` → `cd /home/runner/workspace/happy-tail && PORT=24183 npm run dev`
+- **Port**: 24183 (assigned by artifact system)
 - **DB schema**: Push with `cd happy-tail && npx drizzle-kit push`
 - **AI Integration**: Uses `AI_INTEGRATIONS_OPENAI_API_KEY` + `AI_INTEGRATIONS_OPENAI_BASE_URL` (Replit AI Integrations for OpenAI)
 - **Auth**: Replit Auth (OIDC via `REPL_ID` and `REPLIT_DOMAINS`)
-- **Features**: Emotion Detection, Bark Translator, AI Health Scanner, Diet Planner (all use OpenAI vision)
+- **Features**: Emotion Detection, Bark Translator, AI Health Scanner, Diet Planner, Vet Chat, Breed Guide, Dog-friendly Locations, Community (all AI features use OpenAI vision)
+- **Dependencies**: Install with `cd happy-tail && npm install`
 
 ## Key Commands (monorepo)
 
