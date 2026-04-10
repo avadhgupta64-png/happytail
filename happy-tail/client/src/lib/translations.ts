@@ -29,7 +29,7 @@ export function getTranslation(lang: LangCode) {
 }
 
 type TranslationSet = {
-  nav: { home: string; emotionDetector: string; barkTranslator: string; dogHealth: string; breedGuide: string; places: string; community: string; emergency: string; profile: string };
+  nav: { home: string; emotionDetector: string; barkTranslator: string; dogHealth: string; breedGuide: string; places: string; community: string; emergency: string; profile: string; history: string; about: string; admin: string };
   home: { heroTitle1: string; heroTitle2: string; heroDesc: string; tryNow: string };
   features: { emotionDetector: string; emotionDetectorDesc: string; barkTranslator: string; barkTranslatorDesc: string; dogHealth: string; dogHealthDesc: string; breedGuide: string; breedGuideDesc: string; places: string; placesDesc: string; community: string; communityDesc: string; emergency: string; emergencyDesc: string };
   auth: { login: string; logout: string; welcome: string; tagline: string; loginDesc: string; getStarted: string };
@@ -49,7 +49,7 @@ type TranslationSet = {
 
 const translations: Record<LangCode, TranslationSet> = {
   en: {
-    nav: { home: "Home", emotionDetector: "Emotion Detector", barkTranslator: "Bark Translator", dogHealth: "Dog Health", breedGuide: "Breed Guide", places: "Geofencing", community: "Community", emergency: "Emergency", profile: "Profile" },
+    nav: { home: "Home", emotionDetector: "Emotion Detector", barkTranslator: "Bark Translator", dogHealth: "Dog Health", breedGuide: "Breed Guide", places: "Geofencing", community: "Community", emergency: "Emergency", profile: "Profile", history: "History", about: "About", admin: "Admin" },
     home: { heroTitle1: "They can't speak.", heroTitle2: "We translate.", heroDesc: "AI that reads your dog's emotions, decodes their bark, and watches over their health.", tryNow: "Try now" },
     features: { emotionDetector: "Emotion Detector", emotionDetectorDesc: "Snap a photo. AI reads what your dog is truly feeling.", barkTranslator: "Bark Translator", barkTranslatorDesc: "Record your dog. Get a full body language breakdown.", dogHealth: "Dog Health", dogHealthDesc: "Health scan, AI diet planner, and vet chat — all in one place.", breedGuide: "Breed Guide", breedGuideDesc: "50+ breeds with detailed care & diet info.", places: "Geofencing", placesDesc: "AI finds dog-friendly places near your live location.", community: "Community", communityDesc: "15+ WhatsApp groups for dog owners.", emergency: "Emergency", emergencyDesc: "One-tap access to nearest vets." },
     auth: { login: "Login", logout: "Logout", welcome: "Welcome to Happy Tail", tagline: "Tech for Paws, Care for Life", loginDesc: "Your AI-powered dog care companion. Login to get started.", getStarted: "Get Started" },
@@ -67,7 +67,7 @@ const translations: Record<LangCode, TranslationSet> = {
     profile: { title: "My Profile", editProfile: "Edit Profile", name: "Name", bio: "Bio", email: "Email", updatePhoto: "Update Photo", dogName: "Dog Name", dogBreed: "Breed", dogAge: "Age" },
   },
   hi: {
-    nav: { home: "घर", emotionDetector: "भावना पहचान", barkTranslator: "भौंकना अनुवादक", dogHealth: "कुत्ते का स्वास्थ्य", breedGuide: "नस्ल गाइड", places: "स्थान", community: "समुदाय", emergency: "आपातकाल", profile: "प्रोफ़ाइल" },
+    nav: { home: "घर", emotionDetector: "भावना पहचान", barkTranslator: "भौंकना अनुवादक", dogHealth: "कुत्ते का स्वास्थ्य", breedGuide: "नस्ल गाइड", places: "स्थान", community: "समुदाय", emergency: "आपातकाल", profile: "प्रोफ़ाइल", history: "इतिहास", about: "परिचय", admin: "प्रशासक" },
     home: { heroTitle1: "वे बोल नहीं सकते।", heroTitle2: "हम अनुवाद करते हैं।", heroDesc: "AI जो आपके कुत्ते की भावनाएं पढ़ता है, उनकी भौंक समझता है, और उनके स्वास्थ्य की देखभाल करता है।", tryNow: "अभी आज़माएं" },
     features: { emotionDetector: "भावना पहचान", emotionDetectorDesc: "फ़ोटो अपलोड करें। AI आपके कुत्ते की भावना पढ़ेगा।", barkTranslator: "भौंकना अनुवादक", barkTranslatorDesc: "वीडियो अपलोड करें। पूरी बॉडी लैंग्वेज रिपोर्ट पाएं।", dogHealth: "कुत्ते का स्वास्थ्य", dogHealthDesc: "स्वास्थ्य जांच, AI आहार योजना, और पशु चिकित्सक चैट।", breedGuide: "नस्ल गाइड", breedGuideDesc: "50+ नस्लों की देखभाल और आहार जानकारी।", places: "दिल्ली में जगहें", placesDesc: "पार्क, कैफे, पशु चिकित्सक।", community: "समुदाय", communityDesc: "15+ व्हाट्सएप ग्रुप।", emergency: "आपातकाल", emergencyDesc: "नज़दीकी पशु चिकित्सक तक पहुंच।" },
     auth: { login: "लॉग इन", logout: "लॉग आउट", welcome: "Happy Tail में स्वागत है", tagline: "पंजों के लिए तकनीक, जीवन भर की देखभाल", loginDesc: "AI संचालित कुत्ते की देखभाल साथी। शुरू करने के लिए लॉग इन करें।", getStarted: "शुरू करें" },
@@ -85,7 +85,7 @@ const translations: Record<LangCode, TranslationSet> = {
     profile: { title: "मेरी प्रोफ़ाइल", editProfile: "प्रोफ़ाइल संपादित करें", name: "नाम", bio: "परिचय", email: "ईमेल", updatePhoto: "फ़ोटो अपडेट करें", dogName: "कुत्ते का नाम", dogBreed: "नस्ल", dogAge: "उम्र" },
   },
   ta: {
-    nav: { home: "முகப்பு", emotionDetector: "உணர்ச்சி கண்டறிதல்", barkTranslator: "குரைப்பு மொழிபெயர்ப்பி", dogHealth: "நாய் ஆரோக்கியம்", breedGuide: "இன கைட்டு", places: "இடங்கள்", community: "சமூகம்", emergency: "அவசரம்", profile: "ப்ரொபைல்" },
+    nav: { home: "முகப்பு", emotionDetector: "உணர்ச்சி கண்டறிதல்", barkTranslator: "குரைப்பு மொழிபெயர்ப்பி", dogHealth: "நாய் ஆரோக்கியம்", breedGuide: "இன கைட்டு", places: "இடங்கள்", community: "சமூகம்", emergency: "அவசரம்", profile: "ப்ரொபைல்", history: "வரலாறு", about: "பற்றி", admin: "நிர்வாகம்" },
     home: { heroTitle1: "அவர்களால் பேச முடியாது.", heroTitle2: "நாங்கள் மொழிபெயர்க்கிறோம்.", heroDesc: "உங்கள் நாயின் உணர்வுகளை படிக்கும் AI.", tryNow: "இப்போது முயற்சிக்கவும்" },
     features: { emotionDetector: "உணர்ச்சி கண்டறிதல்", emotionDetectorDesc: "படம் பதிவேற்றவும். AI உங்கள் நாயின் உணர்வுகளை படிக்கும்.", barkTranslator: "குரைப்பு மொழிபெயர்ப்பி", barkTranslatorDesc: "வீடியோ பதிவேற்றவும்.", dogHealth: "நாய் ஆரோக்கியம்", dogHealthDesc: "ஆரோக்கிய சோதனை, உணவு திட்டம், மற்றும் கால்நடை மருத்துவர் சாட்.", breedGuide: "இன கைட்டு", breedGuideDesc: "50+ இனங்கள்.", places: "டெல்லியில் இடங்கள்", placesDesc: "பூங்காக்கள், கபேக்கள், மருத்துவர்கள்.", community: "சமூகம்", communityDesc: "15+ வாட்ஸ்அப் குழுக்கள்.", emergency: "அவசரம்", emergencyDesc: "அருகிலுள்ள மருத்துவர்களை அணுகவும்." },
     auth: { login: "உள்நுழை", logout: "வெளியேறு", welcome: "Happy Tail க்கு வரவேற்பு", tagline: "பாதங்களுக்கான தொழில்நுட்பம்", loginDesc: "AI சார்ந்த நாய் பராமரிப்பு தோழர்.", getStarted: "தொடங்குங்கள்" },
@@ -103,7 +103,7 @@ const translations: Record<LangCode, TranslationSet> = {
     profile: { title: "என் ப்ரொபைல்", editProfile: "ப்ரொபைல் திருத்து", name: "பெயர்", bio: "சுயவிவரம்", email: "மின்னஞ்சல்", updatePhoto: "படத்தை புதுப்பிக்கவும்", dogName: "நாயின் பெயர்", dogBreed: "இனம்", dogAge: "வயது" },
   },
   te: {
-    nav: { home: "హోమ్", emotionDetector: "భావన గుర్తింపు", barkTranslator: "మొరుగు అనువాదకుడు", dogHealth: "కుక్క ఆరోగ్యం", breedGuide: "జాతి గైడ్", places: "స్థలాలు", community: "సమాజం", emergency: "అత్యవసరం", profile: "ప్రొఫైల్" },
+    nav: { home: "హోమ్", emotionDetector: "భావన గుర్తింపు", barkTranslator: "మొరుగు అనువాదకుడు", dogHealth: "కుక్క ఆరోగ్యం", breedGuide: "జాతి గైడ్", places: "స్థలాలు", community: "సమాజం", emergency: "అత్యవసరం", profile: "ప్రొఫైల్", history: "చరిత్ర", about: "గురించి", admin: "అడ్మిన్" },
     home: { heroTitle1: "వాళ్ళు మాట్లాడలేరు.", heroTitle2: "మేము అనువదిస్తాము.", heroDesc: "AI మీ కుక్క భావాలను అర్థం చేసుకుంటుంది.", tryNow: "ఇప్పుడు ప్రయత్నించండి" },
     features: { emotionDetector: "భావన గుర్తింపు", emotionDetectorDesc: "ఫోటో అప్లోడ్ చేయండి.", barkTranslator: "మొరుగు అనువాదకుడు", barkTranslatorDesc: "వీడియో అప్లోడ్ చేయండి.", dogHealth: "కుక్క ఆరోగ్యం", dogHealthDesc: "ఆరోగ్య పరీక్ష, ఆహార ప్రణాళిక, వెట్ చాట్.", breedGuide: "జాతి గైడ్", breedGuideDesc: "50+ జాతులు.", places: "ఢిల్లీలో స్థలాలు", placesDesc: "పార్కులు, కెఫేలు, వెట్లు.", community: "సమాజం", communityDesc: "15+ వాట్సాప్ గ్రూపులు.", emergency: "అత్యవసరం", emergencyDesc: "సమీపంలోని వెట్లు." },
     auth: { login: "లాగిన్", logout: "లాగౌట్", welcome: "Happy Tail కి స్వాగతం", tagline: "పాదాల కోసం సాంకేతికత", loginDesc: "AI ఆధారిత కుక్క సంరక్షణ సాధనం.", getStarted: "ప్రారంభించండి" },
