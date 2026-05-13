@@ -15,10 +15,7 @@ run = "pnpm --filter @workspace/api-server run dev"
 [services.production]
 
 [services.production.build]
-args = ["sh", "-c", "cd /home/runner/workspace/happy-tail && npm install && npm run build"]
-
-[services.production.build.env]
-NODE_ENV = "production"
+args = ["sh", "-c", "cd /home/runner/workspace/happy-tail && npm install --include=dev && npm run build"]
 
 [services.production.run]
 args = ["sh", "-c", "cd /home/runner/workspace/happy-tail && npm start"]
