@@ -20,7 +20,7 @@ run = "cd /home/runner/workspace/happy-tail && PORT=24183 npm run dev"
 [services.production]
 
 [services.production.build]
-args = ["sh", "-c", "cd /home/runner/workspace/happy-tail && npm install --include=dev && npm run build"]
+args = ["sh", "-c", "cd /home/runner/workspace/happy-tail && NODE_ENV=development npm install && npm run build"]
 
 [services.production.run]
 args = ["sh", "-c", "cd /home/runner/workspace/happy-tail && npm start"]
