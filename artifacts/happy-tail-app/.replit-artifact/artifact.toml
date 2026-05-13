@@ -17,6 +17,10 @@ localPort = 24183
 [services.development]
 run = "cd /home/runner/workspace/happy-tail && PORT=24183 npm run dev"
 
+[services.production]
+build = "cd /home/runner/workspace/happy-tail && npm install && npm run build"
+run = "cd /home/runner/workspace/happy-tail && npm start"
+
 [services.env]
 PORT = "24183"
 BASE_PATH = "/"
