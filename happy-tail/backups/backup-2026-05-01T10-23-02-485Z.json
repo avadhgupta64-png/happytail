@@ -1,11 +1,11 @@
 {
-  "createdAt": "2026-04-09T12:44:43.525Z",
+  "createdAt": "2026-05-01T10:23:03.447Z",
   "counts": {
     "users": 1,
     "activityLogs": 0,
     "emotionLogs": 1,
     "dogProfiles": 0,
-    "visitorLogs": 10,
+    "visitorLogs": 20,
     "locations": 7,
     "breeds": 10
   },
@@ -14,12 +14,12 @@
       {
         "id": "57381831",
         "email": "pawcare.tech@gmail.com",
-        "firstName": "Avadh ",
-        "lastName": "Gupta ",
+        "firstName": "Pawcare",
+        "lastName": "Tech",
         "profileImageUrl": "https://lh3.googleusercontent.com/a/ACg8ocIGsn6U6f_r_rMk6Xvw2Et5UCzer1NQI97YZtOyIb2EOL2LOA=s96-c",
         "bio": "Founder and Developer- Happy Tail ",
         "createdAt": "2026-04-09T11:03:48.776Z",
-        "updatedAt": "2026-04-09T11:29:23.643Z"
+        "updatedAt": "2026-04-10T10:59:44.975Z"
       }
     ],
     "activityLogs": [],
@@ -88,6 +88,56 @@
         "id": 10,
         "userId": "57381831",
         "visitedAt": "2026-04-09T12:31:11.370Z"
+      },
+      {
+        "id": 11,
+        "userId": "57381831",
+        "visitedAt": "2026-04-09T12:56:07.100Z"
+      },
+      {
+        "id": 12,
+        "userId": "57381831",
+        "visitedAt": "2026-04-09T12:57:14.566Z"
+      },
+      {
+        "id": 13,
+        "userId": "57381831",
+        "visitedAt": "2026-04-10T10:43:18.226Z"
+      },
+      {
+        "id": 14,
+        "userId": "57381831",
+        "visitedAt": "2026-04-10T10:44:34.045Z"
+      },
+      {
+        "id": 15,
+        "userId": "57381831",
+        "visitedAt": "2026-04-10T10:44:44.257Z"
+      },
+      {
+        "id": 16,
+        "userId": "57381831",
+        "visitedAt": "2026-04-10T10:45:31.338Z"
+      },
+      {
+        "id": 17,
+        "userId": "57381831",
+        "visitedAt": "2026-04-10T10:48:48.315Z"
+      },
+      {
+        "id": 18,
+        "userId": "57381831",
+        "visitedAt": "2026-04-10T10:53:05.197Z"
+      },
+      {
+        "id": 19,
+        "userId": "57381831",
+        "visitedAt": "2026-04-10T10:53:41.972Z"
+      },
+      {
+        "id": 20,
+        "userId": "57381831",
+        "visitedAt": "2026-04-10T10:59:50.288Z"
       }
     ],
     "locations": [

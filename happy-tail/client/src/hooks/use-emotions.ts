@@ -26,10 +26,12 @@ export function useAnalyzeEmotion() {
         method: api.emotions.analyze.method,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ ...data, deviceId, language: lang }),
+        credentials: "include",
       });
       
       if (!res.ok) {
-        throw new Error("Analysis failed. Please try again.");
+        const text = await res.text().catch(() => "");
+        throw new Error(text || "Analysis failed. Please try again.");
       }
       return api.emotions.analyze.responses[200].parse(await res.json());
     },

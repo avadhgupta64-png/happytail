@@ -72,9 +72,9 @@ function AppSidebar() {
     { title: t.nav.places, url: "/locations", icon: MapPin },
     { title: t.nav.community, url: "/community", icon: Users },
     { title: t.nav.emergency, url: "/emergency", icon: ShieldAlert },
-    { title: "History", url: "/history", icon: Clock },
-    { title: "About", url: "/about", icon: Info },
-    ...(adminCheck?.isAdmin ? [{ title: "Admin", url: "/admin", icon: Shield }] : []),
+    { title: t.nav.history, url: "/history", icon: Clock },
+    { title: t.nav.about, url: "/about", icon: Info },
+    ...(adminCheck?.isAdmin ? [{ title: t.nav.admin, url: "/admin", icon: Shield }] : []),
   ];
 
   return (

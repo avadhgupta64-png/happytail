@@ -121,7 +121,7 @@ const translations: Record<LangCode, TranslationSet> = {
     profile: { title: "నా ప్రొఫైల్", editProfile: "ప్రొఫైల్ సవరించండి", name: "పేరు", bio: "పరిచయం", email: "ఇమెయిల్", updatePhoto: "ఫోటో అప్డేట్ చేయండి", dogName: "కుక్క పేరు", dogBreed: "జాతి", dogAge: "వయసు" },
   },
   mr: {
-    nav: { home: "मुखपृष्ठ", emotionDetector: "भावना ओळख", barkTranslator: "भुंकणे अनुवादक", dogHealth: "कुत्र्याचे आरोग्य", breedGuide: "जाती मार्गदर्शक", places: "ठिकाणे", community: "समुदाय", emergency: "आणीबाणी", profile: "प्रोफाइल" },
+    nav: { home: "मुखपृष्ठ", emotionDetector: "भावना ओळख", barkTranslator: "भुंकणे अनुवादक", dogHealth: "कुत्र्याचे आरोग्य", breedGuide: "जाती मार्गदर्शक", places: "ठिकाणे", community: "समुदाय", emergency: "आणीबाणी", profile: "प्रोफाइल", history: "इतिहास", about: "परिचय", admin: "प्रशासक" },
     home: { heroTitle1: "ते बोलू शकत नाहीत.", heroTitle2: "आम्ही अनुवाद करतो.", heroDesc: "AI जे तुमच्या कुत्र्याच्या भावना वाचतो.", tryNow: "आता च वापरा" },
     features: { emotionDetector: "भावना ओळख", emotionDetectorDesc: "फोटो अपलोड करा.", barkTranslator: "भुंकणे अनुवादक", barkTranslatorDesc: "व्हिडिओ अपलोड करा.", dogHealth: "कुत्र्याचे आरोग्य", dogHealthDesc: "आरोग्य तपासणी, आहार योजना, व्हेट चॅट.", breedGuide: "जाती मार्गदर्शक", breedGuideDesc: "50+ जाती.", places: "दिल्लीतील ठिकाणे", placesDesc: "उद्याने, कॅफे, पशुवैद्य.", community: "समुदाय", communityDesc: "15+ व्हाट्सअॅप ग्रुप.", emergency: "आणीबाणी", emergencyDesc: "जवळच्या पशुवैद्यांशी संपर्क." },
     auth: { login: "लॉग इन", logout: "लॉग आउट", welcome: "Happy Tail मध्ये स्वागत", tagline: "पंज्यांसाठी तंत्रज्ञान, आयुष्यभर काळजी", loginDesc: "AI संचालित कुत्र्याची काळजी साथी.", getStarted: "सुरू करा" },
@@ -139,7 +139,7 @@ const translations: Record<LangCode, TranslationSet> = {
     profile: { title: "माझी प्रोफाइल", editProfile: "प्रोफाइल संपादित करा", name: "नाव", bio: "परिचय", email: "ईमेल", updatePhoto: "फोटो अपडेट करा", dogName: "कुत्र्याचे नाव", dogBreed: "जाती", dogAge: "वय" },
   },
   bn: {
-    nav: { home: "হোম", emotionDetector: "আবেগ শনাক্তকরণ", barkTranslator: "ঘেউ অনুবাদক", dogHealth: "কুকুরের স্বাস্থ্য", breedGuide: "জাত গাইড", places: "স্থান", community: "সম্প্রদায়", emergency: "জরুরি", profile: "প্রোফাইল" },
+    nav: { home: "হোম", emotionDetector: "আবেগ শনাক্তকরণ", barkTranslator: "ঘেউ অনুবাদক", dogHealth: "কুকুরের স্বাস্থ্য", breedGuide: "জাত গাইড", places: "স্থান", community: "সম্প্রদায়", emergency: "জরুরি", profile: "প্রোফাইল", history: "ইতিহাস", about: "সম্পর্কে", admin: "অ্যাডমিন" },
     home: { heroTitle1: "তারা বলতে পারে না।", heroTitle2: "আমরা অনুবাদ করি।", heroDesc: "AI যা আপনার কুকুরের আবেগ বোঝে।", tryNow: "এখনই চেষ্টা করুন" },
     features: { emotionDetector: "আবেগ শনাক্তকরণ", emotionDetectorDesc: "ছবি আপলোড করুন।", barkTranslator: "ঘেউ অনুবাদক", barkTranslatorDesc: "ভিডিও আপলোড করুন।", dogHealth: "কুকুরের স্বাস্থ্য", dogHealthDesc: "স্বাস্থ্য পরীক্ষা, খাদ্য পরিকল্পনা, ভেট চ্যাট।", breedGuide: "জাত গাইড", breedGuideDesc: "50+ জাত।", places: "দিল্লিতে স্থান", placesDesc: "পার্ক, ক্যাফে, ভেট।", community: "সম্প্রদায়", communityDesc: "15+ হোয়াটসঅ্যাপ গ্রুপ।", emergency: "জরুরি", emergencyDesc: "কাছের ভেটদের সাথে যোগাযোগ।" },
     auth: { login: "লগইন", logout: "লগআউট", welcome: "Happy Tail-এ স্বাগতম", tagline: "পাঞ্জার জন্য প্রযুক্তি, জীবনভর যত্ন", loginDesc: "AI চালিত কুকুর পরিচর্যা সাথী।", getStarted: "শুরু করুন" },
@@ -157,7 +157,7 @@ const translations: Record<LangCode, TranslationSet> = {
     profile: { title: "আমার প্রোফাইল", editProfile: "প্রোফাইল সম্পাদনা", name: "নাম", bio: "পরিচিতি", email: "ইমেইল", updatePhoto: "ছবি আপডেট করুন", dogName: "কুকুরের নাম", dogBreed: "জাত", dogAge: "বয়স" },
   },
   gu: {
-    nav: { home: "હોમ", emotionDetector: "લાગણી ઓળખ", barkTranslator: "ભૂંકવાનું અનુવાદક", dogHealth: "કૂતરાનું આરોગ્ય", breedGuide: "જાતિ માર્ગદર્શક", places: "સ્થળો", community: "સમુદાય", emergency: "કટોકટી", profile: "પ્રોફાઇલ" },
+    nav: { home: "હોમ", emotionDetector: "લાગણી ઓળખ", barkTranslator: "ભૂંકવાનું અનુવાદક", dogHealth: "કૂતરાનું આરોગ્ય", breedGuide: "જાતિ માર્ગદર્શક", places: "સ્થળો", community: "સમુદાય", emergency: "કટોકટી", profile: "પ્રોફાઇલ", history: "ઇતિહાસ", about: "વિશે", admin: "એડમિન" },
     home: { heroTitle1: "તેઓ બોલી શકતા નથી.", heroTitle2: "અમે અનુવાદ કરીએ છીએ.", heroDesc: "AI જે તમારા કૂતરાની લાગણી વાંચે.", tryNow: "અત્યારે અજમાવો" },
     features: { emotionDetector: "લાગણી ઓળખ", emotionDetectorDesc: "ફોટો અપલોડ કરો.", barkTranslator: "ભૂંકવાનું અનુવાદક", barkTranslatorDesc: "વીડિઓ અપલોડ કરો.", dogHealth: "કૂતરાનું આરોગ્ય", dogHealthDesc: "આરોગ્ય તપાસ, આહાર યોજના, વેટ ચૅટ.", breedGuide: "જાતિ માર્ગદર્શક", breedGuideDesc: "50+ જાતિઓ.", places: "દિલ્લીમાં સ્થળો", placesDesc: "પાર્ક, કૅફે, વેટ.", community: "સમુદાય", communityDesc: "15+ વોટ્સઅૅપ ગ્રુપ.", emergency: "કટોકટી", emergencyDesc: "નજીકના વેટ." },
     auth: { login: "લોગિન", logout: "લોગઆઉટ", welcome: "Happy Tail માં સ્વાગત", tagline: "પંજા માટે ટેક્નોલોજી, જીવનભર કાળજી", loginDesc: "AI સંચાલિત કૂતરાની કાળજી સાથી.", getStarted: "શરૂ કરો" },
@@ -175,7 +175,7 @@ const translations: Record<LangCode, TranslationSet> = {
     profile: { title: "મારી પ્રોફાઇલ", editProfile: "પ્રોફાઇલ સંપાદિત કરો", name: "નામ", bio: "પરિચય", email: "ઇમેઇલ", updatePhoto: "ફોટો અપડેટ કરો", dogName: "કૂતરાનું નામ", dogBreed: "જાતિ", dogAge: "ઉંમર" },
   },
   kn: {
-    nav: { home: "ಮನೆ", emotionDetector: "ಭಾವನೆ ಗುರುತಿಸುವಿಕೆ", barkTranslator: "ಬೊಗಳು ಅನುವಾದಕ", dogHealth: "ನಾಯಿ ಆರೋಗ್ಯ", breedGuide: "ತಳಿ ಮಾರ್ಗದರ್ಶಿ", places: "ಸ್ಥಳಗಳು", community: "ಸಮುದಾಯ", emergency: "ತುರ್ತು", profile: "ಪ್ರೊಫೈಲ್" },
+    nav: { home: "ಮನೆ", emotionDetector: "ಭಾವನೆ ಗುರುತಿಸುವಿಕೆ", barkTranslator: "ಬೊಗಳು ಅನುವಾದಕ", dogHealth: "ನಾಯಿ ಆರೋಗ್ಯ", breedGuide: "ತಳಿ ಮಾರ್ಗದರ್ಶಿ", places: "ಸ್ಥಳಗಳು", community: "ಸಮುದಾಯ", emergency: "ತುರ್ತು", profile: "ಪ್ರೊಫೈಲ್", history: "ಇತಿಹಾಸ", about: "ಬಗ್ಗೆ", admin: "ನಿರ್ವಾಹಕ" },
     home: { heroTitle1: "ಅವರಿಗೆ ಮಾತನಾಡಲು ಆಗುವುದಿಲ್ಲ.", heroTitle2: "ನಾವು ಅನುವಾದಿಸುತ್ತೇವೆ.", heroDesc: "AI ನಿಮ್ಮ ನಾಯಿಯ ಭಾವನೆಗಳನ್ನು ಓದುತ್ತದೆ.", tryNow: "ಈಗ ಪ್ರಯತ್ನಿಸಿ" },
     features: { emotionDetector: "ಭಾವನೆ ಗುರುತಿಸುವಿಕೆ", emotionDetectorDesc: "ಫೋಟೋ ಅಪ್ಲೋಡ್ ಮಾಡಿ.", barkTranslator: "ಬೊಗಳು ಅನುವಾದಕ", barkTranslatorDesc: "ವೀಡಿಯೋ ಅಪ್ಲೋಡ್ ಮಾಡಿ.", dogHealth: "ನಾಯಿ ಆರೋಗ್ಯ", dogHealthDesc: "ಆರೋಗ್ಯ ಪರೀಕ್ಷೆ, ಆಹಾರ ಯೋಜನೆ, ವೆಟ್ ಚಾಟ್.", breedGuide: "ತಳಿ ಮಾರ್ಗದರ್ಶಿ", breedGuideDesc: "50+ ತಳಿಗಳು.", places: "ದೆಹಲಿಯಲ್ಲಿ ಸ್ಥಳಗಳು", placesDesc: "ಉದ್ಯಾನಗಳು, ಕ೅ಫೆಗಳು, ವೆಟ್ಗಳು.", community: "ಸಮುದಾಯ", communityDesc: "15+ ವಾಟ್ಸ್ಆಪ್ ಗುಂಪುಗಳು.", emergency: "ತುರ್ತು", emergencyDesc: "ಹತ್ತಿರದ ವೆಟ್ಗಳು." },
     auth: { login: "ಲಾಗಿನ್", logout: "ಲಾಗೌಟ್", welcome: "Happy Tail ಗೆ ಸ್ವಾಗತ", tagline: "ಪಂಜಗಳಿಗೆ ತಂತ್ರಜ್ಞಾನ", loginDesc: "AI ಚಾಲಿತ ನಾಯಿ ಆರೈಕೆ ಸಂಗಾತಿ.", getStarted: "ಪ್ರಾರಂಭಿಸಿ" },
@@ -193,7 +193,7 @@ const translations: Record<LangCode, TranslationSet> = {
     profile: { title: "ನನ್ನ ಪ್ರೊಫೈಲ್", editProfile: "ಪ್ರೊಫೈಲ್ ಸಂಪಾದಿಸಿ", name: "ಹೆಸರು", bio: "ಪರಿಚಯ", email: "ಇಮೇಲ್", updatePhoto: "ಫೋಟೋ ನವೀಕರಿಸಿ", dogName: "ನಾಯಿಯ ಹೆಸರು", dogBreed: "ತಳಿ", dogAge: "ವಯಸ್ಸು" },
   },
   ml: {
-    nav: { home: "ഹോം", emotionDetector: "വികാര കണ്ടെത്തൽ", barkTranslator: "കുര പരിഭാഷകൻ", dogHealth: "നായ ആരോഗ്യം", breedGuide: "ജാതി ഗൈഡ്", places: "സ്ഥലങ്ങൾ", community: "സമൂഹം", emergency: "അടിയന്തിരം", profile: "പ്രൊഫൈൽ" },
+    nav: { home: "ഹോം", emotionDetector: "വികാര കണ്ടെത്തൽ", barkTranslator: "കുര പരിഭാഷകൻ", dogHealth: "നായ ആരോഗ്യം", breedGuide: "ജാതി ഗൈഡ്", places: "സ്ഥലങ്ങൾ", community: "സമൂഹം", emergency: "അടിയന്തിരം", profile: "പ്രൊഫൈൽ", history: "ചരിത്രം", about: "കുറിച്ച്", admin: "അഡ്മിൻ" },
     home: { heroTitle1: "അവർക്ക് സംസാരിക്കാൻ കഴിയില്ല.", heroTitle2: "നാം പരിഭാഷപ്പെടുത്തുന്നു.", heroDesc: "AI നിങ്ങളുടെ നായയുടെ വികാരങ്ങൾ വായിക്കുന്നു.", tryNow: "ഇപ്പോൾ പരീക്ഷിക്കൂ" },
     features: { emotionDetector: "വികാര കണ്ടെത്തൽ", emotionDetectorDesc: "ഫോട്ടോ അപ്‌ലോഡ് ചെയ്യൂ.", barkTranslator: "കുര പരിഭാഷകൻ", barkTranslatorDesc: "വീഡിയോ അപ്‌ലോഡ് ചെയ്യൂ.", dogHealth: "നായ ആരോഗ്യം", dogHealthDesc: "ആരോഗ്യ പരിശോധന, ആഹാര പദ്ധതി, വെറ്റ് ചാറ്റ്.", breedGuide: "ജാതി ഗൈഡ്", breedGuideDesc: "50+ ജാതികൾ.", places: "ഡൽഹിയിൽ സ്ഥലങ്ങൾ", placesDesc: "പാർക്കുകൾ, കാഫെകൾ, വെറ്റുകൾ.", community: "സമൂഹം", communityDesc: "15+ വാട്സാപ്പ് ഗ്രൂപ്പുകൾ.", emergency: "അടിയന്തിരം", emergencyDesc: "അടുത്തുള്ള വെറ്റുകൾ." },
     auth: { login: "ലോഗിൻ", logout: "ലോഗൗട്ട്", welcome: "Happy Tail ലേക്ക് സ്വാഗതം", tagline: "പാദങ്ങൾക്കായി ടെക്നോളജി", loginDesc: "AI ചാലിത നായ പരിചരണ സഹായി.", getStarted: "തുടങ്ങൂ" },
@@ -211,7 +211,7 @@ const translations: Record<LangCode, TranslationSet> = {
     profile: { title: "എന്റെ പ്രൊഫൈൽ", editProfile: "പ്രൊഫൈൽ എഡിറ്റ് ചെയ്യൂ", name: "പേര്", bio: "പരിചയം", email: "ഇമെയിൽ", updatePhoto: "ഫോട്ടോ അപ്ഡേറ്റ് ചെയ്യൂ", dogName: "നായയുടെ പേര്", dogBreed: "ജാതി", dogAge: "പ്രായം" },
   },
   pa: {
-    nav: { home: "ਹੋਮ", emotionDetector: "ਭਾਵਨਾ ਖੋਜਕ", barkTranslator: "ਭੌਂਕਣ ਅਨੁਵਾਦਕ", dogHealth: "ਕੁੱਤੇ ਦੀ ਸਿਹਤ", breedGuide: "ਨਸਲ ਗਾਈਡ", places: "ਥਾਵਾਂ", community: "ਭਾਈਚਾਰਾ", emergency: "ਐਮਰਜੈਂਸੀ", profile: "ਪ੍ਰੋਫਾਇਲ" },
+    nav: { home: "ਹੋਮ", emotionDetector: "ਭਾਵਨਾ ਖੋਜਕ", barkTranslator: "ਭੌਂਕਣ ਅਨੁਵਾਦਕ", dogHealth: "ਕੁੱਤੇ ਦੀ ਸਿਹਤ", breedGuide: "ਨਸਲ ਗਾਈਡ", places: "ਥਾਵਾਂ", community: "ਭਾਈਚਾਰਾ", emergency: "ਐਮਰਜੈਂਸੀ", profile: "ਪ੍ਰੋਫਾਇਲ", history: "ਇਤਿਹਾਸ", about: "ਬਾਰੇ", admin: "ਪ੍ਰਬੰਧਕ" },
     home: { heroTitle1: "ਉਹ ਬੋਲ ਨਹੀਂ ਸਕਦੇ।", heroTitle2: "ਅਸੀਂ ਅਨੁਵਾਦ ਕਰਦੇ ਹਾਂ।", heroDesc: "AI ਜੋ ਤੁਹਾਡੇ ਕੁੱਤੇ ਦੀਆਂ ਭਾਵਨਾਵਾਂ ਪੜ੍ਹਦਾ ਹੈ।", tryNow: "ਹੁਣੇ ਅਜ਼ਮਾਓ" },
     features: { emotionDetector: "ਭਾਵਨਾ ਖੋਜਕ", emotionDetectorDesc: "ਫੋਟੋ ਅਪਲੋਡ ਕਰੋ।", barkTranslator: "ਭੌਂਕਣ ਅਨੁਵਾਦਕ", barkTranslatorDesc: "ਵੀਡੀਓ ਅਪਲੋਡ ਕਰੋ।", dogHealth: "ਕੁੱਤੇ ਦੀ ਸਿਹਤ", dogHealthDesc: "ਸਿਹਤ ਜਾਂਚ, ਖੁਰਾਕ ਯੋਜਨਾ, ਵੈਟ ਚੈਟ।", breedGuide: "ਨਸਲ ਗਾਈਡ", breedGuideDesc: "50+ ਨਸਲਾਂ।", places: "ਦਿੱਲੀ ਵਿੱਚ ਥਾਵਾਂ", placesDesc: "ਪਾਰਕ, ਕੈਫੇ, ਵੈਟ।", community: "ਭਾਈਚਾਰਾ", communityDesc: "15+ ਵਟਸਐਪ ਗਰੁੱਪ।", emergency: "ਐਮਰਜੈਂਸੀ", emergencyDesc: "ਨੇੜੇ ਦੇ ਵੈਟਾਂ ਨਾਲ ਸੰਪਰਕ।" },
     auth: { login: "ਲੌਗ ਇਨ", logout: "ਲੌਗ ਆਉਟ", welcome: "Happy Tail ਵਿੱਚ ਜੀ ਆਇਆਂ", tagline: "ਪੰਜਿਆਂ ਲਈ ਤਕਨੀਕ, ਜੀਵਨ ਭਰ ਦੇਖਭਾਲ", loginDesc: "AI ਸੰਚਾਲਿਤ ਕੁੱਤੇ ਦੀ ਦੇਖਭਾਲ ਸਾਥੀ।", getStarted: "ਸ਼ੁਰੂ ਕਰੋ" },
@@ -229,7 +229,7 @@ const translations: Record<LangCode, TranslationSet> = {
     profile: { title: "ਮੇਰੀ ਪ੍ਰੋਫਾਇਲ", editProfile: "ਪ੍ਰੋਫਾਇਲ ਸੋਧੋ", name: "ਨਾਮ", bio: "ਜਾਣ-ਪਛਾਣ", email: "ਈਮੇਲ", updatePhoto: "ਫੋਟੋ ਅੱਪਡੇਟ ਕਰੋ", dogName: "ਕੁੱਤੇ ਦਾ ਨਾਮ", dogBreed: "ਨਸਲ", dogAge: "ਉਮਰ" },
   },
   or: {
-    nav: { home: "ଘର", emotionDetector: "ଭାବନା ଚିହ୍ନଟକରଣ", barkTranslator: "ଭୁକିବା ଅନୁବାଦକ", dogHealth: "କୁକୁର ସ୍ୱାସ୍ଥ୍ୟ", breedGuide: "ଜାତି ଗାଇଡ୍", places: "ସ୍ଥାନ", community: "ସମୁଦାୟ", emergency: "ଜରୁରୀ", profile: "ପ୍ରୋଫାଇଲ୍" },
+    nav: { home: "ଘର", emotionDetector: "ଭାବନା ଚିହ୍ନଟକରଣ", barkTranslator: "ଭୁକିବା ଅନୁବାଦକ", dogHealth: "କୁକୁର ସ୍ୱାସ୍ଥ୍ୟ", breedGuide: "ଜାତି ଗାଇଡ୍", places: "ସ୍ଥାନ", community: "ସମୁଦାୟ", emergency: "ଜରୁରୀ", profile: "ପ୍ରୋଫାଇଲ୍", history: "ଇତିହାସ", about: "ବିଷୟରେ", admin: "ଆଡ୍ମିନ" },
     home: { heroTitle1: "ସେମାନେ କହିପାରନ୍ତି ନାହିଁ.", heroTitle2: "ଆମେ ଅନୁବାଦ କରୁଛୁ.", heroDesc: "AI ଆପଣଙ୍କ କୁକୁରର ଭାବନା ପଢ଼ୁଛି.", tryNow: "ଏବେ ଚେଷ୍ଟା କରନ୍ତୁ" },
     features: { emotionDetector: "ଭାବନା ଚିହ୍ନଟକରଣ", emotionDetectorDesc: "ଫଟୋ ଅପಲୋଡ୍ କରନ୍ତୁ.", barkTranslator: "ଭୁକିବା ଅନୁବାଦକ", barkTranslatorDesc: "ଭିଡିଓ ଅପಲୋଡ୍ କରନ୍ତୁ.", dogHealth: "କୁକୁର ସ୍ୱାସ୍ଥ୍ୟ", dogHealthDesc: "ସ୍ୱାସ୍ଥ୍ୟ ପରୀକ୍ଷା, ଖାଦ୍ୟ ଯୋଜନା, ଭେଟ୍ ଚାଟ୍.", breedGuide: "ଜାତି ଗାଇଡ୍", breedGuideDesc: "50+ ଜାତି.", places: "ଦିଲ୍ଲୀରେ ସ୍ଥାନ", placesDesc: "ପାର୍କ, କ୍ୟାଫେ, ଭେଟ୍.", community: "ସମୁଦାୟ", communityDesc: "15+ ହୋୟାଟ୍ସଅ୍ୟାପ୍ ଗ୍ରୁପ୍.", emergency: "ଜରୁରୀ", emergencyDesc: "ନିକଟର ଭେଟ୍." },
     auth: { login: "ଲଗ୍ ଇନ୍", logout: "ଲଗ୍ ଆଉଟ୍", welcome: "Happy Tail କୁ ସ୍ୱାଗତ", tagline: "ପଞ୍ଜା ପାଇଁ ପ୍ରଯୁକ୍ତି", loginDesc: "AI ଚାଲିତ କୁକୁର ଯତ୍ନ ସାଥୀ.", getStarted: "ଆରମ୍ଭ କରନ୍ତୁ" },
@@ -247,7 +247,7 @@ const translations: Record<LangCode, TranslationSet> = {
     profile: { title: "ମୋ ପ୍ରୋଫାଇଲ୍", editProfile: "ପ୍ରୋଫାଇଲ୍ ସମ୍ପାଦନା କରନ୍ତୁ", name: "ନାମ", bio: "ପରିଚୟ", email: "ଇମେଲ୍", updatePhoto: "ଫଟୋ ଅପଡେଟ୍ କରନ୍ତୁ", dogName: "କୁକୁରର ନାମ", dogBreed: "ଜାତି", dogAge: "ବୟସ" },
   },
   ur: {
-    nav: { home: "ہوم", emotionDetector: "جذبات کا پتہ لگانا", barkTranslator: "بھونکنے کا ترجمہ", dogHealth: "کتے کی صحت", breedGuide: "نسل گائیڈ", places: "جگہیں", community: "کمیونٹی", emergency: "ایمرجنسی", profile: "پروفائل" },
+    nav: { home: "ہوم", emotionDetector: "جذبات کا پتہ لگانا", barkTranslator: "بھونکنے کا ترجمہ", dogHealth: "کتے کی صحت", breedGuide: "نسل گائیڈ", places: "جگہیں", community: "کمیونٹی", emergency: "ایمرجنسی", profile: "پروفائل", history: "تاریخ", about: "کے بارے میں", admin: "منتظم" },
     home: { heroTitle1: "وہ بول نہیں سکتے۔", heroTitle2: "ہم ترجمہ کرتے ہیں۔", heroDesc: "AI جو آپ کے کتے کے جذبات پڑھتا ہے۔", tryNow: "ابھی آزمائیں" },
     features: { emotionDetector: "جذبات کا پتہ لگانا", emotionDetectorDesc: "تصویر اپلوڈ کریں۔", barkTranslator: "بھونکنے کا ترجمہ", barkTranslatorDesc: "ویڈیو اپلوڈ کریں۔", dogHealth: "کتے کی صحت", dogHealthDesc: "صحت جانچ، غذا کا منصوبہ، ویٹ چیٹ۔", breedGuide: "نسل گائیڈ", breedGuideDesc: "50+ نسلیں۔", places: "دلی میں جگہیں", placesDesc: "پارک، کیفے، ویٹ۔", community: "کمیونٹی", communityDesc: "15+ واٹس ایپ گروپ۔", emergency: "ایمرجنسی", emergencyDesc: "قریبی ویٹ سے رابطہ۔" },
     auth: { login: "لاگ ان", logout: "لاگ آؤٹ", welcome: "Happy Tail میں خوش آمدید", tagline: "پنجوں کے لیے ٹیکنالوجی، زندگی بھر دیکھ بھال", loginDesc: "AI سے چلنے والا کتے کی دیکھ بھال ساتھی۔", getStarted: "شروع کریں" },
@@ -265,7 +265,7 @@ const translations: Record<LangCode, TranslationSet> = {
     profile: { title: "میری پروفائل", editProfile: "پروفائل ترمیم کریں", name: "نام", bio: "تعارف", email: "ای میل", updatePhoto: "تصویر اپڈیٹ کریں", dogName: "کتے کا نام", dogBreed: "نسل", dogAge: "عمر" },
   },
   es: {
-    nav: { home: "Inicio", emotionDetector: "Detector de Emociones", barkTranslator: "Traductor de Ladridos", dogHealth: "Salud Canina", breedGuide: "Guía de Razas", places: "Lugares", community: "Comunidad", emergency: "Emergencia", profile: "Perfil" },
+    nav: { home: "Inicio", emotionDetector: "Detector de Emociones", barkTranslator: "Traductor de Ladridos", dogHealth: "Salud Canina", breedGuide: "Guía de Razas", places: "Lugares", community: "Comunidad", emergency: "Emergencia", profile: "Perfil", history: "Historial", about: "Acerca de", admin: "Admin" },
     home: { heroTitle1: "No pueden hablar.", heroTitle2: "Nosotros traducimos.", heroDesc: "IA que lee las emociones de tu perro, decodifica sus ladridos y cuida su salud.", tryNow: "Probar ahora" },
     features: { emotionDetector: "Detector de Emociones", emotionDetectorDesc: "Sube una foto. La IA lee lo que siente tu perro.", barkTranslator: "Traductor de Ladridos", barkTranslatorDesc: "Sube un video. Obtén análisis de lenguaje corporal.", dogHealth: "Salud Canina", dogHealthDesc: "Escaneo de salud, planificador de dieta IA y chat veterinario.", breedGuide: "Guía de Razas", breedGuideDesc: "50+ razas con información detallada.", places: "Lugares en Delhi", placesDesc: "Parques, cafés, veterinarios.", community: "Comunidad", communityDesc: "15+ grupos de WhatsApp.", emergency: "Emergencia", emergencyDesc: "Acceso rápido a veterinarios." },
     auth: { login: "Iniciar sesión", logout: "Cerrar sesión", welcome: "Bienvenido a Happy Tail", tagline: "Tecnología para las patas, cuidado de por vida", loginDesc: "Tu compañero de cuidado canino con IA.", getStarted: "Comenzar" },
@@ -283,7 +283,7 @@ const translations: Record<LangCode, TranslationSet> = {
     profile: { title: "Mi Perfil", editProfile: "Editar Perfil", name: "Nombre", bio: "Biografía", email: "Correo", updatePhoto: "Actualizar Foto", dogName: "Nombre del Perro", dogBreed: "Raza", dogAge: "Edad" },
   },
   fr: {
-    nav: { home: "Accueil", emotionDetector: "Détecteur d'Émotions", barkTranslator: "Traducteur d'Aboiements", dogHealth: "Santé Canine", breedGuide: "Guide des Races", places: "Lieux", community: "Communauté", emergency: "Urgence", profile: "Profil" },
+    nav: { home: "Accueil", emotionDetector: "Détecteur d'Émotions", barkTranslator: "Traducteur d'Aboiements", dogHealth: "Santé Canine", breedGuide: "Guide des Races", places: "Lieux", community: "Communauté", emergency: "Urgence", profile: "Profil", history: "Historique", about: "À propos", admin: "Admin" },
     home: { heroTitle1: "Ils ne peuvent pas parler.", heroTitle2: "Nous traduisons.", heroDesc: "L'IA qui lit les émotions de votre chien, décode ses aboiements et veille sur sa santé.", tryNow: "Essayer maintenant" },
     features: { emotionDetector: "Détecteur d'Émotions", emotionDetectorDesc: "Téléchargez une photo. L'IA lit ce que ressent votre chien.", barkTranslator: "Traducteur d'Aboiements", barkTranslatorDesc: "Téléchargez une vidéo.", dogHealth: "Santé Canine", dogHealthDesc: "Scan santé, planificateur de régime IA et chat vétérinaire.", breedGuide: "Guide des Races", breedGuideDesc: "50+ races avec informations détaillées.", places: "Lieux à Delhi", placesDesc: "Parcs, cafés, vétérinaires.", community: "Communauté", communityDesc: "15+ groupes WhatsApp.", emergency: "Urgence", emergencyDesc: "Accès rapide aux vétérinaires." },
     auth: { login: "Connexion", logout: "Déconnexion", welcome: "Bienvenue sur Happy Tail", tagline: "La technologie pour les pattes, le soin pour la vie", loginDesc: "Votre compagnon de soins canins alimenté par l'IA.", getStarted: "Commencer" },
@@ -301,7 +301,7 @@ const translations: Record<LangCode, TranslationSet> = {
     profile: { title: "Mon Profil", editProfile: "Modifier le Profil", name: "Nom", bio: "Bio", email: "Email", updatePhoto: "Mettre à Jour la Photo", dogName: "Nom du Chien", dogBreed: "Race", dogAge: "Âge" },
   },
   de: {
-    nav: { home: "Startseite", emotionDetector: "Emotionserkennung", barkTranslator: "Bell-Übersetzer", dogHealth: "Hundegesundheit", breedGuide: "Rassenführer", places: "Orte", community: "Gemeinschaft", emergency: "Notfall", profile: "Profil" },
+    nav: { home: "Startseite", emotionDetector: "Emotionserkennung", barkTranslator: "Bell-Übersetzer", dogHealth: "Hundegesundheit", breedGuide: "Rassenführer", places: "Orte", community: "Gemeinschaft", emergency: "Notfall", profile: "Profil", history: "Verlauf", about: "Über uns", admin: "Admin" },
     home: { heroTitle1: "Sie können nicht sprechen.", heroTitle2: "Wir übersetzen.", heroDesc: "KI, die die Emotionen Ihres Hundes liest, sein Bellen decodiert und seine Gesundheit überwacht.", tryNow: "Jetzt testen" },
     features: { emotionDetector: "Emotionserkennung", emotionDetectorDesc: "Laden Sie ein Foto hoch. KI liest die Gefühle Ihres Hundes.", barkTranslator: "Bell-Übersetzer", barkTranslatorDesc: "Laden Sie ein Video hoch.", dogHealth: "Hundegesundheit", dogHealthDesc: "Gesundheitsscan, KI-Diätplaner und Tierarzt-Chat.", breedGuide: "Rassenführer", breedGuideDesc: "50+ Rassen mit detaillierten Informationen.", places: "Orte in Delhi", placesDesc: "Parks, Cafés, Tierärzte.", community: "Gemeinschaft", communityDesc: "15+ WhatsApp-Gruppen.", emergency: "Notfall", emergencyDesc: "Schneller Zugang zu Tierärzten." },
     auth: { login: "Anmelden", logout: "Abmelden", welcome: "Willkommen bei Happy Tail", tagline: "Technologie für Pfoten, Pflege fürs Leben", loginDesc: "Ihr KI-gestützter Hundepflege-Begleiter.", getStarted: "Loslegen" },
@@ -319,7 +319,7 @@ const translations: Record<LangCode, TranslationSet> = {
     profile: { title: "Mein Profil", editProfile: "Profil bearbeiten", name: "Name", bio: "Bio", email: "E-Mail", updatePhoto: "Foto aktualisieren", dogName: "Hundename", dogBreed: "Rasse", dogAge: "Alter" },
   },
   ja: {
-    nav: { home: "ホーム", emotionDetector: "感情検出", barkTranslator: "吠え翻訳", dogHealth: "犬の健康", breedGuide: "犬種ガイド", places: "場所", community: "コミュニティ", emergency: "緊急", profile: "プロフィール" },
+    nav: { home: "ホーム", emotionDetector: "感情検出", barkTranslator: "吠え翻訳", dogHealth: "犬の健康", breedGuide: "犬種ガイド", places: "場所", community: "コミュニティ", emergency: "緊急", profile: "プロフィール", history: "履歴", about: "概要", admin: "管理者" },
     home: { heroTitle1: "彼らは話せません。", heroTitle2: "私たちが翻訳します。", heroDesc: "あなたの犬の感情を読み取り、吠えを解読し、健康を見守るAI。", tryNow: "今すぐ試す" },
     features: { emotionDetector: "感情検出", emotionDetectorDesc: "写真をアップロード。AIがあなたの犬の感情を読み取ります。", barkTranslator: "吠え翻訳", barkTranslatorDesc: "動画をアップロード。", dogHealth: "犬の健康", dogHealthDesc: "健康スキャン、AIダイエットプランナー、獣医チャット。", breedGuide: "犬種ガイド", breedGuideDesc: "50以上の犬種の詳細情報。", places: "デリーの場所", placesDesc: "公園、カフェ、獣医。", community: "コミュニティ", communityDesc: "15以上のWhatsAppグループ。", emergency: "緊急", emergencyDesc: "近くの獣医への即時アクセス。" },
     auth: { login: "ログイン", logout: "ログアウト", welcome: "Happy Tailへようこそ", tagline: "パウのためのテクノロジー、生涯のケア", loginDesc: "AI搭載の犬ケアコンパニオン。", getStarted: "始める" },
@@ -337,7 +337,7 @@ const translations: Record<LangCode, TranslationSet> = {
     profile: { title: "マイプロフィール", editProfile: "プロフィールを編集", name: "名前", bio: "自己紹介", email: "メール", updatePhoto: "写真を更新", dogName: "犬の名前", dogBreed: "犬種", dogAge: "年齢" },
   },
   zh: {
-    nav: { home: "首页", emotionDetector: "情绪检测", barkTranslator: "吠叫翻译", dogHealth: "狗狗健康", breedGuide: "品种指南", places: "地点", community: "社区", emergency: "紧急", profile: "个人资料" },
+    nav: { home: "首页", emotionDetector: "情绪检测", barkTranslator: "吠叫翻译", dogHealth: "狗狗健康", breedGuide: "品种指南", places: "地点", community: "社区", emergency: "紧急", profile: "个人资料", history: "历史", about: "关于", admin: "管理员" },
     home: { heroTitle1: "它们无法说话。", heroTitle2: "我们来翻译。", heroDesc: "读取狗狗情绪、解码吠叫、守护健康的AI。", tryNow: "立即尝试" },
     features: { emotionDetector: "情绪检测", emotionDetectorDesc: "上传照片。AI读取你狗狗的感受。", barkTranslator: "吠叫翻译", barkTranslatorDesc: "上传视频。", dogHealth: "狗狗健康", dogHealthDesc: "健康扫描、AI饮食规划、兽医聊天。", breedGuide: "品种指南", breedGuideDesc: "50+品种的详细信息。", places: "德里的地点", placesDesc: "公园、咖啡馆、兽医。", community: "社区", communityDesc: "15+ WhatsApp群组。", emergency: "紧急", emergencyDesc: "快速联系附近兽医。" },
     auth: { login: "登录", logout: "退出", welcome: "欢迎来到Happy Tail", tagline: "为爪子的科技，一生的关爱", loginDesc: "AI驱动的狗狗护理伙伴。", getStarted: "开始" },
@@ -355,7 +355,7 @@ const translations: Record<LangCode, TranslationSet> = {
     profile: { title: "我的资料", editProfile: "编辑资料", name: "名字", bio: "简介", email: "邮箱", updatePhoto: "更新照片", dogName: "狗狗名字", dogBreed: "品种", dogAge: "年龄" },
   },
   ar: {
-    nav: { home: "الرئيسية", emotionDetector: "كاشف المشاعر", barkTranslator: "مترجم النباح", dogHealth: "صحة الكلب", breedGuide: "دليل السلالات", places: "أماكن", community: "المجتمع", emergency: "طوارئ", profile: "الملف الشخصي" },
+    nav: { home: "الرئيسية", emotionDetector: "كاشف المشاعر", barkTranslator: "مترجم النباح", dogHealth: "صحة الكلب", breedGuide: "دليل السلالات", places: "أماكن", community: "المجتمع", emergency: "طوارئ", profile: "الملف الشخصي", history: "السجل", about: "حول", admin: "المشرف" },
     home: { heroTitle1: "لا يستطيعون الكلام.", heroTitle2: "نحن نترجم.", heroDesc: "ذكاء اصطناعي يقرأ مشاعر كلبك ويفك شفرة نباحه ويراقب صحته.", tryNow: "جرّب الآن" },
     features: { emotionDetector: "كاشف المشاعر", emotionDetectorDesc: "ارفع صورة. الذكاء الاصطناعي يقرأ ما يشعر به كلبك.", barkTranslator: "مترجم النباح", barkTranslatorDesc: "ارفع فيديو.", dogHealth: "صحة الكلب", dogHealthDesc: "فحص صحي، مخطط غذائي، دردشة بيطرية.", breedGuide: "دليل السلالات", breedGuideDesc: "50+ سلالة بمعلومات تفصيلية.", places: "أماكن في دلهي", placesDesc: "حدائق، مقاهي، أطباء بيطريين.", community: "المجتمع", communityDesc: "15+ مجموعة واتساب.", emergency: "طوارئ", emergencyDesc: "وصول سريع للأطباء البيطريين." },
     auth: { login: "تسجيل الدخول", logout: "تسجيل الخروج", welcome: "مرحباً بك في Happy Tail", tagline: "تكنولوجيا للمخالب، رعاية مدى الحياة", loginDesc: "رفيق رعاية الكلب بالذكاء الاصطناعي.", getStarted: "ابدأ" },
@@ -373,7 +373,7 @@ const translations: Record<LangCode, TranslationSet> = {
     profile: { title: "ملفي الشخصي", editProfile: "تعديل الملف", name: "الاسم", bio: "نبذة", email: "البريد الإلكتروني", updatePhoto: "تحديث الصورة", dogName: "اسم الكلب", dogBreed: "السلالة", dogAge: "العمر" },
   },
   pt: {
-    nav: { home: "Início", emotionDetector: "Detector de Emoções", barkTranslator: "Tradutor de Latidos", dogHealth: "Saúde Canina", breedGuide: "Guia de Raças", places: "Locais", community: "Comunidade", emergency: "Emergência", profile: "Perfil" },
+    nav: { home: "Início", emotionDetector: "Detector de Emoções", barkTranslator: "Tradutor de Latidos", dogHealth: "Saúde Canina", breedGuide: "Guia de Raças", places: "Locais", community: "Comunidade", emergency: "Emergência", profile: "Perfil", history: "Histórico", about: "Sobre", admin: "Admin" },
     home: { heroTitle1: "Eles não podem falar.", heroTitle2: "Nós traduzimos.", heroDesc: "IA que lê as emoções do seu cão, decodifica seus latidos e cuida da sua saúde.", tryNow: "Experimentar agora" },
     features: { emotionDetector: "Detector de Emoções", emotionDetectorDesc: "Carregue uma foto. A IA lê o que seu cão sente.", barkTranslator: "Tradutor de Latidos", barkTranslatorDesc: "Carregue um vídeo.", dogHealth: "Saúde Canina", dogHealthDesc: "Scan de saúde, planejador de dieta IA e chat veterinário.", breedGuide: "Guia de Raças", breedGuideDesc: "50+ raças com informações detalhadas.", places: "Locais em Delhi", placesDesc: "Parques, cafés, veterinários.", community: "Comunidade", communityDesc: "15+ grupos de WhatsApp.", emergency: "Emergência", emergencyDesc: "Acesso rápido a veterinários." },
     auth: { login: "Entrar", logout: "Sair", welcome: "Bem-vindo ao Happy Tail", tagline: "Tecnologia para patas, cuidado para a vida", loginDesc: "Seu companheiro de cuidado canino com IA.", getStarted: "Começar" },
@@ -391,7 +391,7 @@ const translations: Record<LangCode, TranslationSet> = {
     profile: { title: "Meu Perfil", editProfile: "Editar Perfil", name: "Nome", bio: "Bio", email: "Email", updatePhoto: "Atualizar Foto", dogName: "Nome do Cão", dogBreed: "Raça", dogAge: "Idade" },
   },
   ko: {
-    nav: { home: "홈", emotionDetector: "감정 감지", barkTranslator: "짖음 번역기", dogHealth: "반려견 건강", breedGuide: "품종 가이드", places: "장소", community: "커뮤니티", emergency: "긴급", profile: "프로필" },
+    nav: { home: "홈", emotionDetector: "감정 감지", barkTranslator: "짖음 번역기", dogHealth: "반려견 건강", breedGuide: "품종 가이드", places: "장소", community: "커뮤니티", emergency: "긴급", profile: "프로필", history: "기록", about: "정보", admin: "관리자" },
     home: { heroTitle1: "그들은 말할 수 없습니다.", heroTitle2: "우리가 번역합니다.", heroDesc: "반려견의 감정을 읽고, 짖음을 해독하고, 건강을 돌보는 AI.", tryNow: "지금 시도" },
     features: { emotionDetector: "감정 감지", emotionDetectorDesc: "사진을 올려보세요. AI가 반려견의 감정을 읽습니다.", barkTranslator: "짖음 번역기", barkTranslatorDesc: "영상을 올려보세요.", dogHealth: "반려견 건강", dogHealthDesc: "건강 스캔, AI 식단 플래너, 수의사 채팅.", breedGuide: "품종 가이드", breedGuideDesc: "50개 이상의 품종 상세 정보.", places: "델리의 장소", placesDesc: "공원, 카페, 수의사.", community: "커뮤니티", communityDesc: "15개 이상의 WhatsApp 그룹.", emergency: "긴급", emergencyDesc: "가까운 수의사에 빠른 접근." },
     auth: { login: "로그인", logout: "로그아웃", welcome: "Happy Tail에 오신 것을 환영합니다", tagline: "발바닥을 위한 기술, 평생의 돌봄", loginDesc: "AI 기반 반려견 케어 동반자.", getStarted: "시작하기" },
@@ -409,7 +409,7 @@ const translations: Record<LangCode, TranslationSet> = {
     profile: { title: "내 프로필", editProfile: "프로필 수정", name: "이름", bio: "소개", email: "이메일", updatePhoto: "사진 업데이트", dogName: "반려견 이름", dogBreed: "품종", dogAge: "나이" },
   },
   ru: {
-    nav: { home: "Главная", emotionDetector: "Детектор Эмоций", barkTranslator: "Переводчик Лая", dogHealth: "Здоровье Собаки", breedGuide: "Гид по Породам", places: "Места", community: "Сообщество", emergency: "Экстренная помощь", profile: "Профиль" },
+    nav: { home: "Главная", emotionDetector: "Детектор Эмоций", barkTranslator: "Переводчик Лая", dogHealth: "Здоровье Собаки", breedGuide: "Гид по Породам", places: "Места", community: "Сообщество", emergency: "Экстренная помощь", profile: "Профиль", history: "История", about: "О нас", admin: "Админ" },
     home: { heroTitle1: "Они не могут говорить.", heroTitle2: "Мы переводим.", heroDesc: "ИИ, который читает эмоции вашей собаки, расшифровывает лай и следит за здоровьем.", tryNow: "Попробовать" },
     features: { emotionDetector: "Детектор Эмоций", emotionDetectorDesc: "Загрузите фото. ИИ считает эмоции вашей собаки.", barkTranslator: "Переводчик Лая", barkTranslatorDesc: "Загрузите видео.", dogHealth: "Здоровье Собаки", dogHealthDesc: "Сканирование здоровья, ИИ-планировщик диеты и чат с ветеринаром.", breedGuide: "Гид по Породам", breedGuideDesc: "50+ пород с подробной информацией.", places: "Места в Дели", placesDesc: "Парки, кафе, ветеринары.", community: "Сообщество", communityDesc: "15+ групп WhatsApp.", emergency: "Экстренная помощь", emergencyDesc: "Быстрый доступ к ветеринарам." },
     auth: { login: "Войти", logout: "Выйти", welcome: "Добро пожаловать в Happy Tail", tagline: "Технологии для лап, забота на всю жизнь", loginDesc: "Ваш ИИ-помощник по уходу за собакой.", getStarted: "Начать" },
