@@ -1,11 +1,11 @@
 {
-  "createdAt": "2026-05-02T09:32:52.494Z",
+  "createdAt": "2026-05-13T12:58:55.090Z",
   "counts": {
-    "users": 2,
-    "activityLogs": 4,
-    "emotionLogs": 5,
+    "users": 3,
+    "activityLogs": 18,
+    "emotionLogs": 9,
     "dogProfiles": 0,
-    "visitorLogs": 43,
+    "visitorLogs": 54,
     "locations": 7,
     "breeds": 10
   },
@@ -30,6 +30,16 @@
         "bio": "",
         "createdAt": "2026-05-01T10:48:23.361Z",
         "updatedAt": "2026-05-01T13:15:27.299Z"
+      },
+      {
+        "id": "52288391",
+        "email": "adyaahasija@gmail.com",
+        "firstName": "Adyaa",
+        "lastName": "Hasija",
+        "profileImageUrl": "https://lh3.googleusercontent.com/a/ACg8ocJ3PpkJ5kfE-oDprO_VAyw3Z8OE7o96XQTpWYS-5fO4q9syWGmg=s96-c",
+        "bio": null,
+        "createdAt": "2026-05-02T10:15:09.180Z",
+        "updatedAt": "2026-05-02T10:15:09.180Z"
       }
     ],
     "activityLogs": [
@@ -96,6 +106,540 @@
           "confidence": "95%, based on clarity of visual cues across all frames."
         },
         "createdAt": "2026-05-01T10:53:02.728Z"
+      },
+      {
+        "id": 11,
+        "userId": "57381831",
+        "activityType": "emotion_scan",
+        "title": "Emotion Scan",
+        "summary": "Unknown - Sad (Downcast)",
+        "details": {
+          "mood": "Downcast",
+          "breed": "Unknown",
+          "emotion": "Sad",
+          "suggestion": "Spend time with the dog, offer positive reinforcement, and ensure a safe and comforting space. Consider engaging the dog in a favorite activity or providing toys to improve its mood."
+        },
+        "createdAt": "2026-05-02T10:13:00.353Z"
+      },
+      {
+        "id": 12,
+        "userId": "57381831",
+        "activityType": "emotion_scan",
+        "title": "Emotion Scan",
+        "summary": "Jack Russell Terrier - Neutral (Calm and Alert)",
+        "details": {
+          "mood": "Calm and Alert",
+          "breed": "Jack Russell Terrier",
+          "emotion": "Neutral",
+          "suggestion": "Provide consistent interaction and a stimulating environment to maintain an alert but calm mood."
+        },
+        "createdAt": "2026-05-02T10:27:59.328Z"
+      },
+      {
+        "id": 13,
+        "userId": "57381831",
+        "activityType": "bark_translation",
+        "title": "Bark Translation",
+        "summary": "The images depict different dogs: Frame 1 and 2 appear to show a German Shepherd, Frame 3 and 4 suggest a Doberman, and Frame 5 and 6 show an unknown mixed breed or smaller shepherd-like dog. - Frame 1 and 2: Alert/Warning; Frame 3 and 4: Defensive/Warning; Frame 5 and 6: Fear/Anxiety and Territorial.: \"The dogs across these frames seem to be communicating different things: The German Shepherd is cauti\"",
+        "details": {
+          "breed": "The images depict different dogs: Frame 1 and 2 appear to show a German Shepherd, Frame 3 and 4 suggest a Doberman, and Frame 5 and 6 show an unknown mixed breed or smaller shepherd-like dog.",
+          "emotion": "Varies by frame: Frame 1 and 2 - Alert and Cautious; Frame 3 and 4 - Defensive and Vigilant; Frame 5 and 6 - Aggressive and Fearful.",
+          "message": "The dogs across these frames seem to be communicating different things: The German Shepherd is cautious and focused, possibly saying 'I'm watching you—what are you about to do?'; the Doberman is alert and defensive, possibly conveying 'I'm ready to defend this area'; finally, the snarling dog is expressing an aggressive warning with 'Stay back! I feel threatened!'",
+          "barkType": "Frame 1 and 2: Alert/Warning; Frame 3 and 4: Defensive/Warning; Frame 5 and 6: Fear/Anxiety and Territorial.",
+          "confidence": "65% (due to multiple behaviors and distinct dogs in separate frames)"
+        },
+        "createdAt": "2026-05-02T10:28:41.272Z"
+      },
+      {
+        "id": 14,
+        "userId": "57381831",
+        "activityType": "health_scan",
+        "title": "Health Scan",
+        "summary": "English Bulldog - EMERGENCY - 5 condition(s) found",
+        "details": {
+          "breed": "English Bulldog",
+          "home_remedy": "Clean affected areas with diluted apple cider vinegar (50% water, 50% vinegar) to help with minor yeast or bacterial infections. Do not use on open sores or severe irritations.",
+          "is_emergency": true,
+          "detailed_analysis": "The dog appears to be an English Bulldog, characterized by its distinctive wrinkled face and muscular build. Visible signs include significant redness, irritation, and loss of fur across various areas, including the face, legs, and body. These are likely indicative of skin allergies, mange, or infections. An emergency visit to the vet is necessary for proper diagnosis and treatment. Conditions like mange require prescribed medications, as they can cause significant discomfort and worsen without treatment. Home remedies like diluted apple cider vinegar may help to alleviate mild symptoms temporarily, but they must not replace veterinary care.",
+          "possible_conditions": [
+            "Skin allergies (atopy)",
+            "Demodectic mange (caused by mites)",
+            "Bacterial skin infections",
+            "Fungal infections (e.g., ringworm)",
+            "Yeast infections"
+          ]
+        },
+        "createdAt": "2026-05-02T10:29:52.977Z"
+      },
+      {
+        "id": 15,
+        "userId": "57381831",
+        "activityType": "emotion_scan",
+        "title": "Emotion Scan",
+        "summary": "Unknown - Unknown (Unknown)",
+        "details": {
+          "mood": "Unknown",
+          "breed": "Unknown",
+          "emotion": "Unknown",
+          "suggestion": "Spend time observing the dog in a calm setting to better assess its emotions and needs."
+        },
+        "createdAt": "2026-05-02T11:38:40.747Z"
+      },
+      {
+        "id": 16,
+        "userId": "57381831",
+        "activityType": "bark_translation",
+        "title": "Bark Translation",
+        "summary": "German Shepherd and Doberman are visible; one other dog resembles a mix or medium-sized breed with beige fur. - Alert/Warning, Territorial, Aggressive: \"From a calm and observant stance to escalating alertness and then aggression, the dogs communicate i\"",
+        "details": {
+          "breed": "German Shepherd and Doberman are visible; one other dog resembles a mix or medium-sized breed with beige fur.",
+          "emotion": "Alert transitioning to defensive aggression",
+          "message": "From a calm and observant stance to escalating alertness and then aggression, the dogs communicate increasing intensity of emotions. The German Shepherd appears to be saying, 'I'm watching, something's out there.' The Doberman signals defensiveness, 'Stay away, this is my space!' The last dog aggressively warns, 'I'm ready to attack, I'm serious—back off!'",
+          "barkType": "Alert/Warning, Territorial, Aggressive",
+          "confidence": "88%"
+        },
+        "createdAt": "2026-05-02T11:39:34.417Z"
+      },
+      {
+        "id": 17,
+        "userId": "57381831",
+        "activityType": "health_scan",
+        "title": "Health Scan",
+        "summary": "Bulldog - EMERGENCY - 4 condition(s) found",
+        "details": {
+          "breed": "Bulldog",
+          "home_remedy": "For temporary relief, a diluted apple cider vinegar rinse (mixed with equal parts water) may help soothe the skin. Avoid open wounds. Consult a vet immediately for medical-grade treatment.",
+          "is_emergency": true,
+          "detailed_analysis": "The dog appears to be a Bulldog with visible skin abnormalities, including redness, lesions, hair loss, and possible inflammation primarily on its paws, face, and body. These signs suggest possible conditions such as demodectic mange caused by mites, severe allergic dermatitis, or secondary bacterial/yeast infections due to underlying skin issues. Given the visible extent of inflammation and potential discomfort, this appears to be an urgent medical case requiring immediate veterinary care for proper diagnosis and treatment. Home remedies can only provide temporary symptomatic relief and should not replace professional care.",
+          "possible_conditions": [
+            "Demodectic mange",
+            "Severe allergic dermatitis",
+            "Yeast or bacterial skin infection",
+            "Autoimmune skin disorder"
+          ]
+        },
+        "createdAt": "2026-05-02T11:40:33.410Z"
+      },
+      {
+        "id": 18,
+        "userId": "57381831",
+        "activityType": "diet_plan",
+        "title": "Diet Plan",
+        "summary": "Labrador , 2, 24kg - A balanced diet plan tailored to a healthy 2-year-old Labrador with Indian food options.",
+        "details": {
+          "age": "2",
+          "tips": [
+            "Divide meals into three portions to avoid overeating and bloating.",
+            "Monitor weight regularly to ensure the dog is not gaining excess weight.",
+            "Stick to low-fat protein sources like boiled chicken or fish to maintain lean muscle.",
+            "Ensure regular hydration, especially during summer months."
+          ],
+          "breed": "Labrador ",
+          "meals": [
+            {
+              "name": "Breakfast",
+              "time": "8:00 AM",
+              "foods": [
+                {
+                  "name": "Cooked rice",
+                  "portion": "1 cup"
+                },
+                {
+                  "name": "Boiled chicken (boneless)",
+                  "portion": "100 grams"
+                },
+                {
+                  "name": "Vegetables (carrot and spinach, chopped)",
+                  "portion": "1/4 cup"
+                }
+              ],
+              "portion": "Moderate"
+            },
+            {
+              "name": "Lunch",
+              "time": "1:00 PM",
+              "foods": [
+                {
+                  "name": "Cooked rice",
+                  "portion": "1 cup"
+                },
+                {
+                  "name": "Curd (unsalted)",
+                  "portion": "2 tablespoons"
+                },
+                {
+                  "name": "Boiled egg whites",
+                  "portion": "2"
+                }
+              ],
+              "portion": "Moderate to Full"
+            },
+            {
+              "name": "Dinner",
+              "time": "7:00 PM",
+              "foods": [
+                {
+                  "name": "Cooked rice",
+                  "portion": "3/4 cup"
+                },
+                {
+                  "name": "Boiled lentils (masoor dal)",
+                  "portion": "1/4 cup"
+                },
+                {
+                  "name": "Shredded cooked fish (deboned)",
+                  "portion": "100 grams"
+                }
+              ],
+              "portion": "Light to Moderate"
+            }
+          ],
+          "weight": "24",
+          "summary": "A balanced diet plan tailored to a healthy 2-year-old Labrador with Indian food options.",
+          "conditions": "",
+          "supplements": [
+            "Omega-3 fatty acids (fish oil) for coat health",
+            "Glucosamine and chondroitin for joint support",
+            "Multivitamins for overall nutrition"
+          ],
+          "water_intake": "1000-1500 ml",
+          "weekly_treats": [
+            {
+              "name": "Sweet potato (boiled, slices)",
+              "portion": "1 slice, 2 times/week"
+            },
+            {
+              "name": "Apple (seedless, chopped)",
+              "portion": "1/4 cup, 3 times/week"
+            },
+            {
+              "name": "Coconut chunks (unsweetened)",
+              "portion": "Few small pieces, 1 time/week"
+            }
+          ],
+          "daily_calories": "1100-1400 kcal",
+          "foods_to_avoid": [
+            "Chocolate",
+            "Onions and garlic",
+            "Grapes and raisins",
+            "Spicy or heavily seasoned food",
+            "Fried food",
+            "Raw dough with yeast"
+          ]
+        },
+        "createdAt": "2026-05-02T11:41:04.915Z"
+      },
+      {
+        "id": 19,
+        "userId": "57381831",
+        "activityType": "diet_plan",
+        "title": "Diet Plan",
+        "summary": "Labrador , 2, 22kg - Balanced diet plan for a healthy 2-year-old Labrador with Indian food options.",
+        "details": {
+          "age": "2",
+          "tips": [
+            "Ensure food is properly cooked and served at room temperature to avoid stomach upset.",
+            "Divide meals into equal portions to prevent overeating, which can lead to obesity.",
+            "Introduce new foods gradually to monitor tolerance and prevent allergies or digestive upset.",
+            "Monitor your Labrador’s weight regularly as they are prone to obesity, and adjust portion sizes as needed."
+          ],
+          "breed": "Labrador ",
+          "meals": [
+            {
+              "name": "Breakfast",
+              "time": "8:00 AM",
+              "foods": [
+                "Cooked plain rice",
+                "Boiled chicken (shredded)",
+                "Steamed carrots and peas"
+              ],
+              "portion": "1 cup rice + 100g chicken + 1/4 cup vegetables"
+            },
+            {
+              "name": "Lunch",
+              "time": "1:00 PM",
+              "foods": [
+                "Plain curd",
+                "Cooked oats",
+                "Boiled eggs (chopped)"
+              ],
+              "portion": "1/2 cup curd + 1/2 cup oats + 1 boiled egg"
+            },
+            {
+              "name": "Dinner",
+              "time": "7:00 PM",
+              "foods": [
+                "Brown rice",
+                "Boiled fish (boneless)",
+                "Steamed pumpkin"
+              ],
+              "portion": "1 cup rice + 100g fish + 1/4 cup pumpkin"
+            }
+          ],
+          "weight": "22",
+          "summary": "Balanced diet plan for a healthy 2-year-old Labrador with Indian food options.",
+          "conditions": "",
+          "supplements": [
+            "Omega-3 fish oil",
+            "Joint support supplements (containing glucosamine and chondroitin)",
+            "Multivitamin formulated for dogs"
+          ],
+          "water_intake": "900-1200 ml",
+          "weekly_treats": [
+            "Cucumber slices",
+            "Apple slices (seedless)",
+            "Paneer cubes (unsalted)",
+            "Banana pieces",
+            "Sweet potato (steamed)"
+          ],
+          "daily_calories": "1000-1200 kcal",
+          "foods_to_avoid": [
+            "Chocolate",
+            "Onions",
+            "Garlic",
+            "Grapes",
+            "Raisins",
+            "Spicy or oily foods",
+            "Artificial sweeteners (e.g., xylitol)"
+          ]
+        },
+        "createdAt": "2026-05-02T11:41:30.700Z"
+      },
+      {
+        "id": 20,
+        "userId": "57381831",
+        "activityType": "emotion_scan",
+        "title": "Emotion Scan",
+        "summary": "Unknown - Sad (Dejected and withdrawn)",
+        "details": {
+          "mood": "Dejected and withdrawn",
+          "breed": "Unknown",
+          "emotion": "Sad",
+          "suggestion": "Ensure the dog has a quiet, safe space to rest and provide positive reinforcement. Consider engaging the dog in gentle play or giving it a comforting item, like a favorite toy or blanket, to lift its mood."
+        },
+        "createdAt": "2026-05-02T12:35:33.335Z"
+      },
+      {
+        "id": 21,
+        "userId": "57381831",
+        "activityType": "bark_translation",
+        "title": "Bark Translation",
+        "summary": "The first two frames show a German Shepherd, the third and fourth frame likely depict a Doberman Pinscher, and the last two frames show what appears to be a mixed breed with similarities to a Labrador. - Frame 1-2: Caution/Alert; Frame 3-4: Warning bark; Frame 5-6: Territorial/Aggressive bark.: \"Frame 1-2: 'I'm feeling uncertain or cautious about what's happening around me. I'm keeping a low pr\"",
+        "details": {
+          "breed": "The first two frames show a German Shepherd, the third and fourth frame likely depict a Doberman Pinscher, and the last two frames show what appears to be a mixed breed with similarities to a Labrador.",
+          "emotion": "Frame 1-2: Nervous or unsure; Frame 3-4: Alert and defensive; Frame 5-6: Angry/aggressive.",
+          "message": "Frame 1-2: 'I'm feeling uncertain or cautious about what's happening around me. I'm keeping a low profile just in case.' Frame 3-4: 'I'm feeling intimidated but trying to warn you to keep your distance.' Frame 5-6: 'Stay away! I'm feeling aggressive and ready to defend myself!'",
+          "barkType": "Frame 1-2: Caution/Alert; Frame 3-4: Warning bark; Frame 5-6: Territorial/Aggressive bark.",
+          "confidence": "90%"
+        },
+        "createdAt": "2026-05-02T12:36:21.525Z"
+      },
+      {
+        "id": 22,
+        "userId": "57381831",
+        "activityType": "health_scan",
+        "title": "Health Scan",
+        "summary": "Bulldog - EMERGENCY - 4 condition(s) found",
+        "details": {
+          "breed": "Bulldog",
+          "home_remedy": "It is highly recommended to consult a veterinarian immediately for professional evaluation and treatment, as the condition appears severe and might require prescribed medications. Meanwhile, soothing the skin with a diluted apple cider vinegar rinse (if no open wounds) or a chamomile tea compress can help alleviate discomfort. Ensure the dog is in a clean, stress-free environment.",
+          "is_emergency": true,
+          "detailed_analysis": "The photos show visible signs of redness, irritation, scaling, and potential hair loss, which could be indicative of dermatitis, mange, or a skin infection. There might also be an underlying allergic reaction or hormonal imbalance causing the symptoms. Urgent care by a veterinarian is advised due to the severity and extent of the condition visible across the body, as untreated issues might lead to further complications.",
+          "possible_conditions": [
+            "Skin irritation or dermatitis",
+            "Fungal or bacterial skin infection",
+            "Allergic reaction",
+            "Mange (demodectic or sarcoptic)"
+          ]
+        },
+        "createdAt": "2026-05-02T12:37:07.447Z"
+      },
+      {
+        "id": 23,
+        "userId": "57381831",
+        "activityType": "diet_plan",
+        "title": "Diet Plan",
+        "summary": "Labrador , 2, 24kg - Balanced diet plan for a healthy 2-year-old Labrador weighing 24 kg.",
+        "details": {
+          "age": "2",
+          "tips": [
+            "Divide meals into 3 portions a day to prevent bloating, which Labradors are prone to.",
+            "Monitor portion sizes to avoid overeating, as Labradors are prone to obesity.",
+            "Always provide clean, fresh drinking water and refill it throughout the day.",
+            "Introduce new foods slowly to ensure they don’t upset your dog’s stomach."
+          ],
+          "breed": "Labrador ",
+          "meals": [
+            {
+              "name": "Breakfast",
+              "time": "8:00 AM",
+              "foods": [
+                {
+                  "name": "Rice",
+                  "portion": "1 cup"
+                },
+                {
+                  "name": "Boiled Chicken",
+                  "portion": "150 grams"
+                },
+                {
+                  "name": "Carrots (finely chopped or boiled)",
+                  "portion": "1/4 cup"
+                }
+              ],
+              "portion": "Complete meal size: 400-500 kcal"
+            },
+            {
+              "name": "Lunch",
+              "time": "1:00 PM",
+              "foods": [
+                {
+                  "name": "Rice",
+                  "portion": "1 cup"
+                },
+                {
+                  "name": "Cottage Cheese (paneer, unsalted)",
+                  "portion": "50 grams"
+                },
+                {
+                  "name": "Pumpkin (boiled, mashed)",
+                  "portion": "1/4 cup"
+                },
+                {
+                  "name": "Egg (boiled, fully cooked)",
+                  "portion": "1 piece"
+                }
+              ],
+              "portion": "Complete meal size: 500-600 kcal"
+            },
+            {
+              "name": "Dinner",
+              "time": "7:00 PM",
+              "foods": [
+                {
+                  "name": "Rice",
+                  "portion": "1 cup"
+                },
+                {
+                  "name": "Fish (boneless, boiled)",
+                  "portion": "100 grams"
+                },
+                {
+                  "name": "Green Beans (steamed, chopped)",
+                  "portion": "1/4 cup"
+                },
+                {
+                  "name": "Curd (unsweetened, low-fat)",
+                  "portion": "2 tablespoons"
+                }
+              ],
+              "portion": "Complete meal size: 400-500 kcal"
+            }
+          ],
+          "weight": "24",
+          "summary": "Balanced diet plan for a healthy 2-year-old Labrador weighing 24 kg.",
+          "conditions": "",
+          "supplements": [
+            "Omega-3 fatty acid capsules (for healthy skin and coat)",
+            "Glucosamine and chondroitin (to support joint health)",
+            "Probiotic powder (as recommended by a vet)"
+          ],
+          "water_intake": "1000-1400 ml",
+          "weekly_treats": [
+            "Peanut Butter (unsalted, unsweetened, limit quantity)",
+            "Small pieces of boiled sweet potato",
+            "Unsweetened, plain yogurt",
+            "Chicken jerky (homemade)"
+          ],
+          "daily_calories": "1200-1400 kcal",
+          "foods_to_avoid": [
+            "Chocolate",
+            "Onions",
+            "Garlic",
+            "Grapes or Raisins",
+            "Xylitol (found in sugar-free products)",
+            "High-fat or spicy Indian curries",
+            "Raw dough with yeast"
+          ]
+        },
+        "createdAt": "2026-05-02T12:37:44.942Z"
+      },
+      {
+        "id": 24,
+        "userId": "57381831",
+        "activityType": "diet_plan",
+        "title": "Diet Plan",
+        "summary": "Labrador , 2, 22kg - Balanced daily diet plan tailored for a 2-year-old healthy Labrador weighing 22 kg.",
+        "details": {
+          "age": "2",
+          "tips": [
+            "Divide meals into multiple portions to avoid bloating, which Labradors are prone to.",
+            "Monitor weight regularly; Labradors tend to overeat and gain weight easily.",
+            "Include vegetables and fibrous foods for better digestion and to control calorie intake.",
+            "Avoid feeding directly from your plate to prevent bad habits and begging behavior."
+          ],
+          "breed": "Labrador ",
+          "meals": [
+            {
+              "name": "Breakfast",
+              "time": "8:00 AM",
+              "foods": [
+                "Cooked white rice",
+                "Boiled chicken (skinless, boneless)",
+                "Steamed carrots and peas",
+                "Sunflower oil (1 tsp)"
+              ],
+              "portion": "1 cup rice, 100g chicken, 1/4 cup vegetables"
+            },
+            {
+              "name": "Lunch",
+              "time": "1:00 PM",
+              "foods": [
+                "Cooked brown rice",
+                "Cottage cheese (paneer)",
+                "Steamed pumpkin or sweet potato"
+              ],
+              "portion": "1 cup rice, 50g paneer, 1/4 cup vegetables"
+            },
+            {
+              "name": "Dinner",
+              "time": "7:00 PM",
+              "foods": [
+                "Cooked quinoa",
+                "Boiled fish (e.g., rohu or basa)",
+                "Steamed spinach"
+              ],
+              "portion": "1 cup quinoa, 100g fish, 1/4 cup spinach"
+            }
+          ],
+          "weight": "22",
+          "summary": "Balanced daily diet plan tailored for a 2-year-old healthy Labrador weighing 22 kg.",
+          "conditions": "",
+          "supplements": [
+            "Omega-3 fish oil (for coat health)",
+            "Glucosamine (for joint support)",
+            "Probiotic powder (for gut health)"
+          ],
+          "water_intake": "900-1200 ml",
+          "weekly_treats": [
+            "Small yogurt cubes (no sugar or additives)",
+            "Apple slices (seedless)",
+            "Coconut chunks",
+            "Homemade pumpkin biscuits",
+            "Boiled egg (once weekly)"
+          ],
+          "daily_calories": "1100-1300 kcal",
+          "foods_to_avoid": [
+            "Chocolate",
+            "Onions",
+            "Garlic",
+            "Grapes and raisins",
+            "Artificial sweeteners like xylitol",
+            "Macadamia nuts",
+            "Spicy or heavily seasoned food"
+          ]
+        },
+        "createdAt": "2026-05-02T12:38:17.705Z"
       }
     ],
     "emotionLogs": [
@@ -158,6 +702,54 @@
         "treatment": "Consult a veterinarian to evaluate and treat the skin condition. Ensure the dog's living environment is clean and allergen-free.",
         "deviceId": "tk37hmq5aj7hc5nk",
         "createdAt": "2026-05-01T10:51:53.892Z"
+      },
+      {
+        "id": 6,
+        "imageUrl": "data:image/jpeg;base64,/9j/4QBMRXhpZgAATU0AKgAAAAgABAEAAAQAAAABAAAEsAEBAAQAAAABAAAH0AESAAMAAAABAAEAA...",
+        "detectedEmotion": "Sad",
+        "detectedBreed": "Unknown",
+        "mood": "Downcast",
+        "suggestion": "Spend time with the dog, offer positive reinforcement, and ensure a safe and comforting space. Consider engaging the dog in a favorite activity or providing toys to improve its mood.",
+        "explanation": "The dog's posture, with its head down and body tucked close to the floor, suggests it may be feeling sad or anxious. Potential reasons could be loneliness, fear, or a lack of stimulation.",
+        "treatment": "Provide comfort and reassurance. Engage in gentle interaction and assess the environment for factors that might be causing distress.",
+        "deviceId": "tk37hmq5aj7hc5nk",
+        "createdAt": "2026-05-02T10:13:00.348Z"
+      },
+      {
+        "id": 7,
+        "imageUrl": "data:image/jpeg;base64,/9j/4QBMRXhpZgAATU0AKgAAAAgABAEAAAQAAAABAAAEsAEBAAQAAAABAAAH0AESAAMAAAABAAEAA...",
+        "detectedEmotion": "Neutral",
+        "detectedBreed": "Jack Russell Terrier",
+        "mood": "Calm and Alert",
+        "suggestion": "Provide consistent interaction and a stimulating environment to maintain an alert but calm mood.",
+        "explanation": "The dog's posture and ears suggest attentiveness, but not agitation or stress. It appears comfortable in its environment without showing visible signs of distress.",
+        "treatment": "No specific treatment required, as the dog seems content and calm. Continue engagement as needed.",
+        "deviceId": "tk37hmq5aj7hc5nk",
+        "createdAt": "2026-05-02T10:27:59.275Z"
+      },
+      {
+        "id": 8,
+        "imageUrl": "data:image/jpeg;base64,/9j/4QBMRXhpZgAATU0AKgAAAAgABAEAAAQAAAABAAAEsAEBAAQAAAABAAAH0AESAAMAAAABAAEAA...",
+        "detectedEmotion": "Unknown",
+        "detectedBreed": "Unknown",
+        "mood": "Unknown",
+        "suggestion": "Spend time observing the dog in a calm setting to better assess its emotions and needs.",
+        "explanation": "Cannot determine specific details due to the obscured image of the dog's face.",
+        "treatment": "Provide general care and attention based on observed behavior.",
+        "deviceId": "tk37hmq5aj7hc5nk",
+        "createdAt": "2026-05-02T11:38:40.693Z"
+      },
+      {
+        "id": 9,
+        "imageUrl": "data:image/jpeg;base64,/9j/4QBMRXhpZgAATU0AKgAAAAgABAEAAAQAAAABAAAEsAEBAAQAAAABAAAH0AESAAMAAAABAAEAA...",
+        "detectedEmotion": "Sad",
+        "detectedBreed": "Unknown",
+        "mood": "Dejected and withdrawn",
+        "suggestion": "Ensure the dog has a quiet, safe space to rest and provide positive reinforcement. Consider engaging the dog in gentle play or giving it a comforting item, like a favorite toy or blanket, to lift its mood.",
+        "explanation": "The dog appears to be lying down with its head lowered, which can be a sign of sadness or discomfort. The posture may indicate stress, loneliness, or fear.",
+        "treatment": "Offer comfort and reassurance by sitting nearby, speaking gently, or petting the dog if it seems open to interaction.",
+        "deviceId": "tk37hmq5aj7hc5nk",
+        "createdAt": "2026-05-02T12:35:33.271Z"
       }
     ],
     "dogProfiles": [],
@@ -376,6 +968,61 @@
         "id": 43,
         "userId": "57381831",
         "visitedAt": "2026-05-02T08:59:47.490Z"
+      },
+      {
+        "id": 44,
+        "userId": "57381831",
+        "visitedAt": "2026-05-02T09:33:03.739Z"
+      },
+      {
+        "id": 45,
+        "userId": "57381831",
+        "visitedAt": "2026-05-02T09:39:02.826Z"
+      },
+      {
+        "id": 46,
+        "userId": "57381831",
+        "visitedAt": "2026-05-02T10:12:21.807Z"
+      },
+      {
+        "id": 47,
+        "userId": "57381831",
+        "visitedAt": "2026-05-02T10:14:06.991Z"
+      },
+      {
+        "id": 48,
+        "userId": "52288391",
+        "visitedAt": "2026-05-02T10:15:13.352Z"
+      },
+      {
+        "id": 49,
+        "userId": "57381831",
+        "visitedAt": "2026-05-02T10:15:43.024Z"
+      },
+      {
+        "id": 50,
+        "userId": "57381831",
+        "visitedAt": "2026-05-02T10:27:20.166Z"
+      },
+      {
+        "id": 51,
+        "userId": "57381831",
+        "visitedAt": "2026-05-02T11:37:53.463Z"
+      },
+      {
+        "id": 52,
+        "userId": "57381831",
+        "visitedAt": "2026-05-02T11:41:19.502Z"
+      },
+      {
+        "id": 53,
+        "userId": "57381831",
+        "visitedAt": "2026-05-02T12:34:48.787Z"
+      },
+      {
+        "id": 54,
+        "userId": "57381831",
+        "visitedAt": "2026-05-02T12:37:53.198Z"
       }
     ],
     "locations": [
