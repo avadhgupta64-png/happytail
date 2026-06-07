@@ -67,6 +67,20 @@ export const chatMessages = pgTable("chat_messages", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+export const removedUsers = pgTable("removed_users", {
+  id: serial("id").primaryKey(),
+  originalId: text("original_id").notNull(),
+  email: text("email"),
+  firstName: text("first_name"),
+  lastName: text("last_name"),
+  bio: text("bio"),
+  profileImageUrl: text("profile_image_url"),
+  isBanned: boolean("is_banned").default(false),
+  banReason: text("ban_reason"),
+  removedBy: text("removed_by").notNull(),
+  removedAt: timestamp("removed_at").defaultNow(),
+});
+
 export const activityLogs = pgTable("activity_logs", {
   id: serial("id").primaryKey(),
   userId: text("user_id").notNull(),

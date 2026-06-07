@@ -4,7 +4,7 @@ import { storage } from "./storage";
 import { api } from "@shared/routes";
 import { z } from "zod";
 import OpenAI from "openai";
-import { insertBreedSchema, insertLocationSchema, dogProfiles, visitorLogs, insertDogProfileSchema, activityLogs, emotionLogs } from "@shared/schema";
+import { insertBreedSchema, insertLocationSchema, dogProfiles, visitorLogs, insertDogProfileSchema, activityLogs, emotionLogs, removedUsers } from "@shared/schema";
 import { users } from "@shared/models/auth";
 import { setupAuth, registerAuthRoutes, isAuthenticated, getSession } from "./replit_integrations/auth";
 import { db } from "./db";
@@ -831,15 +831,16 @@ Rules:
 
   app.post("/api/admin/users/:id/ban", isAuthenticated, isAdmin, async (req: any, res) => {
     try {
-      const { reason } = req.body;
+      const reason = req.body?.reason || "Banned by administrator";
       const [updated] = await db
         .update(users)
-        .set({ isBanned: true, bannedAt: new Date(), banReason: reason || "Banned by administrator" })
+        .set({ isBanned: true, bannedAt: new Date(), banReason: reason })
         .where(eq(users.id, req.params.id))
         .returning();
       if (!updated) return res.status(404).json({ message: "User not found" });
       res.json({ message: "User banned", user: updated });
     } catch (err) {
+      console.error("Ban failed:", err);
       res.status(500).json({ message: "Failed to ban user" });
     }
   });
@@ -854,6 +855,7 @@ Rules:
       if (!updated) return res.status(404).json({ message: "User not found" });
       res.json({ message: "User unbanned", user: updated });
     } catch (err) {
+      console.error("Unban failed:", err);
       res.status(500).json({ message: "Failed to unban user" });
     }
   });
@@ -861,17 +863,40 @@ Rules:
   app.delete("/api/admin/users/:id", isAuthenticated, isAdmin, async (req: any, res) => {
     try {
       const adminEmail = "pawcare.tech@gmail.com";
-      const [targetUser] = await db.select({ email: users.email }).from(users).where(eq(users.id, req.params.id));
-      if (targetUser?.email === adminEmail) {
+      const [targetUser] = await db.select().from(users).where(eq(users.id, req.params.id));
+      if (!targetUser) return res.status(404).json({ message: "User not found" });
+      if (targetUser.email === adminEmail) {
         return res.status(403).json({ message: "Cannot remove the admin account" });
       }
-      // Soft-delete all their activities first
+      // Archive the user record before deleting
+      await db.insert(removedUsers).values({
+        originalId: targetUser.id,
+        email: targetUser.email,
+        firstName: targetUser.firstName,
+        lastName: targetUser.lastName,
+        bio: targetUser.bio,
+        profileImageUrl: targetUser.profileImageUrl,
+        isBanned: targetUser.isBanned,
+        banReason: targetUser.banReason,
+        removedBy: String(req.user?.claims?.sub),
+      });
+      // Soft-delete all their activities
       await db.update(activityLogs).set({ deletedAt: new Date() }).where(and(eq(activityLogs.userId, req.params.id), isNull(activityLogs.deletedAt)));
-      // Delete the user
+      // Hard-delete the user
       await db.delete(users).where(eq(users.id, req.params.id));
       res.json({ message: "User removed" });
     } catch (err) {
+      console.error("Remove user failed:", err);
       res.status(500).json({ message: "Failed to remove user" });
+    }
+  });
+
+  app.get("/api/admin/removed-users", isAuthenticated, isAdmin, async (_req, res) => {
+    try {
+      const removed = await db.select().from(removedUsers).orderBy(desc(removedUsers.removedAt));
+      res.json(removed);
+    } catch (err) {
+      res.status(500).json({ message: "Failed to fetch removed users" });
     }
   });
 

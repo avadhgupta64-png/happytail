@@ -1,26 +1,16 @@
 {
-  "createdAt": "2026-05-17T08:23:45.318Z",
+  "createdAt": "2026-06-07T19:56:13.186Z",
   "counts": {
-    "users": 3,
+    "users": 2,
     "activityLogs": 18,
     "emotionLogs": 9,
     "dogProfiles": 0,
-    "visitorLogs": 55,
+    "visitorLogs": 64,
     "locations": 7,
     "breeds": 10
   },
   "data": {
     "users": [
-      {
-        "id": "51336772",
-        "email": "avannu48@gmail.com",
-        "firstName": "Rohit ",
-        "lastName": "Gupta",
-        "profileImageUrl": "https://lh3.googleusercontent.com/a/ACg8ocJKTo4DoGFh5BWOrjKc568HAAERsvx82_0Hvlrp-y-JmD5DkA=s96-c",
-        "bio": "",
-        "createdAt": "2026-05-01T10:48:23.361Z",
-        "updatedAt": "2026-05-01T13:15:27.299Z"
-      },
       {
         "id": "52288391",
         "email": "adyaahasija@gmail.com",
@@ -28,18 +18,24 @@
         "lastName": "Hasija",
         "profileImageUrl": "https://lh3.googleusercontent.com/a/ACg8ocJ3PpkJ5kfE-oDprO_VAyw3Z8OE7o96XQTpWYS-5fO4q9syWGmg=s96-c",
         "bio": null,
+        "isBanned": false,
+        "bannedAt": null,
+        "banReason": null,
         "createdAt": "2026-05-02T10:15:09.180Z",
         "updatedAt": "2026-05-02T10:15:09.180Z"
       },
       {
         "id": "57381831",
         "email": "pawcare.tech@gmail.com",
-        "firstName": "Pawcare",
-        "lastName": "Tech",
+        "firstName": "Avadh",
+        "lastName": "Gupta",
         "profileImageUrl": "https://lh3.googleusercontent.com/a/ACg8ocIGsn6U6f_r_rMk6Xvw2Et5UCzer1NQI97YZtOyIb2EOL2LOA=s96-c",
         "bio": "Founder and Developer- Happy Tail ",
+        "isBanned": false,
+        "bannedAt": null,
+        "banReason": null,
         "createdAt": "2026-04-09T11:03:48.776Z",
-        "updatedAt": "2026-05-14T12:51:26.348Z"
+        "updatedAt": "2026-06-07T19:49:41.086Z"
       }
     ],
     "activityLogs": [
@@ -62,7 +58,8 @@
             "Secondary infections due to scratching"
           ]
         },
-        "createdAt": "2026-05-01T10:25:51.839Z"
+        "createdAt": "2026-05-01T10:25:51.839Z",
+        "deletedAt": null
       },
       {
         "id": 8,
@@ -76,7 +73,8 @@
           "emotion": "Sad",
           "suggestion": "Introduce interactive play or walk outdoors to boost the dog's mood and address any feelings of loneliness."
         },
-        "createdAt": "2026-05-01T10:51:22.428Z"
+        "createdAt": "2026-05-01T10:51:22.428Z",
+        "deletedAt": null
       },
       {
         "id": 9,
@@ -90,7 +88,8 @@
           "emotion": "Anxious",
           "suggestion": "Provide a comfortable space and monitor its behavior to identify further signs of distress. Gentle care and attention will aid in its overall well-being."
         },
-        "createdAt": "2026-05-01T10:51:53.898Z"
+        "createdAt": "2026-05-01T10:51:53.898Z",
+        "deletedAt": null
       },
       {
         "id": 10,
@@ -105,7 +104,8 @@
           "barkType": "Frames 1 and 2: No audible bark predicted (calm observation). Frames 3 and 4: Alert/Warning bark. Frames 5 and 6: Aggressive/Fearful bark with potential growling.",
           "confidence": "95%, based on clarity of visual cues across all frames."
         },
-        "createdAt": "2026-05-01T10:53:02.728Z"
+        "createdAt": "2026-05-01T10:53:02.728Z",
+        "deletedAt": null
       },
       {
         "id": 11,
@@ -119,7 +119,8 @@
           "emotion": "Sad",
           "suggestion": "Spend time with the dog, offer positive reinforcement, and ensure a safe and comforting space. Consider engaging the dog in a favorite activity or providing toys to improve its mood."
         },
-        "createdAt": "2026-05-02T10:13:00.353Z"
+        "createdAt": "2026-05-02T10:13:00.353Z",
+        "deletedAt": null
       },
       {
         "id": 12,
@@ -133,7 +134,8 @@
           "emotion": "Neutral",
           "suggestion": "Provide consistent interaction and a stimulating environment to maintain an alert but calm mood."
         },
-        "createdAt": "2026-05-02T10:27:59.328Z"
+        "createdAt": "2026-05-02T10:27:59.328Z",
+        "deletedAt": null
       },
       {
         "id": 13,
@@ -148,7 +150,8 @@
           "barkType": "Frame 1 and 2: Alert/Warning; Frame 3 and 4: Defensive/Warning; Frame 5 and 6: Fear/Anxiety and Territorial.",
           "confidence": "65% (due to multiple behaviors and distinct dogs in separate frames)"
         },
-        "createdAt": "2026-05-02T10:28:41.272Z"
+        "createdAt": "2026-05-02T10:28:41.272Z",
+        "deletedAt": null
       },
       {
         "id": 14,
@@ -169,7 +172,8 @@
             "Yeast infections"
           ]
         },
-        "createdAt": "2026-05-02T10:29:52.977Z"
+        "createdAt": "2026-05-02T10:29:52.977Z",
+        "deletedAt": null
       },
       {
         "id": 15,
@@ -183,7 +187,8 @@
           "emotion": "Unknown",
           "suggestion": "Spend time observing the dog in a calm setting to better assess its emotions and needs."
         },
-        "createdAt": "2026-05-02T11:38:40.747Z"
+        "createdAt": "2026-05-02T11:38:40.747Z",
+        "deletedAt": null
       },
       {
         "id": 16,
@@ -198,7 +203,8 @@
           "barkType": "Alert/Warning, Territorial, Aggressive",
           "confidence": "88%"
         },
-        "createdAt": "2026-05-02T11:39:34.417Z"
+        "createdAt": "2026-05-02T11:39:34.417Z",
+        "deletedAt": null
       },
       {
         "id": 17,
@@ -218,7 +224,8 @@
             "Autoimmune skin disorder"
           ]
         },
-        "createdAt": "2026-05-02T11:40:33.410Z"
+        "createdAt": "2026-05-02T11:40:33.410Z",
+        "deletedAt": null
       },
       {
         "id": 18,
@@ -327,7 +334,8 @@
             "Raw dough with yeast"
           ]
         },
-        "createdAt": "2026-05-02T11:41:04.915Z"
+        "createdAt": "2026-05-02T11:41:04.915Z",
+        "deletedAt": null
       },
       {
         "id": 19,
@@ -403,7 +411,8 @@
             "Artificial sweeteners (e.g., xylitol)"
           ]
         },
-        "createdAt": "2026-05-02T11:41:30.700Z"
+        "createdAt": "2026-05-02T11:41:30.700Z",
+        "deletedAt": null
       },
       {
         "id": 20,
@@ -417,7 +426,8 @@
           "emotion": "Sad",
           "suggestion": "Ensure the dog has a quiet, safe space to rest and provide positive reinforcement. Consider engaging the dog in gentle play or giving it a comforting item, like a favorite toy or blanket, to lift its mood."
         },
-        "createdAt": "2026-05-02T12:35:33.335Z"
+        "createdAt": "2026-05-02T12:35:33.335Z",
+        "deletedAt": null
       },
       {
         "id": 21,
@@ -432,7 +442,8 @@
           "barkType": "Frame 1-2: Caution/Alert; Frame 3-4: Warning bark; Frame 5-6: Territorial/Aggressive bark.",
           "confidence": "90%"
         },
-        "createdAt": "2026-05-02T12:36:21.525Z"
+        "createdAt": "2026-05-02T12:36:21.525Z",
+        "deletedAt": null
       },
       {
         "id": 22,
@@ -452,7 +463,8 @@
             "Mange (demodectic or sarcoptic)"
           ]
         },
-        "createdAt": "2026-05-02T12:37:07.447Z"
+        "createdAt": "2026-05-02T12:37:07.447Z",
+        "deletedAt": null
       },
       {
         "id": 23,
@@ -562,7 +574,8 @@
             "Raw dough with yeast"
           ]
         },
-        "createdAt": "2026-05-02T12:37:44.942Z"
+        "createdAt": "2026-05-02T12:37:44.942Z",
+        "deletedAt": null
       },
       {
         "id": 24,
@@ -639,7 +652,8 @@
             "Spicy or heavily seasoned food"
           ]
         },
-        "createdAt": "2026-05-02T12:38:17.705Z"
+        "createdAt": "2026-05-02T12:38:17.705Z",
+        "deletedAt": null
       }
     ],
     "emotionLogs": [
@@ -1028,6 +1042,51 @@
         "id": 55,
         "userId": "57381831",
         "visitedAt": "2026-05-14T12:51:31.625Z"
+      },
+      {
+        "id": 56,
+        "userId": "57381831",
+        "visitedAt": "2026-05-17T08:25:12.680Z"
+      },
+      {
+        "id": 57,
+        "userId": "57381831",
+        "visitedAt": "2026-05-23T20:45:04.172Z"
+      },
+      {
+        "id": 58,
+        "userId": "57381831",
+        "visitedAt": "2026-05-23T20:45:44.659Z"
+      },
+      {
+        "id": 59,
+        "userId": "57381831",
+        "visitedAt": "2026-05-23T20:46:47.631Z"
+      },
+      {
+        "id": 60,
+        "userId": "57381831",
+        "visitedAt": "2026-05-23T20:46:54.830Z"
+      },
+      {
+        "id": 61,
+        "userId": "57381831",
+        "visitedAt": "2026-05-28T09:52:57.451Z"
+      },
+      {
+        "id": 62,
+        "userId": "57381831",
+        "visitedAt": "2026-06-07T19:49:48.977Z"
+      },
+      {
+        "id": 63,
+        "userId": "57381831",
+        "visitedAt": "2026-06-07T19:50:14.213Z"
+      },
+      {
+        "id": 64,
+        "userId": "57381831",
+        "visitedAt": "2026-06-07T19:54:51.795Z"
       }
     ],
     "locations": [

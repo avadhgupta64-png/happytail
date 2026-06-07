@@ -4,7 +4,7 @@ import { useState } from "react";
 import {
   Users, Activity, Camera, Dog, Eye, Download,
   ChevronDown, ChevronUp, Search, RefreshCw,
-  Shield, Clock, TrendingUp, Ban, Trash2, CheckCircle, AlertTriangle
+  Shield, Clock, TrendingUp, Ban, Trash2, CheckCircle, AlertTriangle, UserX
 } from "lucide-react";
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
@@ -24,6 +24,20 @@ interface AdminUser {
   banReason: string | null;
   createdAt: string;
   updatedAt: string;
+}
+
+interface RemovedUser {
+  id: number;
+  originalId: string;
+  email: string | null;
+  firstName: string | null;
+  lastName: string | null;
+  bio: string | null;
+  profileImageUrl: string | null;
+  isBanned: boolean | null;
+  banReason: string | null;
+  removedBy: string;
+  removedAt: string;
 }
 
 interface AdminActivity {
@@ -84,7 +98,7 @@ function UserRow({ user, onBan, onUnban, onRemove }: {
   onRemove: (id: string) => void;
 }) {
   const ADMIN_EMAIL = "pawcare.tech@gmail.com";
-  const isAdmin = user.email === ADMIN_EMAIL;
+  const isAdminUser = user.email === ADMIN_EMAIL;
 
   return (
     <div className={`flex items-center gap-3 p-4 rounded-xl border transition-shadow ${
@@ -105,7 +119,7 @@ function UserRow({ user, onBan, onUnban, onRemove }: {
             {user.firstName || ""} {user.lastName || ""}
             {!user.firstName && !user.lastName && <span className="text-muted-foreground text-sm">User {user.id.slice(0, 8)}</span>}
           </p>
-          {isAdmin && (
+          {isAdminUser && (
             <span className="px-1.5 py-0.5 bg-violet-100 text-violet-700 text-xs rounded font-bold">Admin</span>
           )}
           {user.isBanned && (
@@ -123,7 +137,7 @@ function UserRow({ user, onBan, onUnban, onRemove }: {
         <Clock className="w-3 h-3" />
         {formatDate(user.createdAt)}
       </div>
-      {!isAdmin && (
+      {!isAdminUser && (
         <div className="flex items-center gap-1.5 shrink-0">
           {user.isBanned ? (
             <button
@@ -157,7 +171,7 @@ function UserRow({ user, onBan, onUnban, onRemove }: {
                   <AlertTriangle className="w-5 h-5" /> Remove User
                 </AlertDialogTitle>
                 <AlertDialogDescription>
-                  This will permanently delete <strong>{user.firstName || user.email || `User ${user.id.slice(0, 8)}`}</strong> and archive all their activities. This action cannot be undone.
+                  This will permanently delete <strong>{user.firstName || user.email || `User ${user.id.slice(0, 8)}`}</strong> and archive all their activities. A record will be kept in the Removed Users list.
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
@@ -173,6 +187,45 @@ function UserRow({ user, onBan, onUnban, onRemove }: {
           </AlertDialog>
         </div>
       )}
+    </div>
+  );
+}
+
+function RemovedUserRow({ user }: { user: RemovedUser }) {
+  return (
+    <div className="flex items-center gap-3 p-4 rounded-xl border bg-gray-50 dark:bg-gray-900/50 border-gray-200 dark:border-gray-800">
+      {user.profileImageUrl ? (
+        <img src={user.profileImageUrl} alt="" className="w-10 h-10 rounded-full object-cover shrink-0 grayscale" />
+      ) : (
+        <div className="w-10 h-10 rounded-full bg-gray-300 dark:bg-gray-700 flex items-center justify-center text-gray-500 font-bold text-sm shrink-0">
+          {(user.firstName || user.email)?.[0]?.toUpperCase() || "?"}
+        </div>
+      )}
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center gap-2 flex-wrap">
+          <p className="font-semibold text-muted-foreground truncate">
+            {user.firstName || ""} {user.lastName || ""}
+            {!user.firstName && !user.lastName && <span className="text-sm">User {user.originalId.slice(0, 8)}</span>}
+          </p>
+          <span className="px-1.5 py-0.5 bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400 text-xs rounded font-bold flex items-center gap-1">
+            <UserX className="w-3 h-3" /> Removed
+          </span>
+          {user.isBanned && (
+            <span className="px-1.5 py-0.5 bg-red-100 text-red-600 text-xs rounded font-bold flex items-center gap-1">
+              <Ban className="w-3 h-3" /> Was Banned
+            </span>
+          )}
+        </div>
+        <p className="text-xs text-muted-foreground truncate">{user.email || "No email"}</p>
+        {user.banReason && (
+          <p className="text-xs text-red-400 mt-0.5">Ban reason: {user.banReason}</p>
+        )}
+        <p className="text-xs text-muted-foreground mt-0.5">Original ID: {user.originalId}</p>
+      </div>
+      <div className="text-xs text-muted-foreground whitespace-nowrap flex items-center gap-1">
+        <Clock className="w-3 h-3" />
+        {formatDate(user.removedAt)}
+      </div>
     </div>
   );
 }
@@ -229,7 +282,7 @@ function ActivityRow({ activity, userName }: { activity: AdminActivity; userName
 }
 
 export default function AdminDashboard() {
-  const [activeTab, setActiveTab] = useState<"users" | "activities">("users");
+  const [activeTab, setActiveTab] = useState<"users" | "removed" | "activities">("users");
   const [searchQuery, setSearchQuery] = useState("");
   const [userFilter, setUserFilter] = useState<"all" | "active" | "banned">("all");
   const queryClient = useQueryClient();
@@ -261,7 +314,18 @@ export default function AdminDashboard() {
       return res.json();
     },
     enabled: adminCheck?.isAdmin === true,
-    refetchInterval: 5000,
+    refetchInterval: 10000,
+  });
+
+  const { data: removedUsersList = [], isLoading: removedLoading, refetch: refetchRemoved } = useQuery<RemovedUser[]>({
+    queryKey: ["/api/admin/removed-users"],
+    queryFn: async () => {
+      const res = await fetch("/api/admin/removed-users", { credentials: "include" });
+      if (!res.ok) throw new Error("Forbidden");
+      return res.json();
+    },
+    enabled: adminCheck?.isAdmin === true,
+    refetchInterval: 10000,
   });
 
   const { data: allActivities = [], isLoading: activitiesLoading, refetch: refetchActivities } = useQuery<AdminActivity[]>({
@@ -272,47 +336,70 @@ export default function AdminDashboard() {
       return res.json();
     },
     enabled: adminCheck?.isAdmin === true,
-    refetchInterval: 5000,
+    refetchInterval: 10000,
   });
 
   const banMutation = useMutation({
     mutationFn: async (userId: string) => {
-      const res = await fetch(`/api/admin/users/${userId}/ban`, { method: "POST", credentials: "include" });
-      if (!res.ok) throw new Error("Failed to ban user");
+      const res = await fetch(`/api/admin/users/${userId}/ban`, {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ reason: "Banned by administrator" }),
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.message || "Failed to ban user");
+      }
       return res.json();
     },
     onSuccess: () => {
       toast({ title: "User banned", description: "The user has been suspended." });
       queryClient.invalidateQueries({ queryKey: ["/api/admin/users"] });
     },
-    onError: () => toast({ title: "Error", description: "Could not ban user.", variant: "destructive" }),
+    onError: (err: Error) => toast({ title: "Error", description: err.message || "Could not ban user.", variant: "destructive" }),
   });
 
   const unbanMutation = useMutation({
     mutationFn: async (userId: string) => {
-      const res = await fetch(`/api/admin/users/${userId}/unban`, { method: "POST", credentials: "include" });
-      if (!res.ok) throw new Error("Failed to unban user");
+      const res = await fetch(`/api/admin/users/${userId}/unban`, {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({}),
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.message || "Failed to unban user");
+      }
       return res.json();
     },
     onSuccess: () => {
       toast({ title: "User unbanned", description: "The user's access has been restored." });
       queryClient.invalidateQueries({ queryKey: ["/api/admin/users"] });
     },
-    onError: () => toast({ title: "Error", description: "Could not unban user.", variant: "destructive" }),
+    onError: (err: Error) => toast({ title: "Error", description: err.message || "Could not unban user.", variant: "destructive" }),
   });
 
   const removeMutation = useMutation({
     mutationFn: async (userId: string) => {
-      const res = await fetch(`/api/admin/users/${userId}`, { method: "DELETE", credentials: "include" });
-      if (!res.ok) throw new Error("Failed to remove user");
+      const res = await fetch(`/api/admin/users/${userId}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.message || "Failed to remove user");
+      }
       return res.json();
     },
     onSuccess: () => {
-      toast({ title: "User removed", description: "The user has been permanently removed." });
+      toast({ title: "User removed", description: "The user has been removed. A record is kept in the Removed tab." });
       queryClient.invalidateQueries({ queryKey: ["/api/admin/users"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/removed-users"] });
       queryClient.invalidateQueries({ queryKey: ["/api/admin/all-activities"] });
     },
-    onError: () => toast({ title: "Error", description: "Could not remove user.", variant: "destructive" }),
+    onError: (err: Error) => toast({ title: "Error", description: err.message || "Could not remove user.", variant: "destructive" }),
   });
 
   if (adminCheck && !adminCheck.isAdmin) {
@@ -332,6 +419,12 @@ export default function AdminDashboard() {
     const matchesSearch = !q || u.firstName?.toLowerCase().includes(q) || u.lastName?.toLowerCase().includes(q) || u.email?.toLowerCase().includes(q) || u.id.includes(q);
     const matchesFilter = userFilter === "all" || (userFilter === "banned" ? u.isBanned : !u.isBanned);
     return matchesSearch && matchesFilter;
+  });
+
+  const filteredRemoved = removedUsersList.filter(u => {
+    if (!searchQuery) return true;
+    const q = searchQuery.toLowerCase();
+    return u.firstName?.toLowerCase().includes(q) || u.lastName?.toLowerCase().includes(q) || u.email?.toLowerCase().includes(q) || u.originalId.includes(q);
   });
 
   const filteredActivities = allActivities.filter(a => {
@@ -391,6 +484,18 @@ export default function AdminDashboard() {
         </div>
       )}
 
+      {removedUsersList.length > 0 && (
+        <div className="mb-4 p-3 rounded-xl bg-gray-100 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 flex items-center gap-2">
+          <UserX className="w-4 h-4 text-gray-500" />
+          <p className="text-sm text-gray-600 dark:text-gray-400 font-medium">
+            {removedUsersList.length} user{removedUsersList.length > 1 ? "s" : ""} removed —{" "}
+            <button onClick={() => setActiveTab("removed")} className="underline hover:text-gray-800 dark:hover:text-gray-200 transition-colors">
+              view in Removed tab
+            </button>
+          </p>
+        </div>
+      )}
+
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-4">
         <div className="flex gap-2 flex-wrap">
           <button
@@ -399,6 +504,13 @@ export default function AdminDashboard() {
           >
             <Users className="w-4 h-4 inline mr-1.5" />
             Users ({allUsers.length})
+          </button>
+          <button
+            onClick={() => setActiveTab("removed")}
+            className={`px-4 py-2 rounded-xl text-sm font-medium transition-colors ${activeTab === "removed" ? "bg-gray-700 text-white" : "bg-white dark:bg-gray-900 text-muted-foreground border border-gray-200 dark:border-gray-800"}`}
+          >
+            <UserX className="w-4 h-4 inline mr-1.5" />
+            Removed ({removedUsersList.length})
           </button>
           <button
             onClick={() => setActiveTab("activities")}
@@ -421,7 +533,7 @@ export default function AdminDashboard() {
             />
           </div>
           <button
-            onClick={() => { refetchUsers(); refetchActivities(); }}
+            onClick={() => { refetchUsers(); refetchActivities(); refetchRemoved(); }}
             className="p-2 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
             title="Refresh"
           >
@@ -478,6 +590,29 @@ export default function AdminDashboard() {
         </div>
       )}
 
+      {activeTab === "removed" && (
+        <div className="space-y-2">
+          {removedLoading ? (
+            <div className="text-center py-12 text-muted-foreground">Loading removed users...</div>
+          ) : filteredRemoved.length === 0 ? (
+            <div className="text-center py-12">
+              <UserX className="w-10 h-10 text-muted-foreground/40 mx-auto mb-3" />
+              <p className="text-muted-foreground font-medium">No removed users</p>
+              <p className="text-xs text-muted-foreground/70 mt-1">Users you remove will appear here as a permanent record.</p>
+            </div>
+          ) : (
+            <>
+              <p className="text-xs text-muted-foreground mb-3">
+                These users have been removed from the app. Their records are kept here for reference.
+              </p>
+              {filteredRemoved.map(user => (
+                <RemovedUserRow key={user.id} user={user} />
+              ))}
+            </>
+          )}
+        </div>
+      )}
+
       {activeTab === "activities" && (
         <div className="space-y-2">
           {activitiesLoading ? (
@@ -500,7 +635,7 @@ export default function AdminDashboard() {
           <span className="text-sm font-medium text-violet-700 dark:text-violet-400">Auto-Refresh Active</span>
         </div>
         <p className="text-xs text-violet-600/70 dark:text-violet-400/60">
-          Data refreshes every 5 seconds. New users and activities appear in real time.
+          Data refreshes every 10 seconds. New users and activities appear in real time.
         </p>
       </div>
     </div>
