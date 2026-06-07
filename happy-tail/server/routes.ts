@@ -8,7 +8,7 @@ import { insertBreedSchema, insertLocationSchema, dogProfiles, visitorLogs, inse
 import { users } from "@shared/models/auth";
 import { setupAuth, registerAuthRoutes, isAuthenticated, getSession } from "./replit_integrations/auth";
 import { db } from "./db";
-import { eq, count, sql, desc, and } from "drizzle-orm";
+import { eq, count, sql, desc, and, isNull } from "drizzle-orm";
 import { setupWebSocket } from "./ws";
 import { runBackup, listBackups, getBackupPath } from "./backup";
 import fs from "fs";
@@ -45,6 +45,20 @@ export async function registerRoutes(
   // Setup WebSocket for real-time features
   const sessionMw = getSession();
   setupWebSocket(httpServer, sessionMw);
+
+  // Ban check — block suspended users from all authenticated /api routes
+  app.use("/api", async (req: any, res, next) => {
+    if (req.user?.claims?.sub) {
+      const userId = String(req.user.claims.sub);
+      try {
+        const [user] = await db.select({ isBanned: users.isBanned }).from(users).where(eq(users.id, userId));
+        if (user?.isBanned) {
+          return res.status(403).json({ message: "Your account has been suspended by the administrator." });
+        }
+      } catch {}
+    }
+    next();
+  });
 
   // === Dog Profile Routes ===
   app.get("/api/dog-profiles", isAuthenticated, async (req: any, res) => {
@@ -280,7 +294,7 @@ Important:
   app.delete("/api/activity-history/all", isAuthenticated, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
-      await db.delete(activityLogs).where(eq(activityLogs.userId, userId));
+      await db.update(activityLogs).set({ deletedAt: new Date() }).where(and(eq(activityLogs.userId, userId), isNull(activityLogs.deletedAt)));
       res.json({ message: "All history cleared" });
     } catch (err) {
       console.error("Failed to clear history:", err);
@@ -293,7 +307,7 @@ Important:
       const userId = req.user.claims.sub;
       const id = parseInt(req.params.id);
       if (isNaN(id)) return res.status(400).json({ message: "Invalid ID" });
-      await db.delete(activityLogs).where(and(eq(activityLogs.id, id), eq(activityLogs.userId, userId)));
+      await db.update(activityLogs).set({ deletedAt: new Date() }).where(and(eq(activityLogs.id, id), eq(activityLogs.userId, userId)));
       res.json({ message: "Entry deleted" });
     } catch (err) {
       console.error("Failed to delete history entry:", err);
@@ -680,6 +694,80 @@ Rules:
     }
   });
 
+  // === Behavior Analysis Route ===
+  app.post("/api/behavior/analyze", isAuthenticated, async (req: any, res) => {
+    try {
+      const parsed = z.object({
+        frames: z.array(z.string()).min(1).max(10),
+        language: z.string().optional(),
+      }).safeParse(req.body);
+
+      if (!parsed.success) {
+        return res.status(400).json({ message: "Please provide video frames for analysis" });
+      }
+
+      const { frames, language } = parsed.data;
+
+      const imageContent: Array<{ type: "image_url"; image_url: { url: string; detail: "high" } }> = frames.map((frame) => ({
+        type: "image_url" as const,
+        image_url: {
+          url: frame.startsWith("data:") ? frame : `data:image/jpeg;base64,${frame}`,
+          detail: "high" as const,
+        },
+      }));
+
+      const response = await openai.chat.completions.create({
+        model: "gpt-4o",
+        messages: [
+          {
+            role: "user",
+            content: [
+              {
+                type: "text",
+                text: `Analyze the dog's behavior in these video frames. Examine body posture, tail position, ear orientation, facial expression, movement patterns, and overall demeanor. Return ONLY a JSON object with these keys:
+- breed: detected dog breed
+- dominant_behaviors: array of 3-4 main behaviors observed (e.g. "Play-seeking", "Alert", "Anxious pacing")
+- body_language: detailed 2-3 sentence description of body language cues observed
+- stress_level: exactly one of "Low", "Medium", or "High"
+- energy_level: exactly one of "Low", "Medium", or "High"
+- triggers: what might be causing this behavior or what the dog is reacting to (1-2 sentences)
+- recommendations: array of 3 specific actionable recommendations for the owner
+- overall_mood: single word mood
+- summary: 1-2 sentence overall behavior summary${getLangInstruction(language)}`,
+              },
+              ...imageContent,
+            ],
+          },
+        ],
+        response_format: { type: "json_object" },
+      });
+
+      const result = JSON.parse(response.choices[0].message.content || "{}");
+
+      const userId = req.user?.claims?.sub;
+      if (userId) {
+        storage.createActivityLog({
+          userId,
+          activityType: "behavior_analysis",
+          title: "Behavior Analysis",
+          summary: `${result.breed || "Dog"} — ${result.overall_mood || "Unknown"} mood, ${result.stress_level || "Unknown"} stress`,
+          details: {
+            breed: result.breed,
+            dominant_behaviors: result.dominant_behaviors,
+            stress_level: result.stress_level,
+            energy_level: result.energy_level,
+            overall_mood: result.overall_mood,
+          },
+        }).catch(() => {});
+      }
+
+      res.json(result);
+    } catch (err) {
+      console.error("Behavior analysis failed:", err);
+      res.status(500).json({ message: "Failed to analyze behavior" });
+    }
+  });
+
   app.get(api.emotions.history.path, async (req, res) => {
     const deviceId = req.query.deviceId as string | undefined;
     const history = await storage.getEmotionHistory(deviceId);
@@ -741,6 +829,52 @@ Rules:
     }
   });
 
+  app.post("/api/admin/users/:id/ban", isAuthenticated, isAdmin, async (req: any, res) => {
+    try {
+      const { reason } = req.body;
+      const [updated] = await db
+        .update(users)
+        .set({ isBanned: true, bannedAt: new Date(), banReason: reason || "Banned by administrator" })
+        .where(eq(users.id, req.params.id))
+        .returning();
+      if (!updated) return res.status(404).json({ message: "User not found" });
+      res.json({ message: "User banned", user: updated });
+    } catch (err) {
+      res.status(500).json({ message: "Failed to ban user" });
+    }
+  });
+
+  app.post("/api/admin/users/:id/unban", isAuthenticated, isAdmin, async (req: any, res) => {
+    try {
+      const [updated] = await db
+        .update(users)
+        .set({ isBanned: false, bannedAt: null, banReason: null })
+        .where(eq(users.id, req.params.id))
+        .returning();
+      if (!updated) return res.status(404).json({ message: "User not found" });
+      res.json({ message: "User unbanned", user: updated });
+    } catch (err) {
+      res.status(500).json({ message: "Failed to unban user" });
+    }
+  });
+
+  app.delete("/api/admin/users/:id", isAuthenticated, isAdmin, async (req: any, res) => {
+    try {
+      const adminEmail = "pawcare.tech@gmail.com";
+      const [targetUser] = await db.select({ email: users.email }).from(users).where(eq(users.id, req.params.id));
+      if (targetUser?.email === adminEmail) {
+        return res.status(403).json({ message: "Cannot remove the admin account" });
+      }
+      // Soft-delete all their activities first
+      await db.update(activityLogs).set({ deletedAt: new Date() }).where(and(eq(activityLogs.userId, req.params.id), isNull(activityLogs.deletedAt)));
+      // Delete the user
+      await db.delete(users).where(eq(users.id, req.params.id));
+      res.json({ message: "User removed" });
+    } catch (err) {
+      res.status(500).json({ message: "Failed to remove user" });
+    }
+  });
+
   app.get("/api/admin/all-activities", isAuthenticated, isAdmin, async (_req: any, res) => {
     try {
       const allActivities = await db.select().from(activityLogs).orderBy(desc(activityLogs.createdAt));
@@ -766,6 +900,52 @@ Rules:
       });
     } catch (err) {
       res.status(500).json({ message: "Failed to fetch stats" });
+    }
+  });
+
+  // === Admin CSV Export Routes ===
+  app.get("/api/admin/export/users", isAuthenticated, isAdmin, async (_req, res) => {
+    try {
+      const allUsers = await db.select().from(users).orderBy(desc(users.createdAt));
+      const csv = toCsv(
+        ["ID", "Email", "First Name", "Last Name", "Bio", "Banned", "Ban Reason", "Banned At", "Created At"],
+        allUsers.map(u => [u.id, u.email, u.firstName, u.lastName, u.bio, u.isBanned ? "Yes" : "No", u.banReason, u.bannedAt, u.createdAt])
+      );
+      res.setHeader("Content-Type", "text/csv");
+      res.setHeader("Content-Disposition", "attachment; filename=users.csv");
+      res.send(csv);
+    } catch (err) {
+      res.status(500).json({ message: "Failed to export users" });
+    }
+  });
+
+  app.get("/api/admin/export/all-activities", isAuthenticated, isAdmin, async (_req, res) => {
+    try {
+      const allActivities = await db.select().from(activityLogs).orderBy(desc(activityLogs.createdAt));
+      const csv = toCsv(
+        ["ID", "User ID", "Activity Type", "Title", "Summary", "Details", "Created At", "Deleted At"],
+        allActivities.map(a => [a.id, a.userId, a.activityType, a.title, a.summary, JSON.stringify(a.details || {}), a.createdAt, a.deletedAt || ""])
+      );
+      res.setHeader("Content-Type", "text/csv");
+      res.setHeader("Content-Disposition", "attachment; filename=all-activities.csv");
+      res.send(csv);
+    } catch (err) {
+      res.status(500).json({ message: "Failed to export activities" });
+    }
+  });
+
+  app.get("/api/admin/export/all-emotion-logs", isAuthenticated, isAdmin, async (_req, res) => {
+    try {
+      const logs = await db.select().from(emotionLogs).orderBy(desc(emotionLogs.createdAt));
+      const csv = toCsv(
+        ["ID", "Breed", "Emotion", "Mood", "Explanation", "Treatment", "Suggestion", "Device ID", "Created At"],
+        logs.map(l => [l.id, l.detectedBreed, l.detectedEmotion, l.mood, l.explanation, l.treatment, l.suggestion, l.deviceId, l.createdAt])
+      );
+      res.setHeader("Content-Type", "text/csv");
+      res.setHeader("Content-Disposition", "attachment; filename=all-emotion-logs.csv");
+      res.send(csv);
+    } catch (err) {
+      res.status(500).json({ message: "Failed to export emotion logs" });
     }
   });
 

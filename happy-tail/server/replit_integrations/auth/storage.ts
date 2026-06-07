@@ -22,7 +22,8 @@ class AuthStorage implements IAuthStorage {
       .onConflictDoUpdate({
         target: users.id,
         set: {
-          ...userData,
+          // Only update email on re-login — preserve manually edited firstName, lastName, bio, profileImageUrl
+          email: userData.email,
           updatedAt: new Date(),
         },
       })

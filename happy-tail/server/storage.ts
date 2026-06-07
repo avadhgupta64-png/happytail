@@ -6,7 +6,7 @@ import {
   type EmotionLog, type InsertEmotionLog,
   type ActivityLog, type InsertActivityLog
 } from "@shared/schema";
-import { eq, desc } from "drizzle-orm";
+import { eq, desc, isNull, and } from "drizzle-orm";
 
 export interface IStorage {
   // Breeds
@@ -61,7 +61,6 @@ export class DatabaseStorage implements IStorage {
       .set(input)
       .where(eq(locations.id, id))
       .returning();
-    if (!updated) throw new Error("Location not found");
     return updated;
   }
 
@@ -76,19 +75,25 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getEmotionHistory(deviceId?: string): Promise<EmotionLog[]> {
-    if (deviceId) {
-      return await db.select().from(emotionLogs).where(eq(emotionLogs.deviceId, deviceId)).orderBy(emotionLogs.createdAt);
-    }
-    return await db.select().from(emotionLogs).orderBy(emotionLogs.createdAt);
+    return await db
+      .select()
+      .from(emotionLogs)
+      .orderBy(desc(emotionLogs.createdAt))
+      .limit(50);
   }
 
+  // Activity Logs
   async createActivityLog(log: InsertActivityLog): Promise<ActivityLog> {
     const [newLog] = await db.insert(activityLogs).values(log).returning();
     return newLog;
   }
 
   async getActivityHistory(userId: string): Promise<ActivityLog[]> {
-    return await db.select().from(activityLogs).where(eq(activityLogs.userId, userId)).orderBy(desc(activityLogs.createdAt));
+    return await db
+      .select()
+      .from(activityLogs)
+      .where(and(eq(activityLogs.userId, userId), isNull(activityLogs.deletedAt)))
+      .orderBy(desc(activityLogs.createdAt));
   }
 }
 

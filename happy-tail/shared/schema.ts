@@ -75,6 +75,7 @@ export const activityLogs = pgTable("activity_logs", {
   summary: text("summary").notNull(),
   details: jsonb("details").$type<Record<string, any>>(),
   createdAt: timestamp("created_at").defaultNow(),
+  deletedAt: timestamp("deleted_at"),
 });
 
 // === SCHEMAS ===
@@ -84,7 +85,7 @@ export const insertLocationSchema = createInsertSchema(locations).omit({ id: tru
 export const insertEmotionLogSchema = createInsertSchema(emotionLogs).omit({ id: true, createdAt: true });
 export const insertDogProfileSchema = createInsertSchema(dogProfiles).omit({ id: true, createdAt: true });
 export const insertChatMessageSchema = createInsertSchema(chatMessages).omit({ id: true, createdAt: true });
-export const insertActivityLogSchema = createInsertSchema(activityLogs).omit({ id: true, createdAt: true });
+export const insertActivityLogSchema = createInsertSchema(activityLogs).omit({ id: true, createdAt: true, deletedAt: true });
 
 // === TYPES ===
 
@@ -123,4 +124,3 @@ export const analyzeEmotionResponseSchema = z.object({
   suggestion: z.string(),
 });
 export type AnalyzeEmotionResponse = z.infer<typeof analyzeEmotionResponseSchema>;
-

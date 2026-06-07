@@ -1,0 +1,1268 @@
+{
+  "createdAt": "2026-05-31T07:34:28.753Z",
+  "counts": {
+    "users": 3,
+    "activityLogs": 18,
+    "emotionLogs": 9,
+    "dogProfiles": 0,
+    "visitorLogs": 61,
+    "locations": 7,
+    "breeds": 10
+  },
+  "data": {
+    "users": [
+      {
+        "id": "51336772",
+        "email": "avannu48@gmail.com",
+        "firstName": "Rohit ",
+        "lastName": "Gupta",
+        "profileImageUrl": "https://lh3.googleusercontent.com/a/ACg8ocJKTo4DoGFh5BWOrjKc568HAAERsvx82_0Hvlrp-y-JmD5DkA=s96-c",
+        "bio": "",
+        "createdAt": "2026-05-01T10:48:23.361Z",
+        "updatedAt": "2026-05-01T13:15:27.299Z"
+      },
+      {
+        "id": "52288391",
+        "email": "adyaahasija@gmail.com",
+        "firstName": "Adyaa",
+        "lastName": "Hasija",
+        "profileImageUrl": "https://lh3.googleusercontent.com/a/ACg8ocJ3PpkJ5kfE-oDprO_VAyw3Z8OE7o96XQTpWYS-5fO4q9syWGmg=s96-c",
+        "bio": null,
+        "createdAt": "2026-05-02T10:15:09.180Z",
+        "updatedAt": "2026-05-02T10:15:09.180Z"
+      },
+      {
+        "id": "57381831",
+        "email": "pawcare.tech@gmail.com",
+        "firstName": "Avadh",
+        "lastName": "Gupta",
+        "profileImageUrl": "https://lh3.googleusercontent.com/a/ACg8ocIGsn6U6f_r_rMk6Xvw2Et5UCzer1NQI97YZtOyIb2EOL2LOA=s96-c",
+        "bio": "Founder and Developer- Happy Tail ",
+        "createdAt": "2026-04-09T11:03:48.776Z",
+        "updatedAt": "2026-05-23T20:45:32.963Z"
+      }
+    ],
+    "activityLogs": [
+      {
+        "id": 6,
+        "userId": "57381831",
+        "activityType": "health_scan",
+        "title": "Health Scan",
+        "summary": "Bulldog - EMERGENCY - 5 condition(s) found",
+        "details": {
+          "breed": "Bulldog",
+          "home_remedy": "While waiting for professional veterinary care, you can clean the affected areas using a diluted mixture of warm water and povidone-iodine or a gentle antiseptic solution to prevent secondary infections. Avoid harsh soaps and ensure the dog is not scratching excessively. Keep the dog in a clean and dry environment.",
+          "is_emergency": true,
+          "detailed_analysis": "The dog displays severe redness, lesion-like spots, and irritation across its skin, indicating possible dermatitis or mange. There is noticeable fur loss in certain areas, possibly due to underlying infections or scratching. The Bulldog breed is prone to skin-related issues like mange and allergies due to their skin folds and genetic predisposition. Immediate veterinary intervention is necessary to confirm the condition, as it may include bacterial, fungal, or parasitic involvement. Topical treatments, prescribed medications, or medicated baths under veterinary guidance might be required for recovery.",
+          "possible_conditions": [
+            "Skin infections (e.g., bacterial or fungal)",
+            "Demodectic mange (caused by Demodex mites)",
+            "Allergic dermatitis",
+            "Skin irritation or inflammation",
+            "Secondary infections due to scratching"
+          ]
+        },
+        "createdAt": "2026-05-01T10:25:51.839Z"
+      },
+      {
+        "id": 8,
+        "userId": "57381831",
+        "activityType": "emotion_scan",
+        "title": "Emotion Scan",
+        "summary": "Border Collie - Sad (Melancholy and yearning)",
+        "details": {
+          "mood": "Melancholy and yearning",
+          "breed": "Border Collie",
+          "emotion": "Sad",
+          "suggestion": "Introduce interactive play or walk outdoors to boost the dog's mood and address any feelings of loneliness."
+        },
+        "createdAt": "2026-05-01T10:51:22.428Z"
+      },
+      {
+        "id": 9,
+        "userId": "57381831",
+        "activityType": "emotion_scan",
+        "title": "Emotion Scan",
+        "summary": "Bulldog - Anxious (Uncomfortable)",
+        "details": {
+          "mood": "Uncomfortable",
+          "breed": "Bulldog",
+          "emotion": "Anxious",
+          "suggestion": "Provide a comfortable space and monitor its behavior to identify further signs of distress. Gentle care and attention will aid in its overall well-being."
+        },
+        "createdAt": "2026-05-01T10:51:53.898Z"
+      },
+      {
+        "id": 10,
+        "userId": "57381831",
+        "activityType": "bark_translation",
+        "title": "Bark Translation",
+        "summary": "There appear to be multiple dogs showcased in the frames: a German Shepherd in frames 1 and 2, a Doberman Pinscher in frames 3 and 4, and a mixed-breed or medium-sized dog in frames 5 and 6. - Frames 1 and 2: No audible bark predicted (calm observation). Frames 3 and 4: Alert/Warning bark. Frames 5 and 6: Aggressive/Fearful bark with potential growling.: \"Frame-by-frame analysis suggests various messages. In frames 1 and 2, the German Shepherd is calmly \"",
+        "details": {
+          "breed": "There appear to be multiple dogs showcased in the frames: a German Shepherd in frames 1 and 2, a Doberman Pinscher in frames 3 and 4, and a mixed-breed or medium-sized dog in frames 5 and 6.",
+          "emotion": "Frames 1 and 2: Calm. Frames 3 and 4: Alert or tense. Frames 5 and 6: Aggressive or fearful.",
+          "message": "Frame-by-frame analysis suggests various messages. In frames 1 and 2, the German Shepherd is calmly observing the environment—'I'm staying here, waiting or relaxing, but I'm keeping an eye on you.' In frames 3 and 4, the Doberman gives off tension, possibly saying, 'I'm ready to act; I see something, and I'm on high alert!' Finally, in frames 5 and 6, the snarling dog communicates clear aggression or defense: 'Stay away! I feel threatened, and I'll protect myself.'",
+          "barkType": "Frames 1 and 2: No audible bark predicted (calm observation). Frames 3 and 4: Alert/Warning bark. Frames 5 and 6: Aggressive/Fearful bark with potential growling.",
+          "confidence": "95%, based on clarity of visual cues across all frames."
+        },
+        "createdAt": "2026-05-01T10:53:02.728Z"
+      },
+      {
+        "id": 11,
+        "userId": "57381831",
+        "activityType": "emotion_scan",
+        "title": "Emotion Scan",
+        "summary": "Unknown - Sad (Downcast)",
+        "details": {
+          "mood": "Downcast",
+          "breed": "Unknown",
+          "emotion": "Sad",
+          "suggestion": "Spend time with the dog, offer positive reinforcement, and ensure a safe and comforting space. Consider engaging the dog in a favorite activity or providing toys to improve its mood."
+        },
+        "createdAt": "2026-05-02T10:13:00.353Z"
+      },
+      {
+        "id": 12,
+        "userId": "57381831",
+        "activityType": "emotion_scan",
+        "title": "Emotion Scan",
+        "summary": "Jack Russell Terrier - Neutral (Calm and Alert)",
+        "details": {
+          "mood": "Calm and Alert",
+          "breed": "Jack Russell Terrier",
+          "emotion": "Neutral",
+          "suggestion": "Provide consistent interaction and a stimulating environment to maintain an alert but calm mood."
+        },
+        "createdAt": "2026-05-02T10:27:59.328Z"
+      },
+      {
+        "id": 13,
+        "userId": "57381831",
+        "activityType": "bark_translation",
+        "title": "Bark Translation",
+        "summary": "The images depict different dogs: Frame 1 and 2 appear to show a German Shepherd, Frame 3 and 4 suggest a Doberman, and Frame 5 and 6 show an unknown mixed breed or smaller shepherd-like dog. - Frame 1 and 2: Alert/Warning; Frame 3 and 4: Defensive/Warning; Frame 5 and 6: Fear/Anxiety and Territorial.: \"The dogs across these frames seem to be communicating different things: The German Shepherd is cauti\"",
+        "details": {
+          "breed": "The images depict different dogs: Frame 1 and 2 appear to show a German Shepherd, Frame 3 and 4 suggest a Doberman, and Frame 5 and 6 show an unknown mixed breed or smaller shepherd-like dog.",
+          "emotion": "Varies by frame: Frame 1 and 2 - Alert and Cautious; Frame 3 and 4 - Defensive and Vigilant; Frame 5 and 6 - Aggressive and Fearful.",
+          "message": "The dogs across these frames seem to be communicating different things: The German Shepherd is cautious and focused, possibly saying 'I'm watching you—what are you about to do?'; the Doberman is alert and defensive, possibly conveying 'I'm ready to defend this area'; finally, the snarling dog is expressing an aggressive warning with 'Stay back! I feel threatened!'",
+          "barkType": "Frame 1 and 2: Alert/Warning; Frame 3 and 4: Defensive/Warning; Frame 5 and 6: Fear/Anxiety and Territorial.",
+          "confidence": "65% (due to multiple behaviors and distinct dogs in separate frames)"
+        },
+        "createdAt": "2026-05-02T10:28:41.272Z"
+      },
+      {
+        "id": 14,
+        "userId": "57381831",
+        "activityType": "health_scan",
+        "title": "Health Scan",
+        "summary": "English Bulldog - EMERGENCY - 5 condition(s) found",
+        "details": {
+          "breed": "English Bulldog",
+          "home_remedy": "Clean affected areas with diluted apple cider vinegar (50% water, 50% vinegar) to help with minor yeast or bacterial infections. Do not use on open sores or severe irritations.",
+          "is_emergency": true,
+          "detailed_analysis": "The dog appears to be an English Bulldog, characterized by its distinctive wrinkled face and muscular build. Visible signs include significant redness, irritation, and loss of fur across various areas, including the face, legs, and body. These are likely indicative of skin allergies, mange, or infections. An emergency visit to the vet is necessary for proper diagnosis and treatment. Conditions like mange require prescribed medications, as they can cause significant discomfort and worsen without treatment. Home remedies like diluted apple cider vinegar may help to alleviate mild symptoms temporarily, but they must not replace veterinary care.",
+          "possible_conditions": [
+            "Skin allergies (atopy)",
+            "Demodectic mange (caused by mites)",
+            "Bacterial skin infections",
+            "Fungal infections (e.g., ringworm)",
+            "Yeast infections"
+          ]
+        },
+        "createdAt": "2026-05-02T10:29:52.977Z"
+      },
+      {
+        "id": 15,
+        "userId": "57381831",
+        "activityType": "emotion_scan",
+        "title": "Emotion Scan",
+        "summary": "Unknown - Unknown (Unknown)",
+        "details": {
+          "mood": "Unknown",
+          "breed": "Unknown",
+          "emotion": "Unknown",
+          "suggestion": "Spend time observing the dog in a calm setting to better assess its emotions and needs."
+        },
+        "createdAt": "2026-05-02T11:38:40.747Z"
+      },
+      {
+        "id": 16,
+        "userId": "57381831",
+        "activityType": "bark_translation",
+        "title": "Bark Translation",
+        "summary": "German Shepherd and Doberman are visible; one other dog resembles a mix or medium-sized breed with beige fur. - Alert/Warning, Territorial, Aggressive: \"From a calm and observant stance to escalating alertness and then aggression, the dogs communicate i\"",
+        "details": {
+          "breed": "German Shepherd and Doberman are visible; one other dog resembles a mix or medium-sized breed with beige fur.",
+          "emotion": "Alert transitioning to defensive aggression",
+          "message": "From a calm and observant stance to escalating alertness and then aggression, the dogs communicate increasing intensity of emotions. The German Shepherd appears to be saying, 'I'm watching, something's out there.' The Doberman signals defensiveness, 'Stay away, this is my space!' The last dog aggressively warns, 'I'm ready to attack, I'm serious—back off!'",
+          "barkType": "Alert/Warning, Territorial, Aggressive",
+          "confidence": "88%"
+        },
+        "createdAt": "2026-05-02T11:39:34.417Z"
+      },
+      {
+        "id": 17,
+        "userId": "57381831",
+        "activityType": "health_scan",
+        "title": "Health Scan",
+        "summary": "Bulldog - EMERGENCY - 4 condition(s) found",
+        "details": {
+          "breed": "Bulldog",
+          "home_remedy": "For temporary relief, a diluted apple cider vinegar rinse (mixed with equal parts water) may help soothe the skin. Avoid open wounds. Consult a vet immediately for medical-grade treatment.",
+          "is_emergency": true,
+          "detailed_analysis": "The dog appears to be a Bulldog with visible skin abnormalities, including redness, lesions, hair loss, and possible inflammation primarily on its paws, face, and body. These signs suggest possible conditions such as demodectic mange caused by mites, severe allergic dermatitis, or secondary bacterial/yeast infections due to underlying skin issues. Given the visible extent of inflammation and potential discomfort, this appears to be an urgent medical case requiring immediate veterinary care for proper diagnosis and treatment. Home remedies can only provide temporary symptomatic relief and should not replace professional care.",
+          "possible_conditions": [
+            "Demodectic mange",
+            "Severe allergic dermatitis",
+            "Yeast or bacterial skin infection",
+            "Autoimmune skin disorder"
+          ]
+        },
+        "createdAt": "2026-05-02T11:40:33.410Z"
+      },
+      {
+        "id": 18,
+        "userId": "57381831",
+        "activityType": "diet_plan",
+        "title": "Diet Plan",
+        "summary": "Labrador , 2, 24kg - A balanced diet plan tailored to a healthy 2-year-old Labrador with Indian food options.",
+        "details": {
+          "age": "2",
+          "tips": [
+            "Divide meals into three portions to avoid overeating and bloating.",
+            "Monitor weight regularly to ensure the dog is not gaining excess weight.",
+            "Stick to low-fat protein sources like boiled chicken or fish to maintain lean muscle.",
+            "Ensure regular hydration, especially during summer months."
+          ],
+          "breed": "Labrador ",
+          "meals": [
+            {
+              "name": "Breakfast",
+              "time": "8:00 AM",
+              "foods": [
+                {
+                  "name": "Cooked rice",
+                  "portion": "1 cup"
+                },
+                {
+                  "name": "Boiled chicken (boneless)",
+                  "portion": "100 grams"
+                },
+                {
+                  "name": "Vegetables (carrot and spinach, chopped)",
+                  "portion": "1/4 cup"
+                }
+              ],
+              "portion": "Moderate"
+            },
+            {
+              "name": "Lunch",
+              "time": "1:00 PM",
+              "foods": [
+                {
+                  "name": "Cooked rice",
+                  "portion": "1 cup"
+                },
+                {
+                  "name": "Curd (unsalted)",
+                  "portion": "2 tablespoons"
+                },
+                {
+                  "name": "Boiled egg whites",
+                  "portion": "2"
+                }
+              ],
+              "portion": "Moderate to Full"
+            },
+            {
+              "name": "Dinner",
+              "time": "7:00 PM",
+              "foods": [
+                {
+                  "name": "Cooked rice",
+                  "portion": "3/4 cup"
+                },
+                {
+                  "name": "Boiled lentils (masoor dal)",
+                  "portion": "1/4 cup"
+                },
+                {
+                  "name": "Shredded cooked fish (deboned)",
+                  "portion": "100 grams"
+                }
+              ],
+              "portion": "Light to Moderate"
+            }
+          ],
+          "weight": "24",
+          "summary": "A balanced diet plan tailored to a healthy 2-year-old Labrador with Indian food options.",
+          "conditions": "",
+          "supplements": [
+            "Omega-3 fatty acids (fish oil) for coat health",
+            "Glucosamine and chondroitin for joint support",
+            "Multivitamins for overall nutrition"
+          ],
+          "water_intake": "1000-1500 ml",
+          "weekly_treats": [
+            {
+              "name": "Sweet potato (boiled, slices)",
+              "portion": "1 slice, 2 times/week"
+            },
+            {
+              "name": "Apple (seedless, chopped)",
+              "portion": "1/4 cup, 3 times/week"
+            },
+            {
+              "name": "Coconut chunks (unsweetened)",
+              "portion": "Few small pieces, 1 time/week"
+            }
+          ],
+          "daily_calories": "1100-1400 kcal",
+          "foods_to_avoid": [
+            "Chocolate",
+            "Onions and garlic",
+            "Grapes and raisins",
+            "Spicy or heavily seasoned food",
+            "Fried food",
+            "Raw dough with yeast"
+          ]
+        },
+        "createdAt": "2026-05-02T11:41:04.915Z"
+      },
+      {
+        "id": 19,
+        "userId": "57381831",
+        "activityType": "diet_plan",
+        "title": "Diet Plan",
+        "summary": "Labrador , 2, 22kg - Balanced diet plan for a healthy 2-year-old Labrador with Indian food options.",
+        "details": {
+          "age": "2",
+          "tips": [
+            "Ensure food is properly cooked and served at room temperature to avoid stomach upset.",
+            "Divide meals into equal portions to prevent overeating, which can lead to obesity.",
+            "Introduce new foods gradually to monitor tolerance and prevent allergies or digestive upset.",
+            "Monitor your Labrador’s weight regularly as they are prone to obesity, and adjust portion sizes as needed."
+          ],
+          "breed": "Labrador ",
+          "meals": [
+            {
+              "name": "Breakfast",
+              "time": "8:00 AM",
+              "foods": [
+                "Cooked plain rice",
+                "Boiled chicken (shredded)",
+                "Steamed carrots and peas"
+              ],
+              "portion": "1 cup rice + 100g chicken + 1/4 cup vegetables"
+            },
+            {
+              "name": "Lunch",
+              "time": "1:00 PM",
+              "foods": [
+                "Plain curd",
+                "Cooked oats",
+                "Boiled eggs (chopped)"
+              ],
+              "portion": "1/2 cup curd + 1/2 cup oats + 1 boiled egg"
+            },
+            {
+              "name": "Dinner",
+              "time": "7:00 PM",
+              "foods": [
+                "Brown rice",
+                "Boiled fish (boneless)",
+                "Steamed pumpkin"
+              ],
+              "portion": "1 cup rice + 100g fish + 1/4 cup pumpkin"
+            }
+          ],
+          "weight": "22",
+          "summary": "Balanced diet plan for a healthy 2-year-old Labrador with Indian food options.",
+          "conditions": "",
+          "supplements": [
+            "Omega-3 fish oil",
+            "Joint support supplements (containing glucosamine and chondroitin)",
+            "Multivitamin formulated for dogs"
+          ],
+          "water_intake": "900-1200 ml",
+          "weekly_treats": [
+            "Cucumber slices",
+            "Apple slices (seedless)",
+            "Paneer cubes (unsalted)",
+            "Banana pieces",
+            "Sweet potato (steamed)"
+          ],
+          "daily_calories": "1000-1200 kcal",
+          "foods_to_avoid": [
+            "Chocolate",
+            "Onions",
+            "Garlic",
+            "Grapes",
+            "Raisins",
+            "Spicy or oily foods",
+            "Artificial sweeteners (e.g., xylitol)"
+          ]
+        },
+        "createdAt": "2026-05-02T11:41:30.700Z"
+      },
+      {
+        "id": 20,
+        "userId": "57381831",
+        "activityType": "emotion_scan",
+        "title": "Emotion Scan",
+        "summary": "Unknown - Sad (Dejected and withdrawn)",
+        "details": {
+          "mood": "Dejected and withdrawn",
+          "breed": "Unknown",
+          "emotion": "Sad",
+          "suggestion": "Ensure the dog has a quiet, safe space to rest and provide positive reinforcement. Consider engaging the dog in gentle play or giving it a comforting item, like a favorite toy or blanket, to lift its mood."
+        },
+        "createdAt": "2026-05-02T12:35:33.335Z"
+      },
+      {
+        "id": 21,
+        "userId": "57381831",
+        "activityType": "bark_translation",
+        "title": "Bark Translation",
+        "summary": "The first two frames show a German Shepherd, the third and fourth frame likely depict a Doberman Pinscher, and the last two frames show what appears to be a mixed breed with similarities to a Labrador. - Frame 1-2: Caution/Alert; Frame 3-4: Warning bark; Frame 5-6: Territorial/Aggressive bark.: \"Frame 1-2: 'I'm feeling uncertain or cautious about what's happening around me. I'm keeping a low pr\"",
+        "details": {
+          "breed": "The first two frames show a German Shepherd, the third and fourth frame likely depict a Doberman Pinscher, and the last two frames show what appears to be a mixed breed with similarities to a Labrador.",
+          "emotion": "Frame 1-2: Nervous or unsure; Frame 3-4: Alert and defensive; Frame 5-6: Angry/aggressive.",
+          "message": "Frame 1-2: 'I'm feeling uncertain or cautious about what's happening around me. I'm keeping a low profile just in case.' Frame 3-4: 'I'm feeling intimidated but trying to warn you to keep your distance.' Frame 5-6: 'Stay away! I'm feeling aggressive and ready to defend myself!'",
+          "barkType": "Frame 1-2: Caution/Alert; Frame 3-4: Warning bark; Frame 5-6: Territorial/Aggressive bark.",
+          "confidence": "90%"
+        },
+        "createdAt": "2026-05-02T12:36:21.525Z"
+      },
+      {
+        "id": 22,
+        "userId": "57381831",
+        "activityType": "health_scan",
+        "title": "Health Scan",
+        "summary": "Bulldog - EMERGENCY - 4 condition(s) found",
+        "details": {
+          "breed": "Bulldog",
+          "home_remedy": "It is highly recommended to consult a veterinarian immediately for professional evaluation and treatment, as the condition appears severe and might require prescribed medications. Meanwhile, soothing the skin with a diluted apple cider vinegar rinse (if no open wounds) or a chamomile tea compress can help alleviate discomfort. Ensure the dog is in a clean, stress-free environment.",
+          "is_emergency": true,
+          "detailed_analysis": "The photos show visible signs of redness, irritation, scaling, and potential hair loss, which could be indicative of dermatitis, mange, or a skin infection. There might also be an underlying allergic reaction or hormonal imbalance causing the symptoms. Urgent care by a veterinarian is advised due to the severity and extent of the condition visible across the body, as untreated issues might lead to further complications.",
+          "possible_conditions": [
+            "Skin irritation or dermatitis",
+            "Fungal or bacterial skin infection",
+            "Allergic reaction",
+            "Mange (demodectic or sarcoptic)"
+          ]
+        },
+        "createdAt": "2026-05-02T12:37:07.447Z"
+      },
+      {
+        "id": 23,
+        "userId": "57381831",
+        "activityType": "diet_plan",
+        "title": "Diet Plan",
+        "summary": "Labrador , 2, 24kg - Balanced diet plan for a healthy 2-year-old Labrador weighing 24 kg.",
+        "details": {
+          "age": "2",
+          "tips": [
+            "Divide meals into 3 portions a day to prevent bloating, which Labradors are prone to.",
+            "Monitor portion sizes to avoid overeating, as Labradors are prone to obesity.",
+            "Always provide clean, fresh drinking water and refill it throughout the day.",
+            "Introduce new foods slowly to ensure they don’t upset your dog’s stomach."
+          ],
+          "breed": "Labrador ",
+          "meals": [
+            {
+              "name": "Breakfast",
+              "time": "8:00 AM",
+              "foods": [
+                {
+                  "name": "Rice",
+                  "portion": "1 cup"
+                },
+                {
+                  "name": "Boiled Chicken",
+                  "portion": "150 grams"
+                },
+                {
+                  "name": "Carrots (finely chopped or boiled)",
+                  "portion": "1/4 cup"
+                }
+              ],
+              "portion": "Complete meal size: 400-500 kcal"
+            },
+            {
+              "name": "Lunch",
+              "time": "1:00 PM",
+              "foods": [
+                {
+                  "name": "Rice",
+                  "portion": "1 cup"
+                },
+                {
+                  "name": "Cottage Cheese (paneer, unsalted)",
+                  "portion": "50 grams"
+                },
+                {
+                  "name": "Pumpkin (boiled, mashed)",
+                  "portion": "1/4 cup"
+                },
+                {
+                  "name": "Egg (boiled, fully cooked)",
+                  "portion": "1 piece"
+                }
+              ],
+              "portion": "Complete meal size: 500-600 kcal"
+            },
+            {
+              "name": "Dinner",
+              "time": "7:00 PM",
+              "foods": [
+                {
+                  "name": "Rice",
+                  "portion": "1 cup"
+                },
+                {
+                  "name": "Fish (boneless, boiled)",
+                  "portion": "100 grams"
+                },
+                {
+                  "name": "Green Beans (steamed, chopped)",
+                  "portion": "1/4 cup"
+                },
+                {
+                  "name": "Curd (unsweetened, low-fat)",
+                  "portion": "2 tablespoons"
+                }
+              ],
+              "portion": "Complete meal size: 400-500 kcal"
+            }
+          ],
+          "weight": "24",
+          "summary": "Balanced diet plan for a healthy 2-year-old Labrador weighing 24 kg.",
+          "conditions": "",
+          "supplements": [
+            "Omega-3 fatty acid capsules (for healthy skin and coat)",
+            "Glucosamine and chondroitin (to support joint health)",
+            "Probiotic powder (as recommended by a vet)"
+          ],
+          "water_intake": "1000-1400 ml",
+          "weekly_treats": [
+            "Peanut Butter (unsalted, unsweetened, limit quantity)",
+            "Small pieces of boiled sweet potato",
+            "Unsweetened, plain yogurt",
+            "Chicken jerky (homemade)"
+          ],
+          "daily_calories": "1200-1400 kcal",
+          "foods_to_avoid": [
+            "Chocolate",
+            "Onions",
+            "Garlic",
+            "Grapes or Raisins",
+            "Xylitol (found in sugar-free products)",
+            "High-fat or spicy Indian curries",
+            "Raw dough with yeast"
+          ]
+        },
+        "createdAt": "2026-05-02T12:37:44.942Z"
+      },
+      {
+        "id": 24,
+        "userId": "57381831",
+        "activityType": "diet_plan",
+        "title": "Diet Plan",
+        "summary": "Labrador , 2, 22kg - Balanced daily diet plan tailored for a 2-year-old healthy Labrador weighing 22 kg.",
+        "details": {
+          "age": "2",
+          "tips": [
+            "Divide meals into multiple portions to avoid bloating, which Labradors are prone to.",
+            "Monitor weight regularly; Labradors tend to overeat and gain weight easily.",
+            "Include vegetables and fibrous foods for better digestion and to control calorie intake.",
+            "Avoid feeding directly from your plate to prevent bad habits and begging behavior."
+          ],
+          "breed": "Labrador ",
+          "meals": [
+            {
+              "name": "Breakfast",
+              "time": "8:00 AM",
+              "foods": [
+                "Cooked white rice",
+                "Boiled chicken (skinless, boneless)",
+                "Steamed carrots and peas",
+                "Sunflower oil (1 tsp)"
+              ],
+              "portion": "1 cup rice, 100g chicken, 1/4 cup vegetables"
+            },
+            {
+              "name": "Lunch",
+              "time": "1:00 PM",
+              "foods": [
+                "Cooked brown rice",
+                "Cottage cheese (paneer)",
+                "Steamed pumpkin or sweet potato"
+              ],
+              "portion": "1 cup rice, 50g paneer, 1/4 cup vegetables"
+            },
+            {
+              "name": "Dinner",
+              "time": "7:00 PM",
+              "foods": [
+                "Cooked quinoa",
+                "Boiled fish (e.g., rohu or basa)",
+                "Steamed spinach"
+              ],
+              "portion": "1 cup quinoa, 100g fish, 1/4 cup spinach"
+            }
+          ],
+          "weight": "22",
+          "summary": "Balanced daily diet plan tailored for a 2-year-old healthy Labrador weighing 22 kg.",
+          "conditions": "",
+          "supplements": [
+            "Omega-3 fish oil (for coat health)",
+            "Glucosamine (for joint support)",
+            "Probiotic powder (for gut health)"
+          ],
+          "water_intake": "900-1200 ml",
+          "weekly_treats": [
+            "Small yogurt cubes (no sugar or additives)",
+            "Apple slices (seedless)",
+            "Coconut chunks",
+            "Homemade pumpkin biscuits",
+            "Boiled egg (once weekly)"
+          ],
+          "daily_calories": "1100-1300 kcal",
+          "foods_to_avoid": [
+            "Chocolate",
+            "Onions",
+            "Garlic",
+            "Grapes and raisins",
+            "Artificial sweeteners like xylitol",
+            "Macadamia nuts",
+            "Spicy or heavily seasoned food"
+          ]
+        },
+        "createdAt": "2026-05-02T12:38:17.705Z"
+      }
+    ],
+    "emotionLogs": [
+      {
+        "id": 1,
+        "imageUrl": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAYGBgYHBgcICAcKCwoLCg8ODAwODxYQERAREBYiFRkVF...",
+        "detectedEmotion": "Sad",
+        "detectedBreed": "Border Collie mix",
+        "mood": "Melancholic",
+        "suggestion": "Engage the dog with play, a walk, or mental stimulation such as training or puzzle toys to uplift its mood.",
+        "explanation": "The dog's posture and downturned expression suggest sadness or longing, likely stemming from feeling ignored or waiting for someone.",
+        "treatment": "Provide attention and affection.",
+        "deviceId": "l3e19cboti5ifn6h",
+        "createdAt": "2026-04-09T11:04:15.824Z"
+      },
+      {
+        "id": 2,
+        "imageUrl": "data:image/jpeg;base64,/9j/4QBMRXhpZgAATU0AKgAAAAgABAEAAAQAAAABAAAEsAEBAAQAAAABAAAH0AESAAMAAAABAAEAA...",
+        "detectedEmotion": "Sad",
+        "detectedBreed": "Border Collie mix",
+        "mood": "Melancholy",
+        "suggestion": "Engage the dog in a playful activity or take it for a walk to improve its mood and help it feel more connected.",
+        "explanation": "The dog's posture and downward gaze suggest longing or unease, potentially due to a lack of attention or separation from its companion.",
+        "treatment": "Provide comforting interaction, such as petting or talking gently to the dog, to reassure it.",
+        "deviceId": "tk37hmq5aj7hc5nk",
+        "createdAt": "2026-05-01T10:25:24.772Z"
+      },
+      {
+        "id": 3,
+        "imageUrl": "data:image/jpeg;base64,/9j/4QBMRXhpZgAATU0AKgAAAAgABAEAAAQAAAABAAAEsAEBAAQAAAABAAAH0AESAAMAAAABAAEAA...",
+        "detectedEmotion": "Unknown",
+        "detectedBreed": "Unknown",
+        "mood": "Unknown",
+        "suggestion": "Try providing a description of the dog or alternative details to help with the analysis.",
+        "explanation": "Unable to analyze the image due to visual restrictions.",
+        "treatment": "Not applicable",
+        "deviceId": "tk37hmq5aj7hc5nk",
+        "createdAt": "2026-05-01T10:50:41.066Z"
+      },
+      {
+        "id": 4,
+        "imageUrl": "data:image/jpeg;base64,/9j/4QBMRXhpZgAATU0AKgAAAAgABAEAAAQAAAABAAAEsAEBAAQAAAABAAAH0AESAAMAAAABAAEAA...",
+        "detectedEmotion": "Sad",
+        "detectedBreed": "Border Collie",
+        "mood": "Melancholy and yearning",
+        "suggestion": "Introduce interactive play or walk outdoors to boost the dog's mood and address any feelings of loneliness.",
+        "explanation": "The dog’s posture suggests longing or anxiety, possibly because it is separated from its owner or lacks engagement.",
+        "treatment": "Offer comfort through physical affection or quality time; engage the dog in stimulating activities and exercise.",
+        "deviceId": "tk37hmq5aj7hc5nk",
+        "createdAt": "2026-05-01T10:51:22.387Z"
+      },
+      {
+        "id": 5,
+        "imageUrl": "data:image/jpeg;base64,/9j/4QBMRXhpZgAATU0AKgAAAAgABAEAAAQAAAABAAAEsAEBAAQAAAABAAAH0AESAAMAAAABAAEAA...",
+        "detectedEmotion": "Anxious",
+        "detectedBreed": "Bulldog",
+        "mood": "Uncomfortable",
+        "suggestion": "Provide a comfortable space and monitor its behavior to identify further signs of distress. Gentle care and attention will aid in its overall well-being.",
+        "explanation": "The dog appears to have visible skin issues, possibly indicating irritation or a health concern, which could contribute to its anxious or uncomfortable demeanor.",
+        "treatment": "Consult a veterinarian to evaluate and treat the skin condition. Ensure the dog's living environment is clean and allergen-free.",
+        "deviceId": "tk37hmq5aj7hc5nk",
+        "createdAt": "2026-05-01T10:51:53.892Z"
+      },
+      {
+        "id": 6,
+        "imageUrl": "data:image/jpeg;base64,/9j/4QBMRXhpZgAATU0AKgAAAAgABAEAAAQAAAABAAAEsAEBAAQAAAABAAAH0AESAAMAAAABAAEAA...",
+        "detectedEmotion": "Sad",
+        "detectedBreed": "Unknown",
+        "mood": "Downcast",
+        "suggestion": "Spend time with the dog, offer positive reinforcement, and ensure a safe and comforting space. Consider engaging the dog in a favorite activity or providing toys to improve its mood.",
+        "explanation": "The dog's posture, with its head down and body tucked close to the floor, suggests it may be feeling sad or anxious. Potential reasons could be loneliness, fear, or a lack of stimulation.",
+        "treatment": "Provide comfort and reassurance. Engage in gentle interaction and assess the environment for factors that might be causing distress.",
+        "deviceId": "tk37hmq5aj7hc5nk",
+        "createdAt": "2026-05-02T10:13:00.348Z"
+      },
+      {
+        "id": 7,
+        "imageUrl": "data:image/jpeg;base64,/9j/4QBMRXhpZgAATU0AKgAAAAgABAEAAAQAAAABAAAEsAEBAAQAAAABAAAH0AESAAMAAAABAAEAA...",
+        "detectedEmotion": "Neutral",
+        "detectedBreed": "Jack Russell Terrier",
+        "mood": "Calm and Alert",
+        "suggestion": "Provide consistent interaction and a stimulating environment to maintain an alert but calm mood.",
+        "explanation": "The dog's posture and ears suggest attentiveness, but not agitation or stress. It appears comfortable in its environment without showing visible signs of distress.",
+        "treatment": "No specific treatment required, as the dog seems content and calm. Continue engagement as needed.",
+        "deviceId": "tk37hmq5aj7hc5nk",
+        "createdAt": "2026-05-02T10:27:59.275Z"
+      },
+      {
+        "id": 8,
+        "imageUrl": "data:image/jpeg;base64,/9j/4QBMRXhpZgAATU0AKgAAAAgABAEAAAQAAAABAAAEsAEBAAQAAAABAAAH0AESAAMAAAABAAEAA...",
+        "detectedEmotion": "Unknown",
+        "detectedBreed": "Unknown",
+        "mood": "Unknown",
+        "suggestion": "Spend time observing the dog in a calm setting to better assess its emotions and needs.",
+        "explanation": "Cannot determine specific details due to the obscured image of the dog's face.",
+        "treatment": "Provide general care and attention based on observed behavior.",
+        "deviceId": "tk37hmq5aj7hc5nk",
+        "createdAt": "2026-05-02T11:38:40.693Z"
+      },
+      {
+        "id": 9,
+        "imageUrl": "data:image/jpeg;base64,/9j/4QBMRXhpZgAATU0AKgAAAAgABAEAAAQAAAABAAAEsAEBAAQAAAABAAAH0AESAAMAAAABAAEAA...",
+        "detectedEmotion": "Sad",
+        "detectedBreed": "Unknown",
+        "mood": "Dejected and withdrawn",
+        "suggestion": "Ensure the dog has a quiet, safe space to rest and provide positive reinforcement. Consider engaging the dog in gentle play or giving it a comforting item, like a favorite toy or blanket, to lift its mood.",
+        "explanation": "The dog appears to be lying down with its head lowered, which can be a sign of sadness or discomfort. The posture may indicate stress, loneliness, or fear.",
+        "treatment": "Offer comfort and reassurance by sitting nearby, speaking gently, or petting the dog if it seems open to interaction.",
+        "deviceId": "tk37hmq5aj7hc5nk",
+        "createdAt": "2026-05-02T12:35:33.271Z"
+      }
+    ],
+    "dogProfiles": [],
+    "visitorLogs": [
+      {
+        "id": 1,
+        "userId": "57381831",
+        "visitedAt": "2026-04-09T11:03:54.117Z"
+      },
+      {
+        "id": 2,
+        "userId": "57381831",
+        "visitedAt": "2026-04-09T11:17:55.863Z"
+      },
+      {
+        "id": 3,
+        "userId": "57381831",
+        "visitedAt": "2026-04-09T11:25:18.909Z"
+      },
+      {
+        "id": 4,
+        "userId": "57381831",
+        "visitedAt": "2026-04-09T11:27:32.069Z"
+      },
+      {
+        "id": 5,
+        "userId": "57381831",
+        "visitedAt": "2026-04-09T11:27:59.382Z"
+      },
+      {
+        "id": 6,
+        "userId": "57381831",
+        "visitedAt": "2026-04-09T11:29:11.673Z"
+      },
+      {
+        "id": 7,
+        "userId": "57381831",
+        "visitedAt": "2026-04-09T12:22:10.604Z"
+      },
+      {
+        "id": 8,
+        "userId": "57381831",
+        "visitedAt": "2026-04-09T12:27:37.144Z"
+      },
+      {
+        "id": 9,
+        "userId": "57381831",
+        "visitedAt": "2026-04-09T12:29:55.212Z"
+      },
+      {
+        "id": 10,
+        "userId": "57381831",
+        "visitedAt": "2026-04-09T12:31:11.370Z"
+      },
+      {
+        "id": 11,
+        "userId": "57381831",
+        "visitedAt": "2026-04-09T12:56:07.100Z"
+      },
+      {
+        "id": 12,
+        "userId": "57381831",
+        "visitedAt": "2026-04-09T12:57:14.566Z"
+      },
+      {
+        "id": 13,
+        "userId": "57381831",
+        "visitedAt": "2026-04-10T10:43:18.226Z"
+      },
+      {
+        "id": 14,
+        "userId": "57381831",
+        "visitedAt": "2026-04-10T10:44:34.045Z"
+      },
+      {
+        "id": 15,
+        "userId": "57381831",
+        "visitedAt": "2026-04-10T10:44:44.257Z"
+      },
+      {
+        "id": 16,
+        "userId": "57381831",
+        "visitedAt": "2026-04-10T10:45:31.338Z"
+      },
+      {
+        "id": 17,
+        "userId": "57381831",
+        "visitedAt": "2026-04-10T10:48:48.315Z"
+      },
+      {
+        "id": 18,
+        "userId": "57381831",
+        "visitedAt": "2026-04-10T10:53:05.197Z"
+      },
+      {
+        "id": 19,
+        "userId": "57381831",
+        "visitedAt": "2026-04-10T10:53:41.972Z"
+      },
+      {
+        "id": 20,
+        "userId": "57381831",
+        "visitedAt": "2026-04-10T10:59:50.288Z"
+      },
+      {
+        "id": 21,
+        "userId": "57381831",
+        "visitedAt": "2026-05-01T10:24:31.105Z"
+      },
+      {
+        "id": 22,
+        "userId": "57381831",
+        "visitedAt": "2026-05-01T10:27:30.154Z"
+      },
+      {
+        "id": 23,
+        "userId": "57381831",
+        "visitedAt": "2026-05-01T10:29:22.590Z"
+      },
+      {
+        "id": 24,
+        "userId": "57381831",
+        "visitedAt": "2026-05-01T10:30:05.536Z"
+      },
+      {
+        "id": 25,
+        "userId": "57381831",
+        "visitedAt": "2026-05-01T10:30:25.420Z"
+      },
+      {
+        "id": 26,
+        "userId": "57381831",
+        "visitedAt": "2026-05-01T10:31:25.589Z"
+      },
+      {
+        "id": 27,
+        "userId": "57381831",
+        "visitedAt": "2026-05-01T10:36:56.005Z"
+      },
+      {
+        "id": 28,
+        "userId": "57381831",
+        "visitedAt": "2026-05-01T10:46:48.879Z"
+      },
+      {
+        "id": 29,
+        "userId": "57381831",
+        "visitedAt": "2026-05-01T10:49:43.244Z"
+      },
+      {
+        "id": 30,
+        "userId": "57381831",
+        "visitedAt": "2026-05-01T10:52:09.691Z"
+      },
+      {
+        "id": 31,
+        "userId": "57381831",
+        "visitedAt": "2026-05-01T10:55:27.335Z"
+      },
+      {
+        "id": 32,
+        "userId": "57381831",
+        "visitedAt": "2026-05-01T10:55:34.280Z"
+      },
+      {
+        "id": 33,
+        "userId": "57381831",
+        "visitedAt": "2026-05-01T10:55:50.199Z"
+      },
+      {
+        "id": 34,
+        "userId": "57381831",
+        "visitedAt": "2026-05-01T10:56:02.207Z"
+      },
+      {
+        "id": 35,
+        "userId": "57381831",
+        "visitedAt": "2026-05-01T10:56:08.167Z"
+      },
+      {
+        "id": 36,
+        "userId": "57381831",
+        "visitedAt": "2026-05-01T10:56:34.584Z"
+      },
+      {
+        "id": 37,
+        "userId": "57381831",
+        "visitedAt": "2026-05-01T10:57:19.136Z"
+      },
+      {
+        "id": 38,
+        "userId": "57381831",
+        "visitedAt": "2026-05-01T11:01:01.715Z"
+      },
+      {
+        "id": 39,
+        "userId": "57381831",
+        "visitedAt": "2026-05-01T13:12:14.655Z"
+      },
+      {
+        "id": 40,
+        "userId": "57381831",
+        "visitedAt": "2026-05-01T13:12:38.658Z"
+      },
+      {
+        "id": 41,
+        "userId": "51336772",
+        "visitedAt": "2026-05-01T13:15:08.124Z"
+      },
+      {
+        "id": 42,
+        "userId": "57381831",
+        "visitedAt": "2026-05-01T13:15:43.653Z"
+      },
+      {
+        "id": 43,
+        "userId": "57381831",
+        "visitedAt": "2026-05-02T08:59:47.490Z"
+      },
+      {
+        "id": 44,
+        "userId": "57381831",
+        "visitedAt": "2026-05-02T09:33:03.739Z"
+      },
+      {
+        "id": 45,
+        "userId": "57381831",
+        "visitedAt": "2026-05-02T09:39:02.826Z"
+      },
+      {
+        "id": 46,
+        "userId": "57381831",
+        "visitedAt": "2026-05-02T10:12:21.807Z"
+      },
+      {
+        "id": 47,
+        "userId": "57381831",
+        "visitedAt": "2026-05-02T10:14:06.991Z"
+      },
+      {
+        "id": 48,
+        "userId": "52288391",
+        "visitedAt": "2026-05-02T10:15:13.352Z"
+      },
+      {
+        "id": 49,
+        "userId": "57381831",
+        "visitedAt": "2026-05-02T10:15:43.024Z"
+      },
+      {
+        "id": 50,
+        "userId": "57381831",
+        "visitedAt": "2026-05-02T10:27:20.166Z"
+      },
+      {
+        "id": 51,
+        "userId": "57381831",
+        "visitedAt": "2026-05-02T11:37:53.463Z"
+      },
+      {
+        "id": 52,
+        "userId": "57381831",
+        "visitedAt": "2026-05-02T11:41:19.502Z"
+      },
+      {
+        "id": 53,
+        "userId": "57381831",
+        "visitedAt": "2026-05-02T12:34:48.787Z"
+      },
+      {
+        "id": 54,
+        "userId": "57381831",
+        "visitedAt": "2026-05-02T12:37:53.198Z"
+      },
+      {
+        "id": 55,
+        "userId": "57381831",
+        "visitedAt": "2026-05-14T12:51:31.625Z"
+      },
+      {
+        "id": 56,
+        "userId": "57381831",
+        "visitedAt": "2026-05-17T08:25:12.680Z"
+      },
+      {
+        "id": 57,
+        "userId": "57381831",
+        "visitedAt": "2026-05-23T20:45:04.172Z"
+      },
+      {
+        "id": 58,
+        "userId": "57381831",
+        "visitedAt": "2026-05-23T20:45:44.659Z"
+      },
+      {
+        "id": 59,
+        "userId": "57381831",
+        "visitedAt": "2026-05-23T20:46:47.631Z"
+      },
+      {
+        "id": 60,
+        "userId": "57381831",
+        "visitedAt": "2026-05-23T20:46:54.830Z"
+      },
+      {
+        "id": 61,
+        "userId": "57381831",
+        "visitedAt": "2026-05-28T09:52:57.451Z"
+      }
+    ],
+    "locations": [
+      {
+        "id": 1,
+        "name": "Lodhi Gardens (Dog Friendly)",
+        "type": "park",
+        "description": "Historic park with expansive greens. One of the best places for morning walks with dogs in Delhi.",
+        "address": "Lodhi Road, New Delhi, 110003",
+        "latitude": 28.5933,
+        "longitude": 77.2189,
+        "rules": "Leash required at all times. Please clean up after your pet. Avoid main heritage areas."
+      },
+      {
+        "id": 2,
+        "name": "Sunder Nursery Park",
+        "type": "park",
+        "description": "A heritage park complex with massive open lawns where dogs are welcome on leashes.",
+        "address": "Opposite Humayun's Tomb, Nizamuddin, New Delhi",
+        "latitude": 28.5911,
+        "longitude": 77.245,
+        "rules": "Leash strictly required. No pets near heritage structures."
+      },
+      {
+        "id": 3,
+        "name": "Puppychino Pet Cafe",
+        "type": "cafe",
+        "description": "Delhi's first dedicated pet cafe. Offers a special 'woof' menu for your furry friends.",
+        "address": "Shahpur Jat, Siri Fort, New Delhi",
+        "latitude": 28.5492,
+        "longitude": 77.2135,
+        "rules": "Well-behaved dogs allowed. Vaccination records may be requested for entry."
+      },
+      {
+        "id": 4,
+        "name": "Hauz Khas Deer Park",
+        "type": "park",
+        "description": "Lush green space perfect for long walks. Very popular among South Delhi pet parents.",
+        "address": "Hauz Khas Village, New Delhi",
+        "latitude": 28.5555,
+        "longitude": 77.1935,
+        "rules": "Dogs must be leashed. Strictly no entry into the deer enclosure area."
+      },
+      {
+        "id": 5,
+        "name": "Pet Clinic South Delhi - Dr. Kapoor",
+        "type": "vet",
+        "description": "Specialized small animal veterinary care. Emergency services available on call.",
+        "address": "B-21, Green Park Main, New Delhi",
+        "latitude": 28.5588,
+        "longitude": 77.2028,
+        "rules": "Appointment preferred. Emergency walk-ins accepted 24/7."
+      },
+      {
+        "id": 6,
+        "name": "Bark Street Cafe",
+        "type": "cafe",
+        "description": "A cozy pet-friendly cafe with an outdoor play area for dogs.",
+        "address": "Noida-Delhi Border area",
+        "latitude": 28.5355,
+        "longitude": 77.3411,
+        "rules": "Dogs can be off-leash in the designated play zone only."
+      },
+      {
+        "id": 7,
+        "name": "The Blue Door Cafe (Pet Friendly)",
+        "type": "cafe",
+        "description": "European-style cafe that welcomes small to medium pets in their outdoor seating.",
+        "address": "Khan Market, New Delhi",
+        "latitude": 28.6001,
+        "longitude": 77.2274,
+        "rules": "Pets allowed in outdoor seating area only. Must be leashed."
+      }
+    ],
+    "breeds": [
+      {
+        "id": 1,
+        "name": "Indian Pariah Dog",
+        "description": "The native landrace of the Indian subcontinent. Highly resilient, intelligent, and fiercely loyal. They are perfectly adapted to the Indian climate and are excellent watchdogs for any home. They are one of the oldest and healthiest dog breeds in the world, with a natural immunity to many local diseases.",
+        "traits": [
+          "Resilient",
+          "Alert",
+          "Loyal",
+          "Social"
+        ],
+        "imageUrl": "https://images.unsplash.com/photo-1628151523491-a188f5573420?auto=format&fit=crop&q=80",
+        "careGuide": "Low maintenance. Needs mental stimulation and socialization. Excellent watchdogs for Delhi homes. They require minimal grooming and have remarkably few genetic health issues."
+      },
+      {
+        "id": 2,
+        "name": "Golden Retriever",
+        "description": "Intelligent, friendly, and devoted. Famous for their golden coat and gentle temperament. They are world-renowned family pets and excel in various canine activities including therapy and service work.",
+        "traits": [
+          "Gentle",
+          "Intelligent",
+          "Playful",
+          "Affectionate"
+        ],
+        "imageUrl": "https://images.unsplash.com/photo-1552053831-71594a27632d?auto=format&fit=crop&q=80",
+        "careGuide": "Requires daily exercise and weekly grooming. Prone to heat exhaustion in Delhi summers, so keep them indoors during peak heat hours. They thrive on human companionship."
+      },
+      {
+        "id": 3,
+        "name": "German Shepherd",
+        "description": "Confident, courageous, and smart. Versatile working dogs often used in security, search and rescue, and as service dogs. They are deeply loyal to their family and protective by nature.",
+        "traits": [
+          "Courageous",
+          "Obedient",
+          "Watchful",
+          "Smart"
+        ],
+        "imageUrl": "https://images.unsplash.com/photo-1589941013453-ec89f33b5e95?auto=format&fit=crop&q=80",
+        "careGuide": "Needs consistent training and intense physical activity. High shedding breed, requires frequent brushing. They need mental challenges to prevent boredom."
+      },
+      {
+        "id": 4,
+        "name": "Beagle",
+        "description": "Merry, friendly, and curious. Small hound with a big personality and an incredible sense of smell. They are sturdy, compact dogs with a distinctively loud voice.",
+        "traits": [
+          "Curious",
+          "Merry",
+          "Friendly",
+          "Stubborn"
+        ],
+        "imageUrl": "https://images.unsplash.com/photo-1506755855567-92ff770e8d00?auto=format&fit=crop&q=80",
+        "careGuide": "Scent-driven, keep on leash as they might follow their nose anywhere. Prone to obesity, monitor diet closely. They love social interaction and the company of other dogs."
+      },
+      {
+        "id": 5,
+        "name": "Labrador Retriever",
+        "description": "Friendly, active, and outgoing. One of the most popular breeds worldwide for families. They are known for their stable temperament and absolute love for water and retrieving.",
+        "traits": [
+          "Outgoing",
+          "Kind",
+          "Agile",
+          "Trusting"
+        ],
+        "imageUrl": "https://images.unsplash.com/photo-1553736026-ff14d1f8d72c?auto=format&fit=crop&q=80",
+        "careGuide": "High energy, needs long walks and swimming. Very food-motivated; obesity is a common health risk. Excellent with children and usually very welcoming."
+      },
+      {
+        "id": 6,
+        "name": "Pug",
+        "description": "Charming, mischievous, and loving. Compact breed with a wrinkled face and curled tail. They were bred as companion dogs for royalty and still live up to that role today.",
+        "traits": [
+          "Charming",
+          "Dignified",
+          "Docile",
+          "Loving"
+        ],
+        "imageUrl": "https://images.unsplash.com/photo-1517423440428-a5a00ad493e8?auto=format&fit=crop&q=80",
+        "careGuide": "Extremely sensitive to high humidity and heat (critical for Delhi summers). Minimal exercise needed. Clean facial folds regularly to prevent infections."
+      },
+      {
+        "id": 7,
+        "name": "Boxer",
+        "description": "Bright, fun-loving, and active. Known for their 'boxing' play style and patient nature. They are powerful, athletic dogs that remain puppy-like well into adulthood.",
+        "traits": [
+          "Playful",
+          "Devoted",
+          "Energetic",
+          "Fearless"
+        ],
+        "imageUrl": "https://images.unsplash.com/photo-1541364983171-a8ba01d95cfc?auto=format&fit=crop&q=80",
+        "careGuide": "Requires lots of physical and mental stimulation. Very protective of their family. Good apartment dogs if they receive adequate daily exercise."
+      },
+      {
+        "id": 8,
+        "name": "Shih Tzu",
+        "description": "Affectionate, playful, and outgoing. Small, sturdy dog with a long, flowing coat. They were bred to be companions and excel at providing love and warmth.",
+        "traits": [
+          "Affectionate",
+          "Playful",
+          "Clever",
+          "Lively"
+        ],
+        "imageUrl": "https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?auto=format&fit=crop&q=80",
+        "careGuide": "High grooming needs; requires daily brushing. Gentle house dog. Susceptible to eye issues; keep facial hair trimmed or tied back."
+      },
+      {
+        "id": 9,
+        "name": "Dachshund",
+        "description": "Clever, stubborn, and courageous. Distinctive long body and short legs. Originally bred for hunting, they have a surprisingly large bark and brave spirit.",
+        "traits": [
+          "Spunky",
+          "Brave",
+          "Clever",
+          "Persistent"
+        ],
+        "imageUrl": "https://images.unsplash.com/photo-1612195583950-b8fd34c87093?auto=format&fit=crop&q=80",
+        "careGuide": "Protect their long backs—strictly prevent jumping from furniture. Intelligent but notoriously stubborn to train. Moderate exercise and mental games."
+      },
+      {
+        "id": 10,
+        "name": "Rottweiler",
+        "description": "Loyal, loving, and confident guardian. Powerful breed with a soft heart for their family. They are calm, confident protectors who need a clear leader.",
+        "traits": [
+          "Loyal",
+          "Confident",
+          "Good-natured",
+          "Fearless"
+        ],
+        "imageUrl": "https://images.unsplash.com/photo-1567171466295-4afa58141217?auto=format&fit=crop&q=80",
+        "careGuide": "Needs firm, consistent training and early socialization. Powerful but surprisingly calm indoors if properly exercised. They are intensely devoted to their family."
+      }
+    ]
+  }
+}
