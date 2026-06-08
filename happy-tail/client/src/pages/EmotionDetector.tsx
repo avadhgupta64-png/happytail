@@ -597,14 +597,32 @@ export default function EmotionDetector() {
                   )}
                 </div>
 
-                <div className="bg-purple-50 p-4 rounded-2xl flex gap-3 text-purple-700 border border-purple-100 shadow-sm">
-                  <Brain className="w-5 h-5 shrink-0 text-purple-500" />
-                  <div>
-                    <p className="text-sm font-bold mb-1">How behavior analysis works:</p>
-                    <p className="text-xs leading-relaxed">
-                      Our AI extracts frames from your video and analyzes body posture, tail position, ear orientation, and movement patterns to understand your dog's behavioral state and stress levels.
-                    </p>
+                <div className="bg-purple-50 p-4 rounded-2xl border border-purple-100 shadow-sm space-y-3">
+                  <div className="flex gap-3 text-purple-700">
+                    <Brain className="w-5 h-5 shrink-0 text-purple-500 mt-0.5" />
+                    <div>
+                      <p className="text-sm font-bold mb-1">About Behavior Analysis</p>
+                      <p className="text-xs leading-relaxed text-purple-800">
+                        Upload any short video of your dog — playing, resting, eating, or interacting — and our AI will generate a full behavioral report in seconds.
+                      </p>
+                    </div>
                   </div>
+                  <div className="grid grid-cols-2 gap-2 pl-8">
+                    {[
+                      { icon: "🐾", label: "Body posture & tail position" },
+                      { icon: "👂", label: "Ear orientation & eye contact" },
+                      { icon: "😰", label: "Stress & energy levels (1–10)" },
+                      { icon: "🎯", label: "Behavior triggers identified" },
+                      { icon: "🧬", label: "Breed & dominant behaviors" },
+                      { icon: "💡", label: "3 personalized recommendations" },
+                    ].map(({ icon, label }) => (
+                      <div key={label} className="flex items-center gap-1.5 text-purple-700">
+                        <span className="text-sm">{icon}</span>
+                        <span className="text-xs">{label}</span>
+                      </div>
+                    ))}
+                  </div>
+                  <p className="text-[11px] text-purple-500 pl-8">Works best with 5–30 second clips. Supports MP4, MOV, and WebM.</p>
                 </div>
               </div>
 
