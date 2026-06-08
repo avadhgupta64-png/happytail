@@ -26,5 +26,5 @@ args = ["sh", "-c", "cd /home/runner/workspace/happy-tail && NODE_ENV=developmen
 args = ["sh", "-c", "cd /home/runner/workspace/happy-tail && npm start"]
 
 [services.production.run.env]
-PORT = "8080"
+PORT = "24183"
 NODE_ENV = "production"
