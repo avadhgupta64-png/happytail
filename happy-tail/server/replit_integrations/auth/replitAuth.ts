@@ -84,26 +84,30 @@ export async function setupAuth(app: Express) {
     tokens: client.TokenEndpointResponse & client.TokenEndpointResponseHelpers,
     verified: passport.AuthenticateCallback
   ) => {
-    const claims = tokens.claims();
-    const userId = String(claims["sub"]);
+    try {
+      const claims = tokens.claims();
+      const userId = String(claims["sub"]);
 
-    // Block permanently removed users from ever logging back in
-    const [removed] = await db.select({ id: removedUsers.id }).from(removedUsers).where(eq(removedUsers.userId, userId));
-    if (removed) {
-      return verified(null, false, { message: "permanently-removed" } as any);
+      // Block permanently removed users from ever logging back in
+      const [removed] = await db.select({ id: removedUsers.id }).from(removedUsers).where(eq(removedUsers.userId, userId));
+      if (removed) {
+        return verified(null, false, { message: "permanently-removed" } as any);
+      }
+
+      await upsertUser(claims);
+
+      // Block banned users from completing login
+      const [dbUser] = await db.select({ isBanned: users.isBanned }).from(users).where(eq(users.id, userId));
+      if (dbUser?.isBanned) {
+        return verified(null, false, { message: "banned" } as any);
+      }
+
+      const user = {};
+      updateUserSession(user, tokens);
+      verified(null, user);
+    } catch (err) {
+      verified(err as Error);
     }
-
-    await upsertUser(claims);
-
-    // Block banned users from completing login
-    const [dbUser] = await db.select({ isBanned: users.isBanned }).from(users).where(eq(users.id, userId));
-    if (dbUser?.isBanned) {
-      return verified(null, false, { message: "banned" } as any);
-    }
-
-    const user = {};
-    updateUserSession(user, tokens);
-    verified(null, user);
   };
 
   // Keep track of registered strategies
