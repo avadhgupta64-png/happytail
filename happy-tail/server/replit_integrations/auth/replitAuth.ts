@@ -9,9 +9,7 @@ import connectPg from "connect-pg-simple";
 import { randomBytes } from "crypto";
 import { authStorage } from "./storage";
 import { db } from "../../db";
-import { users } from "@shared/models/auth";
-import { removedUsers } from "@shared/schema";
-import { eq } from "drizzle-orm";
+import { sql } from "drizzle-orm";
 
 const getOidcConfig = memoize(
   async () => {
@@ -89,16 +87,16 @@ export async function setupAuth(app: Express) {
       const userId = String(claims["sub"]);
 
       // Block permanently removed users from ever logging back in
-      const [removed] = await db.select({ id: removedUsers.id }).from(removedUsers).where(eq(removedUsers.userId, userId));
-      if (removed) {
+      const removedResult = await db.execute(sql`SELECT 1 FROM removed_users WHERE user_id = ${userId} LIMIT 1`);
+      if (removedResult.rows.length > 0) {
         return verified(null, false, { message: "permanently-removed" } as any);
       }
 
       await upsertUser(claims);
 
       // Block banned users from completing login
-      const [dbUser] = await db.select({ isBanned: users.isBanned }).from(users).where(eq(users.id, userId));
-      if (dbUser?.isBanned) {
+      const banResult = await db.execute(sql`SELECT is_banned FROM users WHERE id = ${userId} LIMIT 1`);
+      if (banResult.rows[0]?.is_banned === true) {
         return verified(null, false, { message: "banned" } as any);
       }
 

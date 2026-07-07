@@ -1,11 +1,11 @@
 {
-  "createdAt": "2026-07-07T10:44:00.149Z",
+  "createdAt": "2026-07-07T15:13:25.127Z",
   "counts": {
     "users": 2,
-    "activityLogs": 19,
+    "activityLogs": 20,
     "emotionLogs": 9,
     "dogProfiles": 0,
-    "visitorLogs": 77,
+    "visitorLogs": 92,
     "locations": 7,
     "breeds": 10
   },
@@ -744,6 +744,22 @@
         },
         "createdAt": "2026-06-08T11:10:51.622Z",
         "deletedAt": null
+      },
+      {
+        "id": 26,
+        "userId": "57381831",
+        "activityType": "health_scan",
+        "title": "Health Scan",
+        "summary": "Unknown - No emergency - 0 condition(s) found",
+        "details": {
+          "breed": "Unknown",
+          "home_remedy": "Consult a vet for specific treatment.",
+          "is_emergency": false,
+          "detailed_analysis": "Analysis complete.",
+          "possible_conditions": []
+        },
+        "createdAt": "2026-07-07T13:53:31.450Z",
+        "deletedAt": null
       }
     ],
     "emotionLogs": [
@@ -1242,6 +1258,81 @@
         "id": 77,
         "userId": "57380803",
         "visitedAt": "2026-07-06T14:02:45.371Z"
+      },
+      {
+        "id": 78,
+        "userId": "57381831",
+        "visitedAt": "2026-07-07T10:44:17.813Z"
+      },
+      {
+        "id": 79,
+        "userId": "57381831",
+        "visitedAt": "2026-07-07T13:52:58.924Z"
+      },
+      {
+        "id": 80,
+        "userId": "57381831",
+        "visitedAt": "2026-07-07T13:56:43.746Z"
+      },
+      {
+        "id": 81,
+        "userId": "57381831",
+        "visitedAt": "2026-07-07T13:58:31.789Z"
+      },
+      {
+        "id": 82,
+        "userId": "57381831",
+        "visitedAt": "2026-07-07T14:06:05.205Z"
+      },
+      {
+        "id": 83,
+        "userId": "57381831",
+        "visitedAt": "2026-07-07T14:10:11.114Z"
+      },
+      {
+        "id": 84,
+        "userId": "57381831",
+        "visitedAt": "2026-07-07T14:16:04.634Z"
+      },
+      {
+        "id": 85,
+        "userId": "57381831",
+        "visitedAt": "2026-07-07T14:19:12.675Z"
+      },
+      {
+        "id": 86,
+        "userId": "57381831",
+        "visitedAt": "2026-07-07T14:22:43.830Z"
+      },
+      {
+        "id": 87,
+        "userId": "57381831",
+        "visitedAt": "2026-07-07T14:24:34.880Z"
+      },
+      {
+        "id": 88,
+        "userId": "57381831",
+        "visitedAt": "2026-07-07T14:28:18.810Z"
+      },
+      {
+        "id": 89,
+        "userId": "57381831",
+        "visitedAt": "2026-07-07T14:29:41.271Z"
+      },
+      {
+        "id": 90,
+        "userId": "57381831",
+        "visitedAt": "2026-07-07T14:55:32.954Z"
+      },
+      {
+        "id": 91,
+        "userId": "57381831",
+        "visitedAt": "2026-07-07T14:57:45.716Z"
+      },
+      {
+        "id": 92,
+        "userId": "57381831",
+        "visitedAt": "2026-07-07T15:07:43.622Z"
       }
     ],
     "locations": [
