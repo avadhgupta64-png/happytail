@@ -260,11 +260,40 @@ function AuthenticatedApp() {
   );
 }
 
+function AuthErrorScreen({ type }: { type: "banned" | "removed" }) {
+  const isBanned = type === "banned";
+  return (
+    <div className="h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-950 p-6">
+      <div className="max-w-md w-full text-center space-y-5">
+        <div className={`inline-flex items-center justify-center w-16 h-16 rounded-full ${isBanned ? "bg-amber-100 dark:bg-amber-900/30" : "bg-red-100 dark:bg-red-900/30"}`}>
+          <ShieldAlert className={`w-8 h-8 ${isBanned ? "text-amber-600 dark:text-amber-400" : "text-red-600 dark:text-red-400"}`} />
+        </div>
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+            {isBanned ? "Account Suspended" : "Account Removed"}
+          </h1>
+          <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
+            {isBanned
+              ? "Your account has been suspended by an administrator. If you believe this is a mistake, please contact support."
+              : "Your account has been permanently removed and cannot be used to sign in."}
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function AppContent() {
   const [showSplash, setShowSplash] = useState(true);
   const handleSplashComplete = useCallback(() => setShowSplash(false), []);
   const { user, isLoading } = useAuth();
   const { isGuest } = useGuest();
+
+  // Check for auth error from login callback
+  const authError = new URLSearchParams(window.location.search).get("auth_error");
+  if (authError === "banned" || authError === "removed") {
+    return <AuthErrorScreen type={authError} />;
+  }
 
   if (showSplash) {
     return <SplashScreen onComplete={handleSplashComplete} />;

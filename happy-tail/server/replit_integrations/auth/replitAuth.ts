@@ -8,6 +8,10 @@ import memoize from "memoizee";
 import connectPg from "connect-pg-simple";
 import { randomBytes } from "crypto";
 import { authStorage } from "./storage";
+import { db } from "../../db";
+import { users } from "@shared/models/auth";
+import { removedUsers } from "@shared/schema";
+import { eq } from "drizzle-orm";
 
 const getOidcConfig = memoize(
   async () => {
@@ -80,9 +84,25 @@ export async function setupAuth(app: Express) {
     tokens: client.TokenEndpointResponse & client.TokenEndpointResponseHelpers,
     verified: passport.AuthenticateCallback
   ) => {
+    const claims = tokens.claims();
+    const userId = String(claims["sub"]);
+
+    // Block permanently removed users from ever logging back in
+    const [removed] = await db.select({ id: removedUsers.id }).from(removedUsers).where(eq(removedUsers.userId, userId));
+    if (removed) {
+      return verified(null, false, { message: "permanently-removed" } as any);
+    }
+
+    await upsertUser(claims);
+
+    // Block banned users from completing login
+    const [dbUser] = await db.select({ isBanned: users.isBanned }).from(users).where(eq(users.id, userId));
+    if (dbUser?.isBanned) {
+      return verified(null, false, { message: "banned" } as any);
+    }
+
     const user = {};
     updateUserSession(user, tokens);
-    await upsertUser(tokens.claims());
     verified(null, user);
   };
 
@@ -120,9 +140,18 @@ export async function setupAuth(app: Express) {
 
   app.get("/api/callback", (req, res, next) => {
     ensureStrategy(req.hostname);
-    passport.authenticate(`replitauth:${req.hostname}`, {
-      successReturnToOrRedirect: "/",
-      failureRedirect: "/api/login",
+    passport.authenticate(`replitauth:${req.hostname}`, (err: any, user: any, info: any) => {
+      if (err) return next(err);
+      if (!user) {
+        const msg = (info as any)?.message;
+        if (msg === "banned") return res.redirect("/?auth_error=banned");
+        if (msg === "permanently-removed") return res.redirect("/?auth_error=removed");
+        return res.redirect("/api/login");
+      }
+      req.logIn(user, (loginErr) => {
+        if (loginErr) return next(loginErr);
+        res.redirect("/");
+      });
     })(req, res, next);
   });
 

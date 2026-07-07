@@ -46,13 +46,18 @@ export async function registerRoutes(
   const sessionMw = getSession();
   setupWebSocket(httpServer, sessionMw);
 
-  // Ban check — block suspended users from all authenticated /api routes
+  // Ban/delete check — block suspended or removed users from all authenticated /api routes
   app.use("/api", async (req: any, res, next) => {
     if (req.user?.claims?.sub) {
       const userId = String(req.user.claims.sub);
       try {
         const [user] = await db.select({ isBanned: users.isBanned }).from(users).where(eq(users.id, userId));
-        if (user?.isBanned) {
+        if (!user) {
+          // User was permanently deleted — destroy their session and reject
+          req.logout(() => {});
+          return res.status(403).json({ message: "Your account has been permanently removed." });
+        }
+        if (user.isBanned) {
           return res.status(403).json({ message: "Your account has been suspended by the administrator." });
         }
       } catch {}
