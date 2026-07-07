@@ -1,0 +1,1 @@
+- [Happy Tail startup crash fix](happy-tail-startup.md) — async IIFE .catch() fails in esbuild CJS; use try/catch/finally inside IIFE instead.

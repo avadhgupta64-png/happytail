@@ -6,6 +6,7 @@ import session from "express-session";
 import type { Express, RequestHandler } from "express";
 import memoize from "memoizee";
 import connectPg from "connect-pg-simple";
+import { randomBytes } from "crypto";
 import { authStorage } from "./storage";
 
 const getOidcConfig = memoize(
@@ -27,8 +28,12 @@ export function getSession() {
     ttl: sessionTtl,
     tableName: "sessions",
   });
+  const secret = process.env.SESSION_SECRET || (() => {
+    console.warn("[auth] SESSION_SECRET not set — using a random secret. Sessions will not persist across restarts.");
+    return randomBytes(32).toString("hex");
+  })();
   return session({
-    secret: process.env.SESSION_SECRET!,
+    secret,
     store: sessionStore,
     resave: false,
     saveUninitialized: false,
