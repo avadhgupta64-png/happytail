@@ -23,8 +23,11 @@ export function getSession() {
   const sessionTtl = 7 * 24 * 60 * 60 * 1000; // 1 week
   const pgStore = connectPg(session);
   const sessionStore = new pgStore({
-    conString: process.env.EXTERNAL_DB_URL || process.env.DATABASE_URL,
-    createTableIfMissing: false,
+    conString:
+      process.env.NODE_ENV === "production"
+        ? process.env.DATABASE_URL
+        : (process.env.EXTERNAL_DB_URL || process.env.DATABASE_URL),
+    createTableIfMissing: true,
     ttl: sessionTtl,
     tableName: "sessions",
   });
