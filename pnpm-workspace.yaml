@@ -88,6 +88,10 @@ overrides:
   "fast-uri": "^3.1.2"
   "rollup@4": "^4.61.1"
   "yaml": "^2.8.3"
+  "linkify-it": "^5.0.1"
+  "markdown-it": "^14.2.0"
+  "js-yaml@4": "^4.2.0"
+  "@babel/core": "^7.29.6"
   # ============================================================================
   # replit uses linux-x64 only, we can exclude all other platforms
   "esbuild>@esbuild/darwin-arm64": "-"
@@ -171,4 +175,4 @@ overrides:
   "@expo/ngrok-bin>@expo/ngrok-bin-win32-x64": "-"
   # drizzle-kit uses esbuild internally on an older version that's vulnerable, this overrides it
   "@esbuild-kit/esm-loader": "npm:tsx@^4.21.0"
-  esbuild: "0.27.3"
+  esbuild: "0.28.1"
