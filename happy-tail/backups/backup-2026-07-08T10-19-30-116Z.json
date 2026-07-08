@@ -1,11 +1,11 @@
 {
-  "createdAt": "2026-07-07T14:53:05.816Z",
+  "createdAt": "2026-07-08T10:19:32.350Z",
   "counts": {
     "users": 2,
     "activityLogs": 20,
     "emotionLogs": 9,
     "dogProfiles": 0,
-    "visitorLogs": 89,
+    "visitorLogs": 98,
     "locations": 7,
     "breeds": 10
   },
@@ -1318,6 +1318,51 @@
         "id": 89,
         "userId": "57381831",
         "visitedAt": "2026-07-07T14:29:41.271Z"
+      },
+      {
+        "id": 90,
+        "userId": "57381831",
+        "visitedAt": "2026-07-07T14:55:32.954Z"
+      },
+      {
+        "id": 91,
+        "userId": "57381831",
+        "visitedAt": "2026-07-07T14:57:45.716Z"
+      },
+      {
+        "id": 92,
+        "userId": "57381831",
+        "visitedAt": "2026-07-07T15:07:43.622Z"
+      },
+      {
+        "id": 93,
+        "userId": "57381831",
+        "visitedAt": "2026-07-07T18:35:53.795Z"
+      },
+      {
+        "id": 94,
+        "userId": "57381831",
+        "visitedAt": "2026-07-07T18:36:51.605Z"
+      },
+      {
+        "id": 95,
+        "userId": "57381831",
+        "visitedAt": "2026-07-07T18:37:57.625Z"
+      },
+      {
+        "id": 96,
+        "userId": "57381831",
+        "visitedAt": "2026-07-07T18:45:35.371Z"
+      },
+      {
+        "id": 97,
+        "userId": "57381831",
+        "visitedAt": "2026-07-07T18:46:31.755Z"
+      },
+      {
+        "id": 98,
+        "userId": "57381831",
+        "visitedAt": "2026-07-07T18:48:55.027Z"
       }
     ],
     "locations": [
