@@ -1,19 +1,11 @@
 {
-<<<<<<<< HEAD:happy-tail/backups/backup-2026-07-08T10-07-37-075Z.json
   "createdAt": "2026-07-08T10:07:38.944Z",
-========
-  "createdAt": "2026-07-08T10:09:23.586Z",
->>>>>>>> 18eb668 (Fix 28 dependency vulnerabilities):happy-tail/backups/backup-2026-07-08T10-09-22-157Z.json
   "counts": {
     "users": 2,
     "activityLogs": 20,
     "emotionLogs": 9,
     "dogProfiles": 0,
-<<<<<<<< HEAD:happy-tail/backups/backup-2026-07-08T10-07-37-075Z.json
     "visitorLogs": 98,
-========
-    "visitorLogs": 96,
->>>>>>>> 18eb668 (Fix 28 dependency vulnerabilities):happy-tail/backups/backup-2026-07-08T10-09-22-157Z.json
     "locations": 7,
     "breeds": 10
   },
@@ -1361,7 +1353,6 @@
         "id": 96,
         "userId": "57381831",
         "visitedAt": "2026-07-07T18:45:35.371Z"
-<<<<<<<< HEAD:happy-tail/backups/backup-2026-07-08T10-07-37-075Z.json
       },
       {
         "id": 97,
@@ -1372,8 +1363,6 @@
         "id": 98,
         "userId": "57381831",
         "visitedAt": "2026-07-07T18:48:55.027Z"
-========
->>>>>>>> 18eb668 (Fix 28 dependency vulnerabilities):happy-tail/backups/backup-2026-07-08T10-09-22-157Z.json
       }
     ],
     "locations": [
