@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { ShieldCheck, Linkedin, Heart, Camera, MessageSquare, Stethoscope, UtensilsCrossed, MapPin, Users, BookOpen, Bot, TriangleAlert } from "lucide-react";
+import { ShieldCheck, Linkedin, Instagram, Heart, Camera, MessageSquare, Stethoscope, UtensilsCrossed, MapPin, Users, BookOpen, Bot, TriangleAlert } from "lucide-react";
 import founderImg from "@assets/Passport_Size_Photo_1775645573471.jpg";
 import logoImg from "@assets/IMG-20260210-WA0048_1770744211559.jpg";
 
@@ -172,7 +172,7 @@ export default function About() {
                 alt="Avadh Gupta — Founder of Happy Tail"
                 className="w-32 h-40 object-cover rounded-2xl shadow-xl border-4 border-white dark:border-gray-800 mx-auto"
               />
-              <div className="mt-3">
+              <div className="mt-3 flex flex-wrap gap-2 justify-center">
                 <a
                   href="https://www.linkedin.com/in/avadhgupta"
                   target="_blank"
@@ -181,6 +181,15 @@ export default function About() {
                 >
                   <Linkedin className="w-3.5 h-3.5" />
                   LinkedIn
+                </a>
+                <a
+                  href="https://www.instagram.com/itz_avadh18"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 text-xs font-semibold text-white bg-gradient-to-tr from-[#feda75] via-[#d62976] to-[#4f5bd5] hover:opacity-90 px-3 py-1.5 rounded-lg transition-opacity shadow"
+                >
+                  <Instagram className="w-3.5 h-3.5" />
+                  Instagram
                 </a>
               </div>
             </div>
