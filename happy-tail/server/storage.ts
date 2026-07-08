@@ -1,10 +1,11 @@
 import { db } from "./db";
 import { 
-  breeds, locations, emotionLogs, activityLogs,
+  breeds, locations, emotionLogs, activityLogs, feedback,
   type Breed, type InsertBreed,
   type Location, type InsertLocation,
   type EmotionLog, type InsertEmotionLog,
-  type ActivityLog, type InsertActivityLog
+  type ActivityLog, type InsertActivityLog,
+  type Feedback, type InsertFeedback
 } from "@shared/schema";
 import { eq, desc, isNull, and } from "drizzle-orm";
 
@@ -27,6 +28,11 @@ export interface IStorage {
   // Activity Logs
   createActivityLog(log: InsertActivityLog): Promise<ActivityLog>;
   getActivityHistory(userId: string): Promise<ActivityLog[]>;
+
+  // Feedback
+  getAllFeedback(): Promise<Feedback[]>;
+  createFeedback(entry: InsertFeedback): Promise<Feedback>;
+  addFeedbackComment(id: number, adminComment: string): Promise<Feedback | undefined>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -94,6 +100,25 @@ export class DatabaseStorage implements IStorage {
       .from(activityLogs)
       .where(and(eq(activityLogs.userId, userId), isNull(activityLogs.deletedAt)))
       .orderBy(desc(activityLogs.createdAt));
+  }
+
+  // Feedback
+  async getAllFeedback(): Promise<Feedback[]> {
+    return await db.select().from(feedback).orderBy(desc(feedback.createdAt));
+  }
+
+  async createFeedback(entry: InsertFeedback): Promise<Feedback> {
+    const [newEntry] = await db.insert(feedback).values(entry).returning();
+    return newEntry;
+  }
+
+  async addFeedbackComment(id: number, adminComment: string): Promise<Feedback | undefined> {
+    const [updated] = await db
+      .update(feedback)
+      .set({ adminComment, updatedAt: new Date() })
+      .where(eq(feedback.id, id))
+      .returning();
+    return updated;
   }
 }
 

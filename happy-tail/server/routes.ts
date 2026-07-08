@@ -4,7 +4,7 @@ import { storage } from "./storage";
 import { api } from "@shared/routes";
 import { z } from "zod";
 import OpenAI from "openai";
-import { insertBreedSchema, insertLocationSchema, dogProfiles, visitorLogs, insertDogProfileSchema, activityLogs, emotionLogs, removedUsers } from "@shared/schema";
+import { insertBreedSchema, insertLocationSchema, dogProfiles, visitorLogs, insertDogProfileSchema, activityLogs, emotionLogs, removedUsers, insertFeedbackSchema } from "@shared/schema";
 import { users } from "@shared/models/auth";
 import { setupAuth, registerAuthRoutes, isAuthenticated, getSession } from "./replit_integrations/auth";
 import { db } from "./db";
@@ -814,6 +814,42 @@ Rules:
       return res.status(403).json({ message: "Forbidden" });
     }
   };
+
+  // === Feedback Routes ===
+  app.get("/api/feedback", isAuthenticated, async (_req: any, res) => {
+    try {
+      const allFeedback = await storage.getAllFeedback();
+      res.json(allFeedback);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch feedback" });
+    }
+  });
+
+  app.post("/api/feedback", isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const userName =
+        [req.user.claims.first_name, req.user.claims.last_name].filter(Boolean).join(" ") ||
+        req.user.claims.email ||
+        "Anonymous";
+      const data = insertFeedbackSchema.parse({ ...req.body, userId, userName });
+      const entry = await storage.createFeedback(data);
+      res.status(201).json(entry);
+    } catch (error) {
+      res.status(400).json({ message: "Invalid feedback data" });
+    }
+  });
+
+  app.patch("/api/feedback/:id/comment", isAuthenticated, isAdmin, async (req: any, res) => {
+    try {
+      const adminComment = z.object({ adminComment: z.string().min(1) }).parse(req.body).adminComment;
+      const updated = await storage.addFeedbackComment(Number(req.params.id), adminComment);
+      if (!updated) return res.status(404).json({ message: "Feedback not found" });
+      res.json(updated);
+    } catch (error) {
+      res.status(400).json({ message: "Failed to add comment" });
+    }
+  });
 
   app.get("/api/admin/check", isAuthenticated, async (req: any, res) => {
     try {

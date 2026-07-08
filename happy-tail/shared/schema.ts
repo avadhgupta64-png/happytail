@@ -92,6 +92,16 @@ export const activityLogs = pgTable("activity_logs", {
   deletedAt: timestamp("deleted_at"),
 });
 
+export const feedback = pgTable("feedback", {
+  id: serial("id").primaryKey(),
+  userId: text("user_id").notNull(),
+  userName: text("user_name").notNull(),
+  message: text("message").notNull(),
+  adminComment: text("admin_comment"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
 // === SCHEMAS ===
 
 export const insertBreedSchema = createInsertSchema(breeds).omit({ id: true });
@@ -100,6 +110,7 @@ export const insertEmotionLogSchema = createInsertSchema(emotionLogs).omit({ id:
 export const insertDogProfileSchema = createInsertSchema(dogProfiles).omit({ id: true, createdAt: true });
 export const insertChatMessageSchema = createInsertSchema(chatMessages).omit({ id: true, createdAt: true });
 export const insertActivityLogSchema = createInsertSchema(activityLogs).omit({ id: true, createdAt: true, deletedAt: true });
+export const insertFeedbackSchema = createInsertSchema(feedback).omit({ id: true, createdAt: true, updatedAt: true, adminComment: true });
 
 // === TYPES ===
 
@@ -120,6 +131,9 @@ export type InsertChatMessage = z.infer<typeof insertChatMessageSchema>;
 
 export type ActivityLog = typeof activityLogs.$inferSelect;
 export type InsertActivityLog = z.infer<typeof insertActivityLogSchema>;
+
+export type Feedback = typeof feedback.$inferSelect;
+export type InsertFeedback = z.infer<typeof insertFeedbackSchema>;
 
 // Analysis Request
 export const analyzeEmotionSchema = z.object({
