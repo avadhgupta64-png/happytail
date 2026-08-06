@@ -1,11 +1,11 @@
 {
-  "createdAt": "2026-07-08T10:19:32.350Z",
+  "createdAt": "2026-08-06T14:41:42.683Z",
   "counts": {
     "users": 2,
     "activityLogs": 20,
     "emotionLogs": 9,
     "dogProfiles": 0,
-    "visitorLogs": 98,
+    "visitorLogs": 99,
     "locations": 7,
     "breeds": 10
   },
@@ -1363,6 +1363,11 @@
         "id": 98,
         "userId": "57381831",
         "visitedAt": "2026-07-07T18:48:55.027Z"
+      },
+      {
+        "id": 99,
+        "userId": "57381831",
+        "visitedAt": "2026-07-08T14:42:22.817Z"
       }
     ],
     "locations": [

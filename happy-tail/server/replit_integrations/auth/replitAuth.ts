@@ -83,7 +83,7 @@ export async function setupAuth(app: Express) {
     verified: passport.AuthenticateCallback
   ) => {
     try {
-      const claims = tokens.claims();
+      const claims = tokens.claims()!;
       const userId = String(claims["sub"]);
 
       // Block permanently removed users from ever logging back in

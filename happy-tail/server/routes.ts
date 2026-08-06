@@ -272,8 +272,8 @@ Important:
 
       try {
         const userId = req.user?.claims?.sub;
-        if (userId && typeof storage.logActivity === "function") {
-          await storage.logActivity(userId, "location_search", `Searched nearby places at ${input.latitude.toFixed(4)}, ${input.longitude.toFixed(4)}`);
+        if (userId) {
+          await storage.createActivityLog({ userId, activityType: "location_search", title: "Location Search", summary: `Searched nearby places at ${input.latitude.toFixed(4)}, ${input.longitude.toFixed(4)}` });
         }
       } catch (logErr) {
         console.error("Activity log failed (non-blocking):", logErr);
@@ -1035,7 +1035,7 @@ Rules:
   });
 
   app.get("/api/admin/backup/download/:filename", isAuthenticated, isAdmin, (req, res) => {
-    const filepath = getBackupPath(req.params.filename);
+    const filepath = getBackupPath(req.params.filename as string);
     if (!filepath) return res.status(404).json({ message: "Backup not found" });
     res.setHeader("Content-Disposition", `attachment; filename="${req.params.filename}"`);
     res.setHeader("Content-Type", "application/json");
