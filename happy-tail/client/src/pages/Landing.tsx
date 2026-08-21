@@ -6,10 +6,12 @@ import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import logoImg from "@assets/IMG-20260210-WA0048_1770744211559.jpg";
 import { useQuery } from "@tanstack/react-query";
 import { useGuest } from "@/lib/guest-context";
+import { useAuthModal } from "@/lib/auth-modal-context";
 
 export default function Landing() {
   const { t } = useLanguage();
   const { enterGuestMode } = useGuest();
+  const { openAuthModal } = useAuthModal();
   const { data: visitorData } = useQuery<{ count: number }>({
     queryKey: ["/api/visitors/count"],
   });
@@ -37,11 +39,24 @@ export default function Landing() {
               </div>
 
               <div className="space-y-3">
-                <a href="/api/login" className="block">
-                  <Button size="lg" className="w-full py-7 text-xl font-bold bg-white text-indigo-900 hover:bg-purple-100 shadow-2xl hover:scale-105 transition-all rounded-2xl" data-testid="button-get-started">
-                    Login to Continue <ArrowRight className="w-6 h-6 ml-2" />
-                  </Button>
-                </a>
+                <Button
+                  size="lg"
+                  className="w-full py-7 text-xl font-bold bg-white text-indigo-900 hover:bg-purple-100 shadow-2xl hover:scale-105 transition-all rounded-2xl"
+                  onClick={() => openAuthModal("login")}
+                  data-testid="button-get-started"
+                >
+                  Login to Continue <ArrowRight className="w-6 h-6 ml-2" />
+                </Button>
+
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="w-full py-6 text-base font-semibold text-indigo-900 border-white/30 bg-white/10 hover:bg-white/20 rounded-2xl transition-all"
+                  onClick={() => openAuthModal("register")}
+                  data-testid="button-create-account"
+                >
+                  Create a Free Account
+                </Button>
 
                 <Button
                   size="lg"

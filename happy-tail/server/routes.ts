@@ -828,8 +828,9 @@ Rules:
   app.post("/api/feedback", isAuthenticated, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
+      const dbUser = req.user.dbUser;
       const userName =
-        [req.user.claims.first_name, req.user.claims.last_name].filter(Boolean).join(" ") ||
+        [dbUser?.firstName, dbUser?.lastName].filter(Boolean).join(" ") ||
         req.user.claims.email ||
         "Anonymous";
       const data = insertFeedbackSchema.parse({ ...req.body, userId, userName });

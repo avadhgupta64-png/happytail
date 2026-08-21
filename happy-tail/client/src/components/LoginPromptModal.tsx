@@ -2,15 +2,17 @@ import { motion, AnimatePresence } from "framer-motion";
 import { LogIn, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useGuest } from "@/lib/guest-context";
+import { useAuthModal } from "@/lib/auth-modal-context";
 
 export function LoginPromptModal() {
   const { showLoginPrompt, exitGuestMode } = useGuest();
+  const { openAuthModal } = useAuthModal();
 
   if (!showLoginPrompt) return null;
 
   const handleLogin = () => {
     exitGuestMode();
-    window.location.href = "/api/login";
+    openAuthModal("login");
   };
 
   return (
@@ -34,10 +36,10 @@ export function LoginPromptModal() {
                 <Sparkles className="w-8 h-8 text-white" />
               </div>
 
-              <h2 className="text-2xl font-bold font-display text-gray-900 mb-2">
+              <h2 className="text-2xl font-bold font-display text-gray-900 dark:text-gray-100 mb-2">
                 Login required
               </h2>
-              <p className="text-gray-500 text-sm mb-6 leading-relaxed">
+              <p className="text-gray-500 dark:text-gray-400 text-sm mb-6 leading-relaxed">
                 AI features require a free account. Log in to unlock all features, save your results, and get personalized insights for your dog.
               </p>
 
@@ -45,6 +47,7 @@ export function LoginPromptModal() {
                 size="lg"
                 className="w-full py-6 text-base font-bold rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 shadow-lg"
                 onClick={handleLogin}
+                data-testid="button-prompt-login"
               >
                 <LogIn className="w-5 h-5 mr-2" />
                 Log In to Continue

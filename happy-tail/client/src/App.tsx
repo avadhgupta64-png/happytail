@@ -37,6 +37,7 @@ import { useAuth } from "@/hooks/use-auth";
 import { WSProvider } from "@/lib/ws-context";
 import { GuestProvider, useGuest } from "@/lib/guest-context";
 import { LoginPromptModal } from "@/components/LoginPromptModal";
+import { AuthModalProvider, useAuthModal } from "@/lib/auth-modal-context";
 
 function ThemeToggle() {
   const { theme, setTheme } = useTheme();
@@ -152,10 +153,11 @@ function Router() {
 function AuthenticatedApp() {
   const { user, logout } = useAuth();
   const { isGuest, exitGuestMode } = useGuest();
+  const { openAuthModal } = useAuthModal();
 
   const handleGuestLogin = () => {
     exitGuestMode();
-    window.location.href = "/api/login";
+    openAuthModal("login");
   };
 
   useState(() => {
@@ -235,7 +237,10 @@ function AuthenticatedApp() {
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       className="flex items-center gap-2 cursor-pointer text-amber-600 dark:text-amber-400 focus:text-amber-600 dark:focus:text-amber-400"
-                      onClick={() => { window.location.href = "/api/switch-account"; }}
+                      onClick={async () => {
+                        await fetch("/api/switch-account", { method: "POST", credentials: "include" });
+                        openAuthModal("login");
+                      }}
                       data-testid="button-switch-account"
                     >
                       <RefreshCw className="w-4 h-4" /> Switch Account
@@ -331,7 +336,9 @@ export default function App() {
       <TooltipProvider>
         <LanguageProvider>
           <GuestProvider>
-            <AppContent />
+            <AuthModalProvider>
+              <AppContent />
+            </AuthModalProvider>
           </GuestProvider>
         </LanguageProvider>
         <Toaster />

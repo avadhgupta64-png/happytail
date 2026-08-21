@@ -1,6 +1,7 @@
 import { drizzle } from "drizzle-orm/node-postgres";
 import pg from "pg";
 import * as schema from "@shared/schema";
+import { users } from "@shared/models/auth";
 
 const { Pool } = pg;
 
@@ -14,3 +15,5 @@ if (!connectionString) {
 
 export const pool = new Pool({ connectionString });
 export const db = drizzle(pool, { schema });
+
+export { users };

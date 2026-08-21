@@ -1,25 +1,24 @@
-import * as client from "openid-client";
-import { Strategy, type VerifyFunction } from "openid-client/passport";
+import bcrypt from "bcrypt";
+import { Strategy as LocalStrategy } from "passport-local";
 
 import passport from "passport";
 import session from "express-session";
 import type { Express, RequestHandler } from "express";
-import memoize from "memoizee";
 import connectPg from "connect-pg-simple";
 import { randomBytes } from "crypto";
 import { authStorage } from "./storage";
-import { db } from "../../db";
-import { sql } from "drizzle-orm";
+import { db, users } from "../../db";
+import { eq } from "drizzle-orm";
+import type { User } from "@shared/models/auth";
 
-const getOidcConfig = memoize(
-  async () => {
-    return await client.discovery(
-      new URL(process.env.ISSUER_URL ?? "https://replit.com/oidc"),
-      process.env.REPL_ID!
-    );
-  },
-  { maxAge: 3600 * 1000 }
-);
+export interface LocalUser extends Express.User {
+  dbUser: User;
+  claims: {
+    sub: string;
+    email: string;
+  };
+  isAdmin?: boolean;
+}
 
 export function getSession() {
   const sessionTtl = 7 * 24 * 60 * 60 * 1000; // 1 week
@@ -30,10 +29,14 @@ export function getSession() {
     ttl: sessionTtl,
     tableName: "sessions",
   });
-  const secret = process.env.SESSION_SECRET || (() => {
-    console.warn("[auth] SESSION_SECRET not set — using a random secret. Sessions will not persist across restarts.");
-    return randomBytes(32).toString("hex");
-  })();
+  const secret =
+    process.env.SESSION_SECRET ||
+    (() => {
+      console.warn(
+        "[auth] SESSION_SECRET not set — using a random secret. Sessions will not persist across restarts.",
+      );
+      return randomBytes(32).toString("hex");
+    })();
   return session({
     secret,
     store: sessionStore,
@@ -41,29 +44,9 @@ export function getSession() {
     saveUninitialized: false,
     cookie: {
       httpOnly: true,
-      secure: true,
+      secure: process.env.NODE_ENV === "production",
       maxAge: sessionTtl,
     },
-  });
-}
-
-function updateUserSession(
-  user: any,
-  tokens: client.TokenEndpointResponse & client.TokenEndpointResponseHelpers
-) {
-  user.claims = tokens.claims();
-  user.access_token = tokens.access_token;
-  user.refresh_token = tokens.refresh_token;
-  user.expires_at = user.claims?.exp;
-}
-
-async function upsertUser(claims: any) {
-  await authStorage.upsertUser({
-    id: claims["sub"],
-    email: claims["email"],
-    firstName: claims["first_name"],
-    lastName: claims["last_name"],
-    profileImageUrl: claims["profile_image_url"],
   });
 }
 
@@ -73,136 +56,200 @@ export async function setupAuth(app: Express) {
   app.use(passport.initialize());
   app.use(passport.session());
 
-  const config = await getOidcConfig();
+  // Passport local strategy for email/password
+  passport.use(
+    new LocalStrategy(
+      { usernameField: "email", passReqToCallback: false },
+      async (
+        email: string,
+        password: string,
+        done: (error: any, user?: Express.User | false, options?: { message: string }) => void,
+      ) => {
+        try {
+          const normalizedEmail = email.toLowerCase().trim();
 
-  const verify: VerifyFunction = async (
-    tokens: client.TokenEndpointResponse & client.TokenEndpointResponseHelpers,
-    verified: passport.AuthenticateCallback
-  ) => {
+          // Find user by email
+          const [dbUser] = await db
+            .select()
+            .from(users)
+            .where(eq(users.email, normalizedEmail));
+
+          if (!dbUser) {
+            return done(null, false, { message: "Invalid email or password" });
+          }
+
+          // Check banned status
+          if (dbUser.isBanned) {
+            return done(null, false, { message: "banned" });
+          }
+
+          // Verify password
+          const isPasswordValid = await bcrypt.compare(
+            password,
+            dbUser.password_hash || "",
+          );
+          if (!isPasswordValid) {
+            return done(null, false, { message: "Invalid email or password" });
+          }
+
+          const user: LocalUser = {
+            claims: { sub: dbUser.id, email: dbUser.email! },
+            dbUser,
+          };
+          done(null, user);
+        } catch (err) {
+          done(err as Error);
+        }
+      },
+    ),
+  );
+
+  passport.serializeUser((user: any, cb) => cb(null, user.claims.sub));
+  passport.deserializeUser(async (id: string, cb) => {
     try {
-      const claims = tokens.claims()!;
-      const userId = String(claims["sub"]);
-
-      // Block permanently removed users from ever logging back in
-      const removedResult = await db.execute(sql`SELECT 1 FROM removed_users WHERE user_id = ${userId} LIMIT 1`);
-      if (removedResult.rows.length > 0) {
-        return verified(null, false, { message: "permanently-removed" } as any);
+      const [dbUser] = await db.select().from(users).where(eq(users.id, id));
+      if (!dbUser) {
+        return cb(null, false);
       }
-
-      await upsertUser(claims);
-
-      // Block banned users from completing login
-      const banResult = await db.execute(sql`SELECT is_banned FROM users WHERE id = ${userId} LIMIT 1`);
-      if (banResult.rows[0]?.is_banned === true) {
-        return verified(null, false, { message: "banned" } as any);
-      }
-
-      const user = {};
-      updateUserSession(user, tokens);
-      verified(null, user);
+      const user: LocalUser = {
+        claims: { sub: dbUser.id, email: dbUser.email! },
+        dbUser,
+      };
+      cb(null, user);
     } catch (err) {
-      verified(err as Error);
+      cb(err as Error);
     }
-  };
-
-  // Keep track of registered strategies
-  const registeredStrategies = new Set<string>();
-
-  // Helper function to ensure strategy exists for a domain
-  const ensureStrategy = (domain: string) => {
-    const strategyName = `replitauth:${domain}`;
-    if (!registeredStrategies.has(strategyName)) {
-      const strategy = new Strategy(
-        {
-          name: strategyName,
-          config,
-          scope: "openid email profile offline_access",
-          callbackURL: `https://${domain}/api/callback`,
-        },
-        verify
-      );
-      passport.use(strategy);
-      registeredStrategies.add(strategyName);
-    }
-  };
-
-  passport.serializeUser((user: Express.User, cb) => cb(null, user));
-  passport.deserializeUser((user: Express.User, cb) => cb(null, user));
-
-  app.get("/api/login", (req, res, next) => {
-    ensureStrategy(req.hostname);
-    passport.authenticate(`replitauth:${req.hostname}`, {
-      prompt: "login consent",
-      scope: ["openid", "email", "profile", "offline_access"],
-    })(req, res, next);
   });
 
-  app.get("/api/callback", (req, res, next) => {
-    ensureStrategy(req.hostname);
-    passport.authenticate(`replitauth:${req.hostname}`, (err: any, user: any, info: any) => {
-      if (err) return next(err);
-      if (!user) {
-        const msg = (info as any)?.message;
-        if (msg === "banned") return res.redirect("/?auth_error=banned");
-        if (msg === "permanently-removed") return res.redirect("/?auth_error=removed");
-        return res.redirect("/api/login");
+  // POST /api/login — email + password login
+  app.post("/api/login", (req, res, next) => {
+    passport.authenticate(
+      "local",
+      (err: any, user: LocalUser | false, info: { message?: string } | undefined) => {
+        if (err) {
+          console.error("[auth] Login error:", err);
+          return res.status(500).json({ message: "Login failed" });
+        }
+        if (!user) {
+          const msg = info?.message || "Invalid email or password";
+          const status = msg === "banned" ? 403 : 401;
+          return res.status(status).json({ message: msg });
+        }
+
+        req.logIn(user, (loginErr) => {
+          if (loginErr) {
+            console.error("[auth] Session error:", loginErr);
+            return res.status(500).json({ message: "Failed to create session" });
+          }
+          // Return the full user object (without password_hash)
+          const { password_hash, ...safeUser } = user.dbUser as any;
+          return res.json({ success: true, user: safeUser });
+        });
+      },
+    )(req, res, next);
+  });
+
+  // POST /api/register — create new account
+  app.post("/api/register", async (req, res) => {
+    try {
+      const { email, password, firstName, lastName } = req.body;
+
+      if (!email || !password || !firstName) {
+        return res
+          .status(400)
+          .json({ message: "Email, password, and first name are required" });
       }
-      req.logIn(user, (loginErr) => {
-        if (loginErr) return next(loginErr);
-        res.redirect("/");
+
+      if (password.length < 6) {
+        return res
+          .status(400)
+          .json({ message: "Password must be at least 6 characters" });
+      }
+
+      const normalizedEmail = email.toLowerCase().trim();
+
+      // Check if user already exists
+      const existing = await db
+        .select({ id: users.id })
+        .from(users)
+        .where(eq(users.email, normalizedEmail));
+      if (existing.length > 0) {
+        return res.status(409).json({ message: "Email already registered" });
+      }
+
+      // Hash password
+      const hashedPassword = await bcrypt.hash(password, 10);
+
+      // Create user
+      const [newUser] = await db
+        .insert(users)
+        .values({
+          email: normalizedEmail,
+          password_hash: hashedPassword,
+          firstName,
+          lastName: lastName || "",
+        })
+        .returning();
+
+      // Log the new user in
+      const sessionUser: LocalUser = {
+        claims: { sub: newUser.id, email: newUser.email! },
+        dbUser: newUser,
+      };
+
+      req.logIn(sessionUser, (err) => {
+        if (err) {
+          return res.status(500).json({ message: "Failed to create session" });
+        }
+        const { password_hash, ...safeUser } = newUser as any;
+        return res.status(201).json({ success: true, user: safeUser });
       });
-    })(req, res, next);
+    } catch (err) {
+      console.error("[auth] Registration error:", err);
+      res.status(500).json({ message: "Registration failed" });
+    }
   });
 
-  app.get("/api/logout", (req, res) => {
+  // POST /api/logout
+  app.post("/api/logout", (req, res) => {
     req.logout(() => {
-      res.redirect(
-        client.buildEndSessionUrl(config, {
-          client_id: process.env.REPL_ID!,
-          post_logout_redirect_uri: `${req.protocol}://${req.hostname}`,
-        }).href
-      );
+      res.json({ success: true });
     });
   });
 
-  app.get("/api/switch-account", (req, res) => {
+  // POST /api/switch-account — same as logout for email/password auth
+  app.post("/api/switch-account", (req, res) => {
     req.logout(() => {
-      const loginUrl = `${req.protocol}://${req.hostname}/api/login`;
-      res.redirect(
-        client.buildEndSessionUrl(config, {
-          client_id: process.env.REPL_ID!,
-          post_logout_redirect_uri: loginUrl,
-        }).href
-      );
+      res.json({ success: true });
     });
   });
 }
 
-export const isAuthenticated: RequestHandler = async (req, res, next) => {
-  const user = req.user as any;
+export const isAuthenticated: RequestHandler = (req, res, next) => {
+  if (!req.isAuthenticated() || !req.user) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+  next();
+};
 
-  if (!req.isAuthenticated() || !user.expires_at) {
+// Admin check middleware
+export const isAdmin: RequestHandler = async (req, res, next) => {
+  if (!req.isAuthenticated() || !req.user) {
     return res.status(401).json({ message: "Unauthorized" });
   }
 
-  const now = Math.floor(Date.now() / 1000);
-  if (now <= user.expires_at) {
-    return next();
-  }
-
-  const refreshToken = user.refresh_token;
-  if (!refreshToken) {
-    res.status(401).json({ message: "Unauthorized" });
-    return;
-  }
+  const userId = String((req.user as LocalUser).claims?.sub);
+  const ADMIN_EMAILS = (process.env.ADMIN_EMAILS || "").split(",").map((e) => e.trim()).filter(Boolean);
 
   try {
-    const config = await getOidcConfig();
-    const tokenResponse = await client.refreshTokenGrant(config, refreshToken);
-    updateUserSession(user, tokenResponse);
-    return next();
-  } catch (error) {
-    res.status(401).json({ message: "Unauthorized" });
-    return;
+    const [user] = await db
+      .select({ email: users.email })
+      .from(users)
+      .where(eq(users.id, userId));
+    const adminFlag = user?.email ? ADMIN_EMAILS.includes(user.email) : false;
+    (req.user as LocalUser).isAdmin = adminFlag;
+    next();
+  } catch {
+    res.status(500).json({ message: "Failed to check admin status" });
   }
 };
