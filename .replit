@@ -31,7 +31,6 @@ channel = "stable-25_05"
 [userenv]
 
 [userenv.shared]
-EXTERNAL_DB_URL = "postgresql://postgres:password@helium/heliumdb?sslmode=disable"
 
 [[ports]]
 localPort = 8080
