@@ -1,7 +1,3 @@
-<div align="center">
-
-<img src="happy-tail/client/src/assets/IMG-20260210-WA0048_1770744211559.jpg" alt="Happy Tail Logo" width="100" style="border-radius:20px" />
-
 # Happy Tail 🐾
 
 **Your AI-powered dog care companion**
