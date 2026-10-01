@@ -317,16 +317,17 @@ export default function Locations() {
     try {
       const res = await fetch("https://ipapi.co/json/");
       const data = await res.json();
-      if (data.latitude && data.longitude && data.city) {
-        const loc = { lat: data.latitude, lng: data.longitude };
+      if (data.latitude && data.longitude) {
+        const loc = { lat: parseFloat(data.latitude), lng: parseFloat(data.longitude) };
         setUserLocation(loc);
-        setLocationName(data.city);
+        setLocationName(data.city || data.region || "Your Area");
         fetchNearbyPlaces(loc.lat, loc.lng, force);
         return;
       }
     } catch {
       // fall through to hardcoded default
     }
+    // Last-resort fallback: New Delhi
     const defaultLoc = { lat: 28.6139, lng: 77.2090 };
     setUserLocation(defaultLoc);
     setLocationName("New Delhi");

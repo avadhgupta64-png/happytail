@@ -303,6 +303,13 @@ function AppContent() {
     return <AuthErrorScreen type={authError} />;
   }
 
+  // Show welcome toast after email verification
+  const verified = new URLSearchParams(window.location.search).get("verified");
+  if (verified === "1" && user) {
+    // Clean the URL without reloading
+    window.history.replaceState({}, "", "/");
+  }
+
   if (showSplash) {
     return <SplashScreen onComplete={handleSplashComplete} />;
   }

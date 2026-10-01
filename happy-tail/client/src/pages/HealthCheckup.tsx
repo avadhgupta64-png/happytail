@@ -2,7 +2,7 @@ import { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Upload, HeartPulse, Loader2, Sparkles, Stethoscope, AlertCircle, CheckCircle2, XCircle, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { apiRequest } from "@/lib/queryClient";
+import { apiRequest, UnauthorizedError } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "wouter";
@@ -24,7 +24,7 @@ export default function HealthCheckup() {
   const [result, setResult] = useState<HealthResult | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
-  const { checkGuestAccess } = useGuest();
+  const { checkGuestAccess, setShowLoginPrompt } = useGuest();
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
@@ -56,7 +56,11 @@ export default function HealthCheckup() {
       const data = await res.json();
       setResult(data);
     } catch (err) {
-      toast({ title: "Checkup failed", description: "Could not analyze the photos. Please try again.", variant: "destructive" });
+      if (err instanceof UnauthorizedError) {
+        setShowLoginPrompt(true);
+      } else {
+        toast({ title: "Checkup failed", description: "Could not analyze the photos. Please try again.", variant: "destructive" });
+      }
     } finally {
       setIsAnalyzing(false);
     }

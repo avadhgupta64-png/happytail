@@ -3,7 +3,6 @@ import { registerRoutes } from "./routes";
 import { serveStatic } from "./static";
 import { createServer } from "http";
 import { scheduleBackups } from "./backup";
-import { migrate } from "drizzle-orm/node-postgres/migrator";
 import { db } from "./db";
 import path from "path";
 
@@ -80,14 +79,8 @@ function startListening() {
 }
 
 (async () => {
-  // Run DB migrations first so all tables exist before routes use them
-  try {
-    const migrationsFolder = path.join(__dirname, "migrations");
-    await migrate(db, { migrationsFolder });
-    console.log("[startup] DB migrations applied");
-  } catch (err) {
-    console.error("[startup] DB migration failed (continuing):", err);
-  }
+  // DB migrations: tables are pre-applied, skip auto-migrate to avoid re-run errors
+  console.log("[startup] DB ready");
 
   let routesOk = false;
 

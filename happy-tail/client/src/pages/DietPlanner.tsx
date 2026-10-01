@@ -4,7 +4,7 @@ import { UtensilsCrossed, Loader2, ArrowLeft, Sparkles, Clock, Droplets, Flame, 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { apiRequest } from "@/lib/queryClient";
+import { apiRequest, UnauthorizedError } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { Link } from "wouter";
 import { useGuest } from "@/lib/guest-context";
@@ -34,7 +34,7 @@ export default function DietPlanner() {
   const [isLoading, setIsLoading] = useState(false);
   const [plan, setPlan] = useState<MealPlan | null>(null);
   const { toast } = useToast();
-  const { checkGuestAccess } = useGuest();
+  const { checkGuestAccess, setShowLoginPrompt } = useGuest();
   const { lang, t } = useLanguage();
 
   const handleGenerate = async () => {
@@ -49,7 +49,11 @@ export default function DietPlanner() {
       const data = await res.json();
       setPlan(data);
     } catch (err) {
-      toast({ title: "Failed", description: "Could not generate diet plan. Please try again.", variant: "destructive" });
+      if (err instanceof UnauthorizedError) {
+        setShowLoginPrompt(true);
+      } else {
+        toast({ title: "Failed", description: "Could not generate diet plan. Please try again.", variant: "destructive" });
+      }
     } finally {
       setIsLoading(false);
     }

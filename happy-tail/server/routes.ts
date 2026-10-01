@@ -1,6 +1,6 @@
 import express, { type Express } from "express";
 import type { Server } from "http";
-import { storage } from "./storage";
+import { storage, AI_FEATURE_LIMIT } from "./storage";
 import { api } from "@shared/routes";
 import { z } from "zod";
 import OpenAI from "openai";
@@ -13,11 +13,16 @@ import { setupWebSocket } from "./ws";
 import { runBackup, listBackups, getBackupPath } from "./backup";
 import fs from "fs";
 
-// Initialize OpenAI client using Replit AI Integrations
+// Initialize Groq client (OpenAI-compatible API)
 const openai = new OpenAI({
-  apiKey: process.env.AI_INTEGRATIONS_OPENAI_API_KEY,
-  baseURL: process.env.AI_INTEGRATIONS_OPENAI_BASE_URL,
+  apiKey: process.env.GROQ_API_KEY,
+  baseURL: "https://api.groq.com/openai/v1",
 });
+
+// Vision model: supports image inputs + JSON mode
+const VISION_MODEL = "qwen/qwen3.8-27b";
+// Text model: for non-vision tasks (fast, cheap)
+const TEXT_MODEL = "qwen/qwen3.8-27b";
 
 const LANGUAGE_NAMES: Record<string, string> = {
   en: "English", hi: "Hindi", ta: "Tamil", te: "Telugu", mr: "Marathi",
@@ -192,58 +197,58 @@ export async function registerRoutes(
         longitude: z.number(),
       }).parse(req.body);
 
+      // Check + increment AI usage limit
+      const allowed = await checkAndIncrementUsage(req, res, "location_search");
+      if (!allowed) return;
+
       const response = await openai.chat.completions.create({
-        model: "gpt-4o",
+        model: TEXT_MODEL,
         messages: [
           {
             role: "system",
-            content: `You are a dog-friendly location expert for India. Given GPS coordinates, identify the city/area and return 15-20 real, well-known dog-friendly places nearby (within 25km radius). Include parks, pet-friendly cafes, veterinary clinics, pet stores, grooming salons, and any restricted zones where dogs are not allowed.
+            content: `You are a dog-friendly location expert. Given GPS coordinates, identify the city/area and return 15-20 real, well-known dog-friendly places nearby (within 25km radius). Include parks, pet-friendly cafes, veterinary clinics, pet stores, grooming salons, and any restricted zones where dogs are not allowed.
 
-Return ONLY valid JSON array with this exact structure (no markdown, no explanation):
-[
-  {
-    "name": "Place Name",
-    "type": "park|cafe|vet|petstore|grooming|restricted",
-    "address": "Full address with city and pincode",
-    "area": "Neighborhood/Area Name",
-    "latitude": 28.1234,
-    "longitude": 77.1234,
-    "description": "2-3 sentence description about what makes this place good for dogs",
-    "rules": "Any specific pet rules or restrictions",
-    "timing": "Opening hours like 6:00 AM - 8:00 PM",
-    "rating": 4.5
-  }
-]
+Return a JSON object with a single key "places" containing an array. Each item must have:
+- "name": place name (string)
+- "type": exactly one of "park", "cafe", "vet", "petstore", "grooming", "restricted"
+- "address": full address with city (string)
+- "area": neighborhood or district name (string)
+- "latitude": numeric latitude (number, not string)
+- "longitude": numeric longitude (number, not string)
+- "description": 2-3 sentences about what makes it good for dogs (string)
+- "rules": pet rules or restrictions (string or null)
+- "timing": opening hours (string or null)
+- "rating": number between 3.0 and 5.0 (number or null)
 
-Important:
-- Use REAL places that actually exist - parks, cafes, vets, pet stores, groomers
-- Include accurate GPS coordinates for each place
-- Cover a good mix of categories
-- If the area is rural/small town, include nearby city options too
-- For restricted zones, explain why dogs aren't allowed
-- Rating should be between 3.0 and 5.0`
+Important rules:
+- Use REAL places that actually exist at the given coordinates' city/region
+- Coordinates can be anywhere in the world — identify the city and find local places
+- All latitude/longitude values must be numbers, never strings
+- Cover a good mix of all categories
+- For restricted zones, explain why dogs are not allowed
+- If the area is rural, include nearby city options`
           },
           {
             role: "user",
-            content: `Find dog-friendly places near these coordinates: Latitude ${input.latitude}, Longitude ${input.longitude}`
+            content: `Find dog-friendly places near coordinates: Latitude ${input.latitude}, Longitude ${input.longitude}`
           }
         ],
+        response_format: { type: "json_object" },
         temperature: 0.3,
-        max_tokens: 4000,
+        max_tokens: 3000,
+        reasoning_effort: "none" as any,
       });
 
-      const text = response.choices[0]?.message?.content || "[]";
-      const jsonMatch = text.match(/\[[\s\S]*\]/);
-      if (!jsonMatch) {
+      const text = response.choices[0]?.message?.content || "{}";
+      let parsed: any;
+      try {
+        parsed = JSON.parse(text);
+      } catch {
         return res.status(500).json({ message: "Failed to parse AI response" });
       }
 
-      let rawPlaces: any[];
-      try {
-        rawPlaces = JSON.parse(jsonMatch[0]);
-      } catch {
-        return res.status(500).json({ message: "Failed to parse places data" });
-      }
+      // Support both { places: [...] } wrapper and bare array responses
+      const rawPlaces: any[] = Array.isArray(parsed) ? parsed : (Array.isArray(parsed.places) ? parsed.places : []);
 
       if (!Array.isArray(rawPlaces)) {
         return res.status(500).json({ message: "Invalid places data" });
@@ -334,7 +339,16 @@ Important:
 
       const { frames, language } = parsed.data;
 
-      const imageContent: Array<{ type: "image_url"; image_url: { url: string; detail: "high" } }> = frames.map((frame) => ({
+      // Check + increment AI usage limit
+      const allowed = await checkAndIncrementUsage(req, res, "bark_translation");
+      if (!allowed) return;
+
+      // Groq vision supports max 5 images — sample evenly if more frames provided
+      const sampledFrames = frames.length > 5
+        ? [0, 1, 2, 3, 4].map(i => frames[Math.round(i * (frames.length - 1) / 4)])
+        : frames;
+
+      const imageContent: Array<{ type: "image_url"; image_url: { url: string; detail: "high" } }> = sampledFrames.map((frame) => ({
         type: "image_url" as const,
         image_url: {
           url: frame.startsWith("data:") ? frame : `data:image/jpeg;base64,${frame}`,
@@ -343,7 +357,7 @@ Important:
       }));
 
       const response = await openai.chat.completions.create({
-        model: "gpt-4o",
+        model: VISION_MODEL,
         messages: [
           {
             role: "system",
@@ -434,7 +448,8 @@ CRITICAL RULES:
           },
         ],
         response_format: { type: "json_object" },
-        max_tokens: 1500,
+        reasoning_effort: "none" as any,
+        max_tokens: 800,
       });
 
       const content = response.choices[0].message.content || '{}';
@@ -473,10 +488,16 @@ CRITICAL RULES:
   // === Health Checkup Route ===
   app.post("/api/health/checkup", isAuthenticated, async (req: any, res) => {
     try {
-      const { images, language } = z.object({ images: z.array(z.string()), language: z.string().optional() }).parse(req.body);
+      const { images: rawImages, language } = z.object({ images: z.array(z.string()), language: z.string().optional() }).parse(req.body);
+      // Groq vision supports max 5 images
+      const images = rawImages.slice(0, 5);
+
+      // Check + increment AI usage limit
+      const allowed = await checkAndIncrementUsage(req, res, "health_scan");
+      if (!allowed) return;
       
       const response = await openai.chat.completions.create({
-        model: "gpt-4o",
+        model: VISION_MODEL,
         messages: [
           {
             role: "user",
@@ -490,6 +511,8 @@ CRITICAL RULES:
           },
         ],
         response_format: { type: "json_object" },
+        reasoning_effort: "none" as any,
+        max_tokens: 800,
       });
 
       const content = response.choices[0].message.content || "{}";
@@ -532,8 +555,12 @@ CRITICAL RULES:
         language: z.string().optional(),
       }).parse(req.body);
 
+      // Check + increment AI usage limit
+      const allowed = await checkAndIncrementUsage(req, res, "diet_plan");
+      if (!allowed) return;
+
       const response = await openai.chat.completions.create({
-        model: "gpt-4o",
+        model: VISION_MODEL,
         messages: [
           {
             role: "system",
@@ -559,6 +586,8 @@ Return ONLY a JSON object with these keys:
           }
         ],
         response_format: { type: "json_object" },
+        reasoning_effort: "none" as any,
+        max_tokens: 800,
       });
 
       const result = JSON.parse(response.choices[0].message.content || "{}");
@@ -602,8 +631,17 @@ Return ONLY a JSON object with these keys:
         language: z.string().optional(),
       }).parse(req.body);
 
+      // Check + increment AI usage limit (only on first message to avoid counting each turn)
+      const isFirstMessage = messages.filter(m => m.role === "user").length === 1;
+      if (isFirstMessage) {
+        const allowed = await checkAndIncrementUsage(req, res, "vet_chat");
+        if (!allowed) return;
+      }
+
       const response = await openai.chat.completions.create({
-        model: "gpt-4o",
+        reasoning_effort: "none" as any,
+        max_tokens: 800,
+        model: VISION_MODEL,
         messages: [
           {
             role: "system",
@@ -648,9 +686,13 @@ Rules:
     try {
       const { image, deviceId, language } = api.emotions.analyze.input.parse(req.body);
 
+      // Check + increment AI usage limit
+      const allowed = await checkAndIncrementUsage(req, res, "emotion_scan");
+      if (!allowed) return;
+
       // Call OpenAI for analysis
       const response = await openai.chat.completions.create({
-        model: "gpt-4o", // Using multimodal model
+        model: VISION_MODEL, // Using multimodal model
         messages: [
           {
             role: "user",
@@ -666,9 +708,20 @@ Rules:
           },
         ],
         response_format: { type: "json_object" },
+        reasoning_effort: "none" as any,
+        max_tokens: 800,
       });
 
-      const result = JSON.parse(response.choices[0].message.content || "{}");
+      const raw = JSON.parse(response.choices[0].message.content || "{}");
+      console.log("[emotion] Groq raw:", JSON.stringify(raw));
+      const result = {
+        breed:       raw.breed       || raw.Breed       || "Unknown",
+        emotion:     raw.emotion     || raw.Emotion     || "Unknown",
+        mood:        raw.mood        || raw.Mood        || "Unknown",
+        explanation: raw.explanation || raw.Explanation || "",
+        treatment:   raw.treatment   || raw.Treatment   || "",
+        suggestion:  raw.suggestion  || raw.Suggestion  || "No suggestion",
+      };
 
       await storage.createEmotionLog({
         imageUrl: image.substring(0, 100) + "...", 
@@ -713,7 +766,16 @@ Rules:
 
       const { frames, language } = parsed.data;
 
-      const imageContent: Array<{ type: "image_url"; image_url: { url: string; detail: "high" } }> = frames.map((frame) => ({
+      // Check + increment AI usage limit
+      const allowed = await checkAndIncrementUsage(req, res, "behavior_analysis");
+      if (!allowed) return;
+
+      // Groq vision supports max 5 images — sample evenly if more frames provided
+      const sampledFrames = frames.length > 5
+        ? [0, 1, 2, 3, 4].map(i => frames[Math.round(i * (frames.length - 1) / 4)])
+        : frames;
+
+      const imageContent: Array<{ type: "image_url"; image_url: { url: string; detail: "high" } }> = sampledFrames.map((frame) => ({
         type: "image_url" as const,
         image_url: {
           url: frame.startsWith("data:") ? frame : `data:image/jpeg;base64,${frame}`,
@@ -722,7 +784,7 @@ Rules:
       }));
 
       const response = await openai.chat.completions.create({
-        model: "gpt-4o",
+        model: VISION_MODEL,
         messages: [
           {
             role: "user",
@@ -745,6 +807,7 @@ Rules:
           },
         ],
         response_format: { type: "json_object" },
+        reasoning_effort: "none" as any,
       });
 
       const result = JSON.parse(response.choices[0].message.content || "{}");
@@ -800,7 +863,11 @@ Rules:
   });
 
   // === Admin Routes (locked to admin emails) ===
-  const ADMIN_EMAILS = ["pawcare.tech@gmail.com"];
+  const ADMIN_EMAILS = [
+    "pawcare.tech@gmail.com",
+    "avadhgupta64@gmail.com",
+    "avxdhgupta@gmail.com",
+  ];
 
   const isAdmin = async (req: any, res: any, next: any) => {
     try {
@@ -812,6 +879,37 @@ Rules:
       next();
     } catch {
       return res.status(403).json({ message: "Forbidden" });
+    }
+  };
+
+  // Helper: check AI usage limit before invoking AI. Returns true if allowed, false if blocked (also sends 429).
+  const checkAndIncrementUsage = async (req: any, res: any, featureKey: string): Promise<boolean> => {
+    try {
+      const userId = String(req.user?.claims?.sub);
+      // Admins always have unlimited access
+      const [userRow] = await db.select({ email: users.email }).from(users).where(eq(users.id, userId));
+      if (userRow && ADMIN_EMAILS.includes(userRow.email ?? "")) return true;
+      // Check admin-granted unlimited access (per-feature or "all")
+      const unlimited = await storage.hasUnlimitedAccess(userId, featureKey);
+      if (unlimited) return true;
+      // Check current usage count
+      const count = await storage.getUsageCount(userId, featureKey);
+      if (count >= AI_FEATURE_LIMIT) {
+        res.status(429).json({
+          message: "Usage limit reached",
+          featureKey,
+          used: count,
+          limit: AI_FEATURE_LIMIT,
+        });
+        return false;
+      }
+      // Increment usage
+      await storage.incrementUsage(userId, featureKey);
+      return true;
+    } catch (err) {
+      console.error("Usage check failed:", err);
+      // On DB error, allow the request through (fail open) rather than blocking users
+      return true;
     }
   };
 
@@ -873,6 +971,12 @@ Rules:
 
   app.post("/api/admin/users/:id/ban", isAuthenticated, isAdmin, async (req: any, res) => {
     try {
+      // Prevent banning another admin
+      const [targetUser] = await db.select({ email: users.email }).from(users).where(eq(users.id, req.params.id));
+      if (!targetUser) return res.status(404).json({ message: "User not found" });
+      if (ADMIN_EMAILS.includes(targetUser.email ?? "")) {
+        return res.status(403).json({ message: "Cannot ban an admin account" });
+      }
       const reason = req.body?.reason || "Banned by administrator";
       const [updated] = await db
         .update(users)
@@ -904,11 +1008,10 @@ Rules:
 
   app.delete("/api/admin/users/:id", isAuthenticated, isAdmin, async (req: any, res) => {
     try {
-      const adminEmail = "pawcare.tech@gmail.com";
       const [targetUser] = await db.select().from(users).where(eq(users.id, req.params.id));
       if (!targetUser) return res.status(404).json({ message: "User not found" });
-      if (targetUser.email === adminEmail) {
-        return res.status(403).json({ message: "Cannot remove the admin account" });
+      if (ADMIN_EMAILS.includes(targetUser.email ?? "")) {
+        return res.status(403).json({ message: "Cannot remove an admin account" });
       }
       // Archive the user record before deleting
       await db.insert(removedUsers).values({
@@ -1271,6 +1374,93 @@ Rules:
       res.send(csv);
     } catch (err) {
       res.status(500).json({ message: "Failed to export emotion logs" });
+    }
+  });
+
+  // === Admin Feedback Routes ===
+  app.get("/api/admin/feedback", isAuthenticated, isAdmin, async (_req, res) => {
+    try {
+      const allFeedback = await storage.getAllFeedback();
+      res.json(allFeedback);
+    } catch (err) {
+      res.status(500).json({ message: "Failed to fetch feedback" });
+    }
+  });
+
+  app.patch("/api/admin/feedback/:id/resolve", isAuthenticated, isAdmin, async (req: any, res) => {
+    try {
+      const id = Number(req.params.id);
+      const { resolved } = z.object({ resolved: z.boolean() }).parse(req.body);
+      const updated = await storage.resolveFeedback(id, resolved);
+      if (!updated) return res.status(404).json({ message: "Feedback not found" });
+      res.json(updated);
+    } catch (err) {
+      res.status(400).json({ message: "Failed to update feedback" });
+    }
+  });
+
+  // === AI Usage Summary (for current user) ===
+  app.get("/api/ai/usage-summary", isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = String(req.user?.claims?.sub);
+      // Admins have unlimited — return special flag
+      const [userRow] = await db.select({ email: users.email }).from(users).where(eq(users.id, userId));
+      const isAdminUser = userRow && ADMIN_EMAILS.includes(userRow.email ?? "");
+      const usageSummary = await storage.getUserUsageSummary(userId);
+      const permissions = await storage.getUserPermissions(userId);
+      const hasAllUnlimited = isAdminUser || permissions.some(p => p.featureKey === "all");
+      const unlimitedFeatures = permissions.map(p => p.featureKey);
+      res.json({
+        isAdmin: !!isAdminUser,
+        hasAllUnlimited,
+        limit: AI_FEATURE_LIMIT,
+        usage: usageSummary,
+        unlimitedFeatures,
+      });
+    } catch (err) {
+      res.status(500).json({ message: "Failed to fetch usage summary" });
+    }
+  });
+
+  // === Admin AI Permission Routes ===
+  app.get("/api/admin/users/:id/permissions", isAuthenticated, isAdmin, async (req: any, res) => {
+    try {
+      const permissions = await storage.getUserPermissions(req.params.id);
+      res.json(permissions);
+    } catch (err) {
+      res.status(500).json({ message: "Failed to fetch permissions" });
+    }
+  });
+
+  app.post("/api/admin/users/:id/permissions", isAuthenticated, isAdmin, async (req: any, res) => {
+    try {
+      const { featureKey } = z.object({
+        featureKey: z.string().min(1),
+      }).parse(req.body);
+      const adminId = String(req.user?.claims?.sub);
+      await storage.grantUnlimitedAccess(req.params.id, featureKey, adminId);
+      res.json({ success: true, message: `Unlimited access granted for ${featureKey}` });
+    } catch (err) {
+      res.status(400).json({ message: "Failed to grant permission" });
+    }
+  });
+
+  app.delete("/api/admin/users/:id/permissions/:feature", isAuthenticated, isAdmin, async (req: any, res) => {
+    try {
+      await storage.revokeUnlimitedAccess(req.params.id, req.params.feature);
+      res.json({ success: true, message: `Permission revoked for ${req.params.feature}` });
+    } catch (err) {
+      res.status(500).json({ message: "Failed to revoke permission" });
+    }
+  });
+
+  // === Admin Usage Overview ===
+  app.get("/api/admin/ai-usage", isAuthenticated, isAdmin, async (_req, res) => {
+    try {
+      const allPermissions = await storage.getAllPermissions();
+      res.json({ permissions: allPermissions });
+    } catch (err) {
+      res.status(500).json({ message: "Failed to fetch AI usage data" });
     }
   });
 

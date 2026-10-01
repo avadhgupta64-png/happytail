@@ -4,6 +4,8 @@ import {
   Camera, RefreshCcw, Sparkles, AlertCircle, Loader2, Upload, Clock,
   Dog, Heart, XCircle, Video, Brain, Activity, Zap, Shield, ChevronRight
 } from "lucide-react";
+import CameraCapture, { type CaptureResult } from "@/components/CameraCapture";
+import { UnauthorizedError } from "@/lib/queryClient";
 import { PageHeader } from "@/components/PageHeader";
 import { useAnalyzeEmotion, useEmotionHistory } from "@/hooks/use-emotions";
 import { Button } from "@/components/ui/button";
@@ -234,16 +236,20 @@ export default function EmotionDetector() {
   const { mutate: analyze, isPending, data: result, error, reset: resetMutation } = useAnalyzeEmotion();
   const { data: history } = useEmotionHistory();
 
+  // Emotion camera state
+  const [showEmotionCamera, setShowEmotionCamera] = useState(false);
+
   // Behavior tab state
   const videoInputRef = useRef<HTMLInputElement>(null);
   const [videoFile, setVideoFile] = useState<File | null>(null);
   const [videoPreviewUrl, setVideoPreviewUrl] = useState<string | null>(null);
   const [behaviorResult, setBehaviorResult] = useState<any | null>(null);
   const [extracting, setExtracting] = useState(false);
+  const [showBehaviorCamera, setShowBehaviorCamera] = useState(false);
 
   const { toast } = useToast();
   const { t } = useLanguage();
-  const { checkGuestAccess } = useGuest();
+  const { checkGuestAccess, setShowLoginPrompt } = useGuest();
 
   const { mutate: analyzeBehavior, isPending: behaviorPending } = useMutation({
     mutationFn: async (frames: string[]) => {
@@ -252,6 +258,10 @@ export default function EmotionDetector() {
     },
     onSuccess: (data) => setBehaviorResult(data),
     onError: (err: any) => {
+      if (err instanceof UnauthorizedError) {
+        setShowLoginPrompt(true);
+        return;
+      }
       toast({
         title: "Analysis failed",
         description: err.message || "Could not analyze behavior. Please try with a clearer video.",
@@ -278,11 +288,23 @@ export default function EmotionDetector() {
     if (!checkGuestAccess()) return;
     analyze({ image: imgSrc }, {
       onError: (err) => {
+        if (err instanceof UnauthorizedError) {
+          setShowLoginPrompt(true);
+          return;
+        }
         toast({ title: "Analysis failed", description: err.message || "Could not analyze the image.", variant: "destructive" });
       },
     });
   };
   const reset = () => { setImgSrc(null); resetMutation(); };
+
+  const handleEmotionCameraCapture = (result: CaptureResult) => {
+    setShowEmotionCamera(false);
+    if (result.mode === "photo") {
+      setImgSrc(result.dataUrl);
+      resetMutation();
+    }
+  };
 
   // Behavior handlers
   const handleVideoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -315,6 +337,16 @@ export default function EmotionDetector() {
     if (videoPreviewUrl) URL.revokeObjectURL(videoPreviewUrl);
     setVideoPreviewUrl(null);
     setBehaviorResult(null);
+  };
+
+  const handleBehaviorCameraCapture = (result: CaptureResult) => {
+    setShowBehaviorCamera(false);
+    if (result.mode === "video") {
+      const file = new File([result.blob], "camera-recording.webm", { type: result.blob.type });
+      setVideoFile(file);
+      setVideoPreviewUrl(result.blobUrl);
+      setBehaviorResult(null);
+    }
   };
 
   return (
@@ -366,10 +398,18 @@ export default function EmotionDetector() {
                       <div className="w-20 h-20 bg-gray-800 rounded-full flex items-center justify-center mb-6">
                         <Camera className="w-10 h-10 text-gray-500" />
                       </div>
-                      <div className="flex flex-col gap-4 w-full max-w-xs">
+                      <div className="flex flex-col gap-3 w-full max-w-xs">
+                        <Button
+                          onClick={() => setShowEmotionCamera(true)}
+                          className="bg-primary hover:bg-primary/90 text-white rounded-xl py-6 flex items-center gap-2"
+                          data-testid="button-take-photo"
+                        >
+                          <Camera className="w-5 h-5" /> Take a Photo
+                        </Button>
                         <Button
                           onClick={() => fileInputRef.current?.click()}
-                          className="bg-primary hover:bg-primary/90 text-white rounded-xl py-6 flex items-center gap-2"
+                          variant="outline"
+                          className="bg-white/10 border-white/20 text-white hover:bg-white/20 rounded-xl py-6 flex items-center gap-2"
                           data-testid="button-upload-photo"
                         >
                           <Upload className="w-5 h-5" /> {t.emotionDetector.uploadPrompt}
@@ -550,19 +590,28 @@ export default function EmotionDetector() {
                       <p className="text-gray-400 text-sm mb-6 max-w-xs">
                         Upload a short video of your dog to analyze their body language and behavior patterns
                       </p>
-                      <Button
-                        onClick={() => videoInputRef.current?.click()}
-                        className="bg-purple-600 hover:bg-purple-700 text-white rounded-xl py-6 flex items-center gap-2"
-                      >
-                        <Upload className="w-5 h-5" /> Upload Video
-                      </Button>
-                      <input
-                        type="file"
-                        ref={videoInputRef}
-                        onChange={handleVideoUpload}
-                        accept="video/*"
-                        className="hidden"
-                      />
+                      <div className="flex flex-col gap-3 w-full max-w-xs">
+                        <Button
+                          onClick={() => setShowBehaviorCamera(true)}
+                          className="bg-purple-600 hover:bg-purple-700 text-white rounded-xl py-6 flex items-center gap-2"
+                        >
+                          <Video className="w-5 h-5" /> Record a Video
+                        </Button>
+                        <Button
+                          onClick={() => videoInputRef.current?.click()}
+                          variant="outline"
+                          className="bg-white/10 border-white/20 text-white hover:bg-white/20 rounded-xl py-6 flex items-center gap-2"
+                        >
+                          <Upload className="w-5 h-5" /> Upload Video
+                        </Button>
+                        <input
+                          type="file"
+                          ref={videoInputRef}
+                          onChange={handleVideoUpload}
+                          accept="video/*"
+                          className="hidden"
+                        />
+                      </div>
                     </div>
                   ) : (
                     <video
@@ -645,6 +694,22 @@ export default function EmotionDetector() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Camera overlays */}
+      {showEmotionCamera && (
+        <CameraCapture
+          mode="photo"
+          onCapture={handleEmotionCameraCapture}
+          onClose={() => setShowEmotionCamera(false)}
+        />
+      )}
+      {showBehaviorCamera && (
+        <CameraCapture
+          mode="video"
+          onCapture={handleBehaviorCameraCapture}
+          onClose={() => setShowBehaviorCamera(false)}
+        />
+      )}
     </div>
   );
 }

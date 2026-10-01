@@ -1,4 +1,4 @@
-import { pgTable, text, serial, integer, boolean, timestamp, jsonb, doublePrecision } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, integer, boolean, timestamp, jsonb, doublePrecision, unique } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -98,9 +98,40 @@ export const feedback = pgTable("feedback", {
   userName: text("user_name").notNull(),
   message: text("message").notNull(),
   adminComment: text("admin_comment"),
+  resolved: boolean("resolved").default(false).notNull(),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
+
+// === AI USAGE TRACKING ===
+// One row per (userId, featureKey) — stores how many times this user has used this feature.
+// featureKey values: "emotion_scan" | "bark_translation" | "health_scan" | "diet_plan" | "vet_chat" | "behavior_analysis" | "location_search"
+export const aiUsageLogs = pgTable(
+  "ai_usage_logs",
+  {
+    id: serial("id").primaryKey(),
+    userId: text("user_id").notNull(),
+    featureKey: text("feature_key").notNull(),
+    usageCount: integer("usage_count").default(0).notNull(),
+    updatedAt: timestamp("updated_at").defaultNow(),
+  },
+  (t) => [unique("ai_usage_unique").on(t.userId, t.featureKey)]
+);
+
+// === USER FEATURE PERMISSIONS ===
+// Admin-granted unlimited access for a specific user + feature (or "all").
+// featureKey = "all" means unlimited on every feature.
+export const userFeaturePermissions = pgTable(
+  "user_feature_permissions",
+  {
+    id: serial("id").primaryKey(),
+    userId: text("user_id").notNull(),
+    featureKey: text("feature_key").notNull(), // "all" | specific feature key
+    grantedBy: text("granted_by").notNull(),   // admin userId who granted this
+    grantedAt: timestamp("granted_at").defaultNow(),
+  },
+  (t) => [unique("user_feature_perm_unique").on(t.userId, t.featureKey)]
+);
 
 // === SCHEMAS ===
 
@@ -110,7 +141,7 @@ export const insertEmotionLogSchema = createInsertSchema(emotionLogs).omit({ id:
 export const insertDogProfileSchema = createInsertSchema(dogProfiles).omit({ id: true, createdAt: true });
 export const insertChatMessageSchema = createInsertSchema(chatMessages).omit({ id: true, createdAt: true });
 export const insertActivityLogSchema = createInsertSchema(activityLogs).omit({ id: true, createdAt: true, deletedAt: true });
-export const insertFeedbackSchema = createInsertSchema(feedback).omit({ id: true, createdAt: true, updatedAt: true, adminComment: true });
+export const insertFeedbackSchema = createInsertSchema(feedback).omit({ id: true, createdAt: true, updatedAt: true, adminComment: true, resolved: true });
 
 // === TYPES ===
 
@@ -134,6 +165,9 @@ export type InsertActivityLog = z.infer<typeof insertActivityLogSchema>;
 
 export type Feedback = typeof feedback.$inferSelect;
 export type InsertFeedback = z.infer<typeof insertFeedbackSchema>;
+
+export type AiUsageLog = typeof aiUsageLogs.$inferSelect;
+export type UserFeaturePermission = typeof userFeaturePermissions.$inferSelect;
 
 // Analysis Request
 export const analyzeEmotionSchema = z.object({

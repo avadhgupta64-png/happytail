@@ -1,5 +1,3 @@
-# See https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files for more about ignoring files.
-
 # compiled output
 dist
 tmp
@@ -41,9 +39,25 @@ testem.log
 .DS_Store
 Thumbs.db
 
-.cursor/rules/nx-rules.mdc
-.github/instructions/nx.instructions.md
-
 # Replit
 .cache/
 .local/
+.replit
+.replitignore
+.replit-artifact
+
+# Environment variable files — never commit secrets
+.env
+.env.local
+.env.*.local
+
+# Artifacts and sandbox (not part of the main app)
+artifacts/
+backups/
+happy-tail/backups/
+
+# Agent memory
+.agents/
+
+# Lock files (optional — remove these lines if you want to commit them)
+# pnpm-lock.yaml

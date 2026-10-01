@@ -183,7 +183,7 @@ export default function About() {
                   LinkedIn
                 </a>
                 <a
-                  href="https://www.instagram.com/itz_avadh18"
+                  href="https://www.instagram.com/avxdhgupta/"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-1.5 text-xs font-semibold text-white bg-gradient-to-tr from-[#feda75] via-[#d62976] to-[#4f5bd5] hover:opacity-90 px-3 py-1.5 rounded-lg transition-opacity shadow"

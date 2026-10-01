@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { Send, ArrowLeft, Loader2, Bot, User, Stethoscope } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { apiRequest } from "@/lib/queryClient";
+import { apiRequest, UnauthorizedError } from "@/lib/queryClient";
 import { Link } from "wouter";
 import { useLanguage } from "@/lib/language-context";
 import { useGuest } from "@/lib/guest-context";
@@ -42,7 +42,7 @@ export default function VetChat() {
   const [isLoading, setIsLoading] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
-  const { checkGuestAccess } = useGuest();
+  const { checkGuestAccess, setShowLoginPrompt } = useGuest();
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -68,8 +68,14 @@ export default function VetChat() {
       });
       const data = await res.json();
       setMessages([...updatedMessages, { role: "assistant", content: data.reply }]);
-    } catch {
-      setMessages([...updatedMessages, { role: "assistant", content: "Sorry, I couldn't process that. Please try again." }]);
+    } catch (err) {
+      if (err instanceof UnauthorizedError) {
+        setShowLoginPrompt(true);
+        // Remove the user message we already appended
+        setMessages(messages);
+      } else {
+        setMessages([...updatedMessages, { role: "assistant", content: "Sorry, I couldn't process that. Please try again." }]);
+      }
     } finally {
       setIsLoading(false);
       inputRef.current?.focus();

@@ -19,8 +19,19 @@ export async function apiRequest(
     credentials: "include",
   });
 
+  if (res.status === 401) {
+    throw new UnauthorizedError();
+  }
+
   await throwIfResNotOk(res);
   return res;
+}
+
+export class UnauthorizedError extends Error {
+  constructor() {
+    super("Unauthorized");
+    this.name = "UnauthorizedError";
+  }
 }
 
 type UnauthorizedBehavior = "returnNull" | "throw";

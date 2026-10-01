@@ -3,6 +3,7 @@ import { api } from "@shared/routes";
 import { type AnalyzeEmotionRequest } from "@shared/schema";
 import { getDeviceId } from "@/lib/device-id";
 import { useLanguage } from "@/lib/language-context";
+import { UnauthorizedError } from "@/lib/queryClient";
 
 export function useEmotionHistory() {
   const deviceId = getDeviceId();
@@ -28,7 +29,11 @@ export function useAnalyzeEmotion() {
         body: JSON.stringify({ ...data, deviceId, language: lang }),
         credentials: "include",
       });
-      
+
+      if (res.status === 401) {
+        throw new UnauthorizedError();
+      }
+
       if (!res.ok) {
         const text = await res.text().catch(() => "");
         throw new Error(text || "Analysis failed. Please try again.");

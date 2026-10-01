@@ -1,11 +1,11 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { LogIn, Sparkles } from "lucide-react";
+import { LogIn, Sparkles, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useGuest } from "@/lib/guest-context";
 import { useAuthModal } from "@/lib/auth-modal-context";
 
 export function LoginPromptModal() {
-  const { showLoginPrompt, exitGuestMode } = useGuest();
+  const { showLoginPrompt, setShowLoginPrompt, exitGuestMode } = useGuest();
   const { openAuthModal } = useAuthModal();
 
   if (!showLoginPrompt) return null;
@@ -13,6 +13,10 @@ export function LoginPromptModal() {
   const handleLogin = () => {
     exitGuestMode();
     openAuthModal("login");
+  };
+
+  const handleBack = () => {
+    setShowLoginPrompt(false);
   };
 
   return (
@@ -43,15 +47,28 @@ export function LoginPromptModal() {
                 AI features require a free account. Log in to unlock all features, save your results, and get personalized insights for your dog.
               </p>
 
-              <Button
-                size="lg"
-                className="w-full py-6 text-base font-bold rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 shadow-lg"
-                onClick={handleLogin}
-                data-testid="button-prompt-login"
-              >
-                <LogIn className="w-5 h-5 mr-2" />
-                Log In to Continue
-              </Button>
+              <div className="flex flex-col gap-3">
+                <Button
+                  size="lg"
+                  className="w-full py-6 text-base font-bold rounded-2xl bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-700 hover:to-purple-700 shadow-lg"
+                  onClick={handleLogin}
+                  data-testid="button-prompt-login"
+                >
+                  <LogIn className="w-5 h-5 mr-2" />
+                  Log In to Continue
+                </Button>
+
+                <Button
+                  size="lg"
+                  variant="ghost"
+                  className="w-full py-6 text-base font-medium rounded-2xl text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                  onClick={handleBack}
+                  data-testid="button-prompt-back"
+                >
+                  <ArrowLeft className="w-5 h-5 mr-2" />
+                  Back
+                </Button>
+              </div>
             </div>
           </motion.div>
         </motion.div>

@@ -4,13 +4,16 @@ import { useState } from "react";
 import {
   Users, Activity, Camera, Dog, Eye, Download,
   ChevronDown, ChevronUp, Search, RefreshCw,
-  Shield, Clock, TrendingUp, Ban, Trash2, CheckCircle, AlertTriangle, UserX
+  Shield, Clock, TrendingUp, Ban, Trash2, CheckCircle, AlertTriangle, UserX,
+  MessageSquare, Crown, Zap, ZapOff, Star, StarOff, Check, X
 } from "lucide-react";
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
   AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { useToast } from "@/hooks/use-toast";
+
+// ─── Types ────────────────────────────────────────────────────────────────────
 
 interface AdminUser {
   id: string;
@@ -59,6 +62,67 @@ interface AdminStats {
   uniqueVisitors: number;
 }
 
+interface FeedbackItem {
+  id: number;
+  userId: string;
+  userName: string;
+  message: string;
+  adminComment: string | null;
+  resolved: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface UserPermission {
+  id: number;
+  userId: string;
+  featureKey: string;
+  grantedBy: string;
+  grantedAt: string;
+}
+
+// ─── Constants ────────────────────────────────────────────────────────────────
+
+const ADMIN_EMAILS = [
+  "pawcare.tech@gmail.com",
+  "avadhgupta64@gmail.com",
+  "avxdhgupta@gmail.com",
+];
+
+const AI_FEATURE_LIMIT = 3;
+
+const FEATURE_KEYS = [
+  { key: "emotion_scan",      label: "Emotion Scan",       color: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400" },
+  { key: "behavior_analysis", label: "Behavior Analysis",  color: "bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-400" },
+  { key: "bark_translation",  label: "Bark Translator",    color: "bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400" },
+  { key: "health_scan",       label: "Health Checkup",     color: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400" },
+  { key: "diet_plan",         label: "Diet Planner",       color: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400" },
+  { key: "vet_chat",          label: "AI Vet Chat",        color: "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400" },
+  { key: "location_search",   label: "Nearby Locations",   color: "bg-teal-100 text-teal-700 dark:bg-teal-900/30 dark:text-teal-400" },
+];
+
+const activityTypeLabels: Record<string, string> = {
+  emotion_scan: "Emotion Scan",
+  bark_translation: "Bark Translation",
+  health_scan: "Health Scan",
+  diet_plan: "Diet Plan",
+  vet_chat: "Vet Chat",
+  behavior_analysis: "Behavior Analysis",
+  location_search: "Location Search",
+};
+
+const activityColors: Record<string, string> = {
+  emotion_scan: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
+  bark_translation: "bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400",
+  health_scan: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400",
+  diet_plan: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
+  vet_chat: "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400",
+  behavior_analysis: "bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-400",
+  location_search: "bg-teal-100 text-teal-700 dark:bg-teal-900/30 dark:text-teal-400",
+};
+
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+
 function formatDate(dateStr: string) {
   const date = new Date(dateStr);
   const now = new Date();
@@ -72,6 +136,13 @@ function formatDate(dateStr: string) {
   if (diffDays < 7) return `${diffDays}d ago`;
   return date.toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" });
 }
+
+function displayName(u: { firstName?: string | null; lastName?: string | null; email?: string | null }) {
+  const n = [u.firstName, u.lastName].filter(Boolean).join(" ").trim();
+  return n || (u.email ? u.email.split("@")[0] : "Unknown");
+}
+
+// ─── Sub-components ───────────────────────────────────────────────────────────
 
 function StatCard({ icon: Icon, label, value, gradient }: { icon: typeof Users; label: string; value: number; gradient: string }) {
   return (
@@ -91,14 +162,28 @@ function StatCard({ icon: Icon, label, value, gradient }: { icon: typeof Users; 
   );
 }
 
-function UserRow({ user, onBan, onUnban, onRemove }: {
+// Crown badge shown for admin emails
+function AdminCrown() {
+  return (
+    <span
+      title="Admin"
+      className="inline-flex items-center gap-1 px-1.5 py-0.5 bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400 text-xs rounded font-bold"
+    >
+      <Crown className="w-3 h-3" /> Admin
+    </span>
+  );
+}
+
+function UserRow({
+  user, onBan, onUnban, onRemove, onManagePermissions,
+}: {
   user: AdminUser;
   onBan: (id: string) => void;
   onUnban: (id: string) => void;
   onRemove: (id: string) => void;
+  onManagePermissions: (user: AdminUser) => void;
 }) {
-  const ADMIN_EMAIL = "pawcare.tech@gmail.com";
-  const isAdminUser = user.email === ADMIN_EMAIL;
+  const isAdminUser = ADMIN_EMAILS.includes(user.email ?? "");
 
   return (
     <div className={`flex items-center gap-3 p-4 rounded-xl border transition-shadow ${
@@ -113,15 +198,16 @@ function UserRow({ user, onBan, onUnban, onRemove }: {
           {(user.firstName || user.id)?.[0]?.toUpperCase() || "?"}
         </div>
       )}
+
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 flex-wrap">
           <p className="font-semibold text-foreground truncate">
             {user.firstName || ""} {user.lastName || ""}
-            {!user.firstName && !user.lastName && <span className="text-muted-foreground text-sm">User {user.id.slice(0, 8)}</span>}
+            {!user.firstName && !user.lastName && (
+              <span className="text-muted-foreground text-sm">User {user.id.slice(0, 8)}</span>
+            )}
           </p>
-          {isAdminUser && (
-            <span className="px-1.5 py-0.5 bg-violet-100 text-violet-700 text-xs rounded font-bold">Admin</span>
-          )}
+          {isAdminUser && <AdminCrown />}
           {user.isBanned && (
             <span className="px-1.5 py-0.5 bg-red-100 text-red-700 text-xs rounded font-bold flex items-center gap-1">
               <Ban className="w-3 h-3" /> Banned
@@ -133,12 +219,24 @@ function UserRow({ user, onBan, onUnban, onRemove }: {
           <p className="text-xs text-red-500 mt-0.5">Reason: {user.banReason}</p>
         )}
       </div>
+
       <div className="text-xs text-muted-foreground whitespace-nowrap hidden sm:flex items-center gap-1">
         <Clock className="w-3 h-3" />
         {formatDate(user.createdAt)}
       </div>
+
       {!isAdminUser && (
         <div className="flex items-center gap-1.5 shrink-0">
+          {/* AI Permissions */}
+          <button
+            onClick={() => onManagePermissions(user)}
+            title="Manage AI permissions"
+            className="p-2 rounded-lg bg-violet-50 dark:bg-violet-900/20 text-violet-600 hover:bg-violet-100 dark:hover:bg-violet-900/30 transition-colors"
+          >
+            <Zap className="w-4 h-4" />
+          </button>
+
+          {/* Ban / Unban */}
           {user.isBanned ? (
             <button
               onClick={() => onUnban(user.id)}
@@ -156,6 +254,8 @@ function UserRow({ user, onBan, onUnban, onRemove }: {
               <Ban className="w-4 h-4" />
             </button>
           )}
+
+          {/* Delete */}
           <AlertDialog>
             <AlertDialogTrigger asChild>
               <button
@@ -171,7 +271,9 @@ function UserRow({ user, onBan, onUnban, onRemove }: {
                   <AlertTriangle className="w-5 h-5" /> Remove User
                 </AlertDialogTitle>
                 <AlertDialogDescription>
-                  This will permanently delete <strong>{user.firstName || user.email || `User ${user.id.slice(0, 8)}`}</strong> and archive all their activities. A record will be kept in the Removed Users list.
+                  This will permanently delete{" "}
+                  <strong>{user.firstName || user.email || `User ${user.id.slice(0, 8)}`}</strong>{" "}
+                  and archive all their activities. A record will be kept in the Removed Users list.
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
@@ -205,7 +307,9 @@ function RemovedUserRow({ user }: { user: RemovedUser }) {
         <div className="flex items-center gap-2 flex-wrap">
           <p className="font-semibold text-muted-foreground truncate">
             {user.firstName || ""} {user.lastName || ""}
-            {!user.firstName && !user.lastName && <span className="text-sm">User {user.originalId.slice(0, 8)}</span>}
+            {!user.firstName && !user.lastName && (
+              <span className="text-sm">User {user.originalId.slice(0, 8)}</span>
+            )}
           </p>
           <span className="px-1.5 py-0.5 bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-400 text-xs rounded font-bold flex items-center gap-1">
             <UserX className="w-3 h-3" /> Removed
@@ -217,9 +321,7 @@ function RemovedUserRow({ user }: { user: RemovedUser }) {
           )}
         </div>
         <p className="text-xs text-muted-foreground truncate">{user.email || "No email"}</p>
-        {user.banReason && (
-          <p className="text-xs text-red-400 mt-0.5">Ban reason: {user.banReason}</p>
-        )}
+        {user.banReason && <p className="text-xs text-red-400 mt-0.5">Ban reason: {user.banReason}</p>}
         <p className="text-xs text-muted-foreground mt-0.5">Original ID: {user.originalId}</p>
       </div>
       <div className="text-xs text-muted-foreground whitespace-nowrap flex items-center gap-1">
@@ -229,24 +331,6 @@ function RemovedUserRow({ user }: { user: RemovedUser }) {
     </div>
   );
 }
-
-const activityTypeLabels: Record<string, string> = {
-  emotion_scan: "Emotion Scan",
-  bark_translation: "Bark Translation",
-  health_scan: "Health Scan",
-  diet_plan: "Diet Plan",
-  vet_chat: "Vet Chat",
-  behavior_analysis: "Behavior Analysis",
-};
-
-const activityColors: Record<string, string> = {
-  emotion_scan: "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
-  bark_translation: "bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400",
-  health_scan: "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400",
-  diet_plan: "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400",
-  vet_chat: "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400",
-  behavior_analysis: "bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-400",
-};
 
 function ActivityRow({ activity, userName }: { activity: AdminActivity; userName: string }) {
   const [expanded, setExpanded] = useState(false);
@@ -260,9 +344,7 @@ function ActivityRow({ activity, userName }: { activity: AdminActivity; userName
           <p className="font-medium text-foreground text-sm truncate">{activity.title}</p>
           <p className="text-xs text-muted-foreground truncate">{activity.summary}</p>
         </div>
-        {activity.deletedAt && (
-          <span className="text-xs text-red-400 whitespace-nowrap hidden sm:block">Deleted</span>
-        )}
+        {activity.deletedAt && <span className="text-xs text-red-400 whitespace-nowrap hidden sm:block">Deleted</span>}
         <span className="text-xs text-muted-foreground whitespace-nowrap hidden sm:block">{userName}</span>
         <span className="text-xs text-muted-foreground whitespace-nowrap">{formatDate(activity.createdAt)}</span>
         {activity.details && (expanded ? <ChevronUp className="w-4 h-4 text-muted-foreground shrink-0" /> : <ChevronDown className="w-4 h-4 text-muted-foreground shrink-0" />)}
@@ -281,13 +363,412 @@ function ActivityRow({ activity, userName }: { activity: AdminActivity; userName
   );
 }
 
+// ─── Feedback Tab ─────────────────────────────────────────────────────────────
+
+function FeedbackTab() {
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+  const [replyingTo, setReplyingTo] = useState<number | null>(null);
+  const [replyText, setReplyText] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filter, setFilter] = useState<"all" | "open" | "resolved">("all");
+
+  const { data: feedbackList = [], isLoading } = useQuery<FeedbackItem[]>({
+    queryKey: ["/api/admin/feedback"],
+    queryFn: async () => {
+      const res = await fetch("/api/admin/feedback", { credentials: "include" });
+      if (!res.ok) throw new Error("Failed to fetch feedback");
+      return res.json();
+    },
+    refetchInterval: 15000,
+  });
+
+  const replyMutation = useMutation({
+    mutationFn: async ({ id, adminComment }: { id: number; adminComment: string }) => {
+      const res = await fetch(`/api/feedback/${id}/comment`, {
+        method: "PATCH",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ adminComment }),
+      });
+      if (!res.ok) throw new Error("Failed to post reply");
+      return res.json();
+    },
+    onSuccess: () => {
+      toast({ title: "Reply sent", description: "Your reply has been saved." });
+      setReplyingTo(null);
+      setReplyText("");
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/feedback"] });
+    },
+    onError: () => toast({ title: "Error", description: "Failed to send reply.", variant: "destructive" }),
+  });
+
+  const resolveMutation = useMutation({
+    mutationFn: async ({ id, resolved }: { id: number; resolved: boolean }) => {
+      const res = await fetch(`/api/admin/feedback/${id}/resolve`, {
+        method: "PATCH",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ resolved }),
+      });
+      if (!res.ok) throw new Error("Failed to update");
+      return res.json();
+    },
+    onSuccess: (_, vars) => {
+      toast({
+        title: vars.resolved ? "Marked resolved" : "Marked open",
+        description: vars.resolved ? "Feedback has been resolved." : "Feedback reopened.",
+      });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/feedback"] });
+    },
+    onError: () => toast({ title: "Error", description: "Failed to update status.", variant: "destructive" }),
+  });
+
+  const filtered = feedbackList.filter(f => {
+    const matchFilter =
+      filter === "all" ||
+      (filter === "resolved" ? f.resolved : !f.resolved);
+    const q = searchQuery.toLowerCase();
+    const matchSearch = !q ||
+      f.message.toLowerCase().includes(q) ||
+      f.userName.toLowerCase().includes(q);
+    return matchFilter && matchSearch;
+  });
+
+  const openCount = feedbackList.filter(f => !f.resolved).length;
+  const resolvedCount = feedbackList.filter(f => f.resolved).length;
+
+  return (
+    <div className="space-y-4">
+      {/* Filter bar */}
+      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+        <div className="flex gap-2">
+          {([["all", `All (${feedbackList.length})`], ["open", `Open (${openCount})`], ["resolved", `Resolved (${resolvedCount})`]] as const).map(([val, lbl]) => (
+            <button
+              key={val}
+              onClick={() => setFilter(val)}
+              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+                filter === val ? "bg-primary text-white" : "bg-white dark:bg-gray-900 text-muted-foreground border border-gray-200 dark:border-gray-700"
+              }`}
+            >
+              {lbl}
+            </button>
+          ))}
+        </div>
+        <div className="relative flex-1 sm:max-w-xs">
+          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+          <input
+            type="text"
+            placeholder="Search feedback..."
+            value={searchQuery}
+            onChange={e => setSearchQuery(e.target.value)}
+            className="w-full pl-9 pr-4 py-2 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
+          />
+        </div>
+      </div>
+
+      {isLoading ? (
+        <div className="text-center py-12 text-muted-foreground">Loading feedback...</div>
+      ) : filtered.length === 0 ? (
+        <div className="text-center py-12">
+          <MessageSquare className="w-10 h-10 text-muted-foreground/40 mx-auto mb-3" />
+          <p className="text-muted-foreground font-medium">No feedback found</p>
+        </div>
+      ) : (
+        filtered.map(item => (
+          <div
+            key={item.id}
+            className={`p-4 rounded-xl border ${
+              item.resolved
+                ? "bg-green-50/50 dark:bg-green-900/10 border-green-200 dark:border-green-800/30"
+                : "bg-white dark:bg-gray-900 border-gray-100 dark:border-gray-800"
+            }`}
+          >
+            {/* Header */}
+            <div className="flex items-start justify-between gap-3">
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="font-semibold text-sm text-foreground">{item.userName}</span>
+                  {item.resolved ? (
+                    <span className="flex items-center gap-1 px-1.5 py-0.5 bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 text-xs rounded font-medium">
+                      <CheckCircle className="w-3 h-3" /> Resolved
+                    </span>
+                  ) : (
+                    <span className="flex items-center gap-1 px-1.5 py-0.5 bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400 text-xs rounded font-medium">
+                      <AlertTriangle className="w-3 h-3" /> Open
+                    </span>
+                  )}
+                  <span className="text-xs text-muted-foreground">{formatDate(item.createdAt)}</span>
+                </div>
+                <p className="mt-1.5 text-sm text-foreground/90">{item.message}</p>
+              </div>
+
+              {/* Actions */}
+              <div className="flex items-center gap-1.5 shrink-0">
+                <button
+                  onClick={() => {
+                    setReplyingTo(replyingTo === item.id ? null : item.id);
+                    setReplyText(item.adminComment || "");
+                  }}
+                  title="Reply"
+                  className="p-2 rounded-lg bg-blue-50 dark:bg-blue-900/20 text-blue-600 hover:bg-blue-100 dark:hover:bg-blue-900/30 transition-colors"
+                >
+                  <MessageSquare className="w-4 h-4" />
+                </button>
+                <button
+                  onClick={() => resolveMutation.mutate({ id: item.id, resolved: !item.resolved })}
+                  title={item.resolved ? "Mark open" : "Mark resolved"}
+                  className={`p-2 rounded-lg transition-colors ${
+                    item.resolved
+                      ? "bg-gray-100 dark:bg-gray-800 text-gray-500 hover:bg-gray-200"
+                      : "bg-green-50 dark:bg-green-900/20 text-green-600 hover:bg-green-100 dark:hover:bg-green-900/30"
+                  }`}
+                >
+                  {item.resolved ? <StarOff className="w-4 h-4" /> : <Star className="w-4 h-4" />}
+                </button>
+              </div>
+            </div>
+
+            {/* Existing admin comment */}
+            {item.adminComment && replyingTo !== item.id && (
+              <div className="mt-3 pt-3 border-t border-gray-100 dark:border-gray-800">
+                <p className="text-xs font-medium text-violet-600 dark:text-violet-400 mb-1">Admin reply:</p>
+                <p className="text-sm text-muted-foreground">{item.adminComment}</p>
+              </div>
+            )}
+
+            {/* Reply box */}
+            {replyingTo === item.id && (
+              <div className="mt-3 pt-3 border-t border-gray-100 dark:border-gray-800">
+                <p className="text-xs font-medium text-muted-foreground mb-2">
+                  {item.adminComment ? "Edit reply:" : "Write a reply:"}
+                </p>
+                <textarea
+                  value={replyText}
+                  onChange={e => setReplyText(e.target.value)}
+                  rows={3}
+                  placeholder="Type your reply..."
+                  className="w-full px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none"
+                />
+                <div className="flex gap-2 mt-2">
+                  <button
+                    onClick={() => replyMutation.mutate({ id: item.id, adminComment: replyText })}
+                    disabled={!replyText.trim() || replyMutation.isPending}
+                    className="px-4 py-1.5 rounded-lg bg-primary text-white text-xs font-medium hover:bg-primary/90 disabled:opacity-50 transition-colors"
+                  >
+                    {replyMutation.isPending ? "Sending..." : "Send Reply"}
+                  </button>
+                  <button
+                    onClick={() => { setReplyingTo(null); setReplyText(""); }}
+                    className="px-4 py-1.5 rounded-lg bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 text-xs font-medium hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        ))
+      )}
+    </div>
+  );
+}
+
+// ─── AI Permissions Modal ─────────────────────────────────────────────────────
+
+function AIPermissionsModal({
+  user,
+  onClose,
+}: {
+  user: AdminUser;
+  onClose: () => void;
+}) {
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+
+  const { data: permissions = [], isLoading } = useQuery<UserPermission[]>({
+    queryKey: ["/api/admin/users", user.id, "permissions"],
+    queryFn: async () => {
+      const res = await fetch(`/api/admin/users/${user.id}/permissions`, { credentials: "include" });
+      if (!res.ok) throw new Error("Failed to fetch permissions");
+      return res.json();
+    },
+  });
+
+  const grantMutation = useMutation({
+    mutationFn: async (featureKey: string) => {
+      const res = await fetch(`/api/admin/users/${user.id}/permissions`, {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ featureKey }),
+      });
+      if (!res.ok) throw new Error("Failed to grant");
+      return res.json();
+    },
+    onSuccess: (_, fk) => {
+      toast({ title: "Access granted", description: `Unlimited access for "${fk}" granted to ${displayName(user)}.` });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/users", user.id, "permissions"] });
+    },
+    onError: () => toast({ title: "Error", description: "Failed to grant access.", variant: "destructive" }),
+  });
+
+  const revokeMutation = useMutation({
+    mutationFn: async (featureKey: string) => {
+      const res = await fetch(`/api/admin/users/${user.id}/permissions/${featureKey}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+      if (!res.ok) throw new Error("Failed to revoke");
+      return res.json();
+    },
+    onSuccess: (_, fk) => {
+      toast({ title: "Access revoked", description: `Unlimited access for "${fk}" removed.` });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/users", user.id, "permissions"] });
+    },
+    onError: () => toast({ title: "Error", description: "Failed to revoke access.", variant: "destructive" }),
+  });
+
+  const hasAll = permissions.some(p => p.featureKey === "all");
+  const hasFeature = (key: string) => hasAll || permissions.some(p => p.featureKey === key);
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        className="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl w-full max-w-md overflow-hidden"
+      >
+        {/* Header */}
+        <div className="flex items-center justify-between p-5 border-b border-gray-100 dark:border-gray-800">
+          <div className="flex items-center gap-3">
+            {user.profileImageUrl ? (
+              <img src={user.profileImageUrl} alt="" className="w-9 h-9 rounded-full object-cover" />
+            ) : (
+              <div className="w-9 h-9 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center text-white font-bold text-sm">
+                {(user.firstName || user.id)?.[0]?.toUpperCase() || "?"}
+              </div>
+            )}
+            <div>
+              <p className="font-semibold text-foreground text-sm">{displayName(user)}</p>
+              <p className="text-xs text-muted-foreground">{user.email}</p>
+            </div>
+          </div>
+          <button
+            onClick={onClose}
+            className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+          >
+            <X className="w-4 h-4 text-muted-foreground" />
+          </button>
+        </div>
+
+        {/* Body */}
+        <div className="p-5 space-y-4">
+          <div className="flex items-center gap-2">
+            <Zap className="w-4 h-4 text-violet-500" />
+            <p className="text-sm font-semibold text-foreground">AI Feature Access</p>
+            <span className="ml-auto text-xs text-muted-foreground">Limit: {AI_FEATURE_LIMIT} uses/feature</span>
+          </div>
+
+          {isLoading ? (
+            <p className="text-sm text-muted-foreground text-center py-4">Loading...</p>
+          ) : (
+            <div className="space-y-2">
+              {/* Grant ALL */}
+              <div className="flex items-center justify-between p-3 rounded-xl border border-violet-200 dark:border-violet-800/40 bg-violet-50 dark:bg-violet-900/10">
+                <div className="flex items-center gap-2">
+                  <Crown className="w-4 h-4 text-violet-600" />
+                  <span className="text-sm font-medium text-violet-700 dark:text-violet-300">All Features — Unlimited</span>
+                </div>
+                {hasAll ? (
+                  <button
+                    onClick={() => revokeMutation.mutate("all")}
+                    disabled={revokeMutation.isPending}
+                    className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-red-100 text-red-600 dark:bg-red-900/30 dark:text-red-400 text-xs font-medium hover:bg-red-200 transition-colors disabled:opacity-50"
+                  >
+                    <ZapOff className="w-3 h-3" /> Revoke
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => grantMutation.mutate("all")}
+                    disabled={grantMutation.isPending}
+                    className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-violet-600 text-white text-xs font-medium hover:bg-violet-700 transition-colors disabled:opacity-50"
+                  >
+                    <Zap className="w-3 h-3" /> Grant All
+                  </button>
+                )}
+              </div>
+
+              {/* Per-feature rows */}
+              {FEATURE_KEYS.map(({ key, label, color }) => {
+                const granted = hasFeature(key);
+                const fromAll = hasAll && !permissions.some(p => p.featureKey === key);
+                return (
+                  <div
+                    key={key}
+                    className="flex items-center justify-between p-3 rounded-xl border border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900"
+                  >
+                    <div className="flex items-center gap-2">
+                      <span className={`px-1.5 py-0.5 rounded text-xs font-medium ${color}`}>{label}</span>
+                      {granted && (
+                        <span className="text-xs text-green-600 dark:text-green-400 flex items-center gap-0.5">
+                          <Check className="w-3 h-3" />
+                          {fromAll ? "via All" : "Unlimited"}
+                        </span>
+                      )}
+                    </div>
+                    {!fromAll && (
+                      granted ? (
+                        <button
+                          onClick={() => revokeMutation.mutate(key)}
+                          disabled={revokeMutation.isPending}
+                          className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-red-50 text-red-600 dark:bg-red-900/20 dark:text-red-400 text-xs font-medium hover:bg-red-100 transition-colors disabled:opacity-50"
+                        >
+                          <ZapOff className="w-3 h-3" /> Revoke
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() => grantMutation.mutate(key)}
+                          disabled={grantMutation.isPending || hasAll}
+                          className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-green-50 text-green-700 dark:bg-green-900/20 dark:text-green-400 text-xs font-medium hover:bg-green-100 transition-colors disabled:opacity-50"
+                        >
+                          <Zap className="w-3 h-3" /> Grant
+                        </button>
+                      )
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+
+        <div className="px-5 pb-5">
+          <button
+            onClick={onClose}
+            className="w-full py-2 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 text-sm font-medium hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
+          >
+            Close
+          </button>
+        </div>
+      </motion.div>
+    </div>
+  );
+}
+
+// ─── Main AdminDashboard ──────────────────────────────────────────────────────
+
+type Tab = "users" | "removed" | "activities" | "feedback";
+
 export default function AdminDashboard() {
-  const [activeTab, setActiveTab] = useState<"users" | "removed" | "activities">("users");
+  const [activeTab, setActiveTab] = useState<Tab>("users");
   const [searchQuery, setSearchQuery] = useState("");
   const [userFilter, setUserFilter] = useState<"all" | "active" | "banned">("all");
+  const [permissionsUser, setPermissionsUser] = useState<AdminUser | null>(null);
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
+  // ── Admin check ──
   const { data: adminCheck } = useQuery({
     queryKey: ["/api/admin/check"],
     queryFn: async () => {
@@ -296,6 +777,7 @@ export default function AdminDashboard() {
     },
   });
 
+  // ── Stats ──
   const { data: stats } = useQuery<AdminStats>({
     queryKey: ["/api/admin/stats"],
     queryFn: async () => {
@@ -306,6 +788,7 @@ export default function AdminDashboard() {
     enabled: adminCheck?.isAdmin === true,
   });
 
+  // ── Users ──
   const { data: allUsers = [], isLoading: usersLoading, refetch: refetchUsers } = useQuery<AdminUser[]>({
     queryKey: ["/api/admin/users"],
     queryFn: async () => {
@@ -317,6 +800,7 @@ export default function AdminDashboard() {
     refetchInterval: 10000,
   });
 
+  // ── Removed Users ──
   const { data: removedUsersList = [], isLoading: removedLoading, refetch: refetchRemoved } = useQuery<RemovedUser[]>({
     queryKey: ["/api/admin/removed-users"],
     queryFn: async () => {
@@ -328,6 +812,7 @@ export default function AdminDashboard() {
     refetchInterval: 10000,
   });
 
+  // ── Activities ──
   const { data: allActivities = [], isLoading: activitiesLoading, refetch: refetchActivities } = useQuery<AdminActivity[]>({
     queryKey: ["/api/admin/all-activities"],
     queryFn: async () => {
@@ -339,6 +824,19 @@ export default function AdminDashboard() {
     refetchInterval: 10000,
   });
 
+  // ── Feedback count for badge ──
+  const { data: feedbackList = [] } = useQuery<FeedbackItem[]>({
+    queryKey: ["/api/admin/feedback"],
+    queryFn: async () => {
+      const res = await fetch("/api/admin/feedback", { credentials: "include" });
+      if (!res.ok) return [];
+      return res.json();
+    },
+    enabled: adminCheck?.isAdmin === true,
+    refetchInterval: 15000,
+  });
+
+  // ── Mutations ──
   const banMutation = useMutation({
     mutationFn: async (userId: string) => {
       const res = await fetch(`/api/admin/users/${userId}/ban`, {
@@ -402,21 +900,27 @@ export default function AdminDashboard() {
     onError: (err: Error) => toast({ title: "Error", description: err.message || "Could not remove user.", variant: "destructive" }),
   });
 
+  // ── Access denied ──
   if (adminCheck && !adminCheck.isAdmin) {
     return (
       <div className="flex items-center justify-center h-full">
         <div className="text-center p-8">
           <Shield className="w-16 h-16 text-red-400 mx-auto mb-4" />
           <h2 className="text-xl font-bold text-foreground">Access Denied</h2>
-          <p className="text-muted-foreground mt-2">This page is restricted to the administrator.</p>
+          <p className="text-muted-foreground mt-2">This page is restricted to administrators.</p>
         </div>
       </div>
     );
   }
 
+  // ── Filters ──
   const filteredUsers = allUsers.filter(u => {
     const q = searchQuery.toLowerCase();
-    const matchesSearch = !q || u.firstName?.toLowerCase().includes(q) || u.lastName?.toLowerCase().includes(q) || u.email?.toLowerCase().includes(q) || u.id.includes(q);
+    const matchesSearch = !q ||
+      u.firstName?.toLowerCase().includes(q) ||
+      u.lastName?.toLowerCase().includes(q) ||
+      u.email?.toLowerCase().includes(q) ||
+      u.id.includes(q);
     const matchesFilter = userFilter === "all" || (userFilter === "banned" ? u.isBanned : !u.isBanned);
     return matchesSearch && matchesFilter;
   });
@@ -452,192 +956,234 @@ export default function AdminDashboard() {
   };
 
   const bannedCount = allUsers.filter(u => u.isBanned).length;
+  const openFeedbackCount = feedbackList.filter(f => !f.resolved).length;
+
+  const tabs: { id: Tab; label: string; icon: typeof Users; count?: number; badge?: number }[] = [
+    { id: "users",      label: "Users",      icon: Users,        count: allUsers.length },
+    { id: "removed",    label: "Removed",    icon: UserX,        count: removedUsersList.length },
+    { id: "activities", label: "Activity",   icon: Activity,     count: allActivities.length },
+    { id: "feedback",   label: "Feedback",   icon: MessageSquare, badge: openFeedbackCount },
+  ];
 
   return (
-    <div className="min-h-full bg-gray-50 dark:bg-gray-950 p-4 md:p-6 max-w-6xl mx-auto">
-      <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
-        <div className="flex items-center gap-3 mb-6">
-          <div className="p-2 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600">
-            <Shield className="w-6 h-6 text-white" />
-          </div>
-          <div>
-            <h1 className="text-2xl font-bold font-display text-foreground">Admin Dashboard</h1>
-            <p className="text-sm text-muted-foreground">Monitor all users and activity in real-time</p>
-          </div>
-        </div>
-      </motion.div>
-
-      {stats && (
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-6">
-          <StatCard icon={Users} label="Total Users" value={stats.totalUsers} gradient="from-blue-500 to-blue-600" />
-          <StatCard icon={Activity} label="Activities" value={stats.totalActivities} gradient="from-amber-500 to-orange-600" />
-          <StatCard icon={Camera} label="Emotion Scans" value={stats.totalEmotionScans} gradient="from-sky-400 to-cyan-600" />
-          <StatCard icon={Dog} label="Dog Profiles" value={stats.totalDogProfiles} gradient="from-emerald-500 to-green-600" />
-          <StatCard icon={Eye} label="Unique Visitors" value={stats.uniqueVisitors} gradient="from-purple-500 to-violet-600" />
-        </div>
+    <>
+      {/* AI Permissions Modal */}
+      {permissionsUser && (
+        <AIPermissionsModal
+          user={permissionsUser}
+          onClose={() => setPermissionsUser(null)}
+        />
       )}
 
-      {bannedCount > 0 && (
-        <div className="mb-4 p-3 rounded-xl bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-800/30 flex items-center gap-2">
-          <Ban className="w-4 h-4 text-red-500" />
-          <p className="text-sm text-red-700 dark:text-red-400 font-medium">{bannedCount} user{bannedCount > 1 ? "s" : ""} currently suspended</p>
-        </div>
-      )}
+      <div className="min-h-full bg-gray-50 dark:bg-gray-950 p-4 md:p-6 max-w-6xl mx-auto">
+        {/* Page header */}
+        <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}>
+          <div className="flex items-center gap-3 mb-6">
+            <div className="p-2 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600">
+              <Shield className="w-6 h-6 text-white" />
+            </div>
+            <div>
+              <h1 className="text-2xl font-bold font-display text-foreground">Admin Dashboard</h1>
+              <p className="text-sm text-muted-foreground">Monitor all users and activity in real-time</p>
+            </div>
+          </div>
+        </motion.div>
 
-      {removedUsersList.length > 0 && (
-        <div className="mb-4 p-3 rounded-xl bg-gray-100 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 flex items-center gap-2">
-          <UserX className="w-4 h-4 text-gray-500" />
-          <p className="text-sm text-gray-600 dark:text-gray-400 font-medium">
-            {removedUsersList.length} user{removedUsersList.length > 1 ? "s" : ""} removed —{" "}
-            <button onClick={() => setActiveTab("removed")} className="underline hover:text-gray-800 dark:hover:text-gray-200 transition-colors">
-              view in Removed tab
+        {/* Stats */}
+        {stats && (
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-6">
+            <StatCard icon={Users}    label="Total Users"     value={stats.totalUsers}        gradient="from-blue-500 to-blue-600" />
+            <StatCard icon={Activity} label="Activities"      value={stats.totalActivities}   gradient="from-amber-500 to-orange-600" />
+            <StatCard icon={Camera}   label="Emotion Scans"   value={stats.totalEmotionScans} gradient="from-sky-400 to-cyan-600" />
+            <StatCard icon={Dog}      label="Dog Profiles"    value={stats.totalDogProfiles}  gradient="from-emerald-500 to-green-600" />
+            <StatCard icon={Eye}      label="Unique Visitors" value={stats.uniqueVisitors}    gradient="from-purple-500 to-violet-600" />
+          </div>
+        )}
+
+        {/* Alerts */}
+        {bannedCount > 0 && (
+          <div className="mb-4 p-3 rounded-xl bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-800/30 flex items-center gap-2">
+            <Ban className="w-4 h-4 text-red-500" />
+            <p className="text-sm text-red-700 dark:text-red-400 font-medium">
+              {bannedCount} user{bannedCount > 1 ? "s" : ""} currently suspended
+            </p>
+          </div>
+        )}
+
+        {removedUsersList.length > 0 && (
+          <div className="mb-4 p-3 rounded-xl bg-gray-100 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700 flex items-center gap-2">
+            <UserX className="w-4 h-4 text-gray-500" />
+            <p className="text-sm text-gray-600 dark:text-gray-400 font-medium">
+              {removedUsersList.length} user{removedUsersList.length > 1 ? "s" : ""} removed —{" "}
+              <button onClick={() => setActiveTab("removed")} className="underline hover:text-gray-800 dark:hover:text-gray-200 transition-colors">
+                view in Removed tab
+              </button>
+            </p>
+          </div>
+        )}
+
+        {/* Toolbar */}
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-4">
+          {/* Tabs */}
+          <div className="flex gap-2 flex-wrap">
+            {tabs.map(tab => (
+              <button
+                key={tab.id}
+                onClick={() => { setActiveTab(tab.id); setSearchQuery(""); }}
+                className={`relative px-4 py-2 rounded-xl text-sm font-medium transition-colors ${
+                  activeTab === tab.id
+                    ? "bg-primary text-white"
+                    : "bg-white dark:bg-gray-900 text-muted-foreground border border-gray-200 dark:border-gray-800"
+                }`}
+              >
+                <tab.icon className="w-4 h-4 inline mr-1.5" />
+                {tab.label}
+                {tab.count !== undefined && <span className="ml-1 opacity-70">({tab.count})</span>}
+                {/* Unread badge */}
+                {tab.badge !== undefined && tab.badge > 0 && (
+                  <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center">
+                    {tab.badge > 9 ? "9+" : tab.badge}
+                  </span>
+                )}
+              </button>
+            ))}
+          </div>
+
+          {/* Search + Refresh */}
+          <div className="flex gap-2 w-full sm:w-auto">
+            {activeTab !== "feedback" && (
+              <div className="relative flex-1 sm:w-64">
+                <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                <input
+                  type="text"
+                  placeholder={`Search ${activeTab}...`}
+                  value={searchQuery}
+                  onChange={e => setSearchQuery(e.target.value)}
+                  className="w-full pl-9 pr-4 py-2 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
+                />
+              </div>
+            )}
+            <button
+              onClick={() => { refetchUsers(); refetchActivities(); refetchRemoved(); }}
+              className="p-2 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
+              title="Refresh"
+            >
+              <RefreshCw className="w-4 h-4 text-muted-foreground" />
             </button>
+          </div>
+        </div>
+
+        {/* User filter sub-bar */}
+        {activeTab === "users" && (
+          <div className="flex gap-2 mb-3 flex-wrap">
+            {(["all", "active", "banned"] as const).map(f => (
+              <button
+                key={f}
+                onClick={() => setUserFilter(f)}
+                className={`px-3 py-1.5 rounded-lg text-xs font-medium capitalize transition-colors ${
+                  userFilter === f ? "bg-primary text-white" : "bg-white dark:bg-gray-900 text-muted-foreground border border-gray-200 dark:border-gray-700"
+                }`}
+              >
+                {f === "all" ? `All (${allUsers.length})` : f === "banned" ? `Banned (${bannedCount})` : `Active (${allUsers.length - bannedCount})`}
+              </button>
+            ))}
+          </div>
+        )}
+
+        {/* Export buttons */}
+        {(activeTab === "users" || activeTab === "activities") && (
+          <div className="flex flex-wrap gap-2 mb-4">
+            <button onClick={() => handleExport("users")} className="flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-lg bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 hover:bg-blue-100 transition-colors">
+              <Download className="w-3 h-3" /> Export Users CSV
+            </button>
+            <button onClick={() => handleExport("all-activities")} className="flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-lg bg-orange-50 dark:bg-orange-900/20 text-orange-600 dark:text-orange-400 hover:bg-orange-100 transition-colors">
+              <Download className="w-3 h-3" /> Export Activities CSV
+            </button>
+            <button onClick={() => handleExport("all-emotion-logs")} className="flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-lg bg-cyan-50 dark:bg-cyan-900/20 text-cyan-600 dark:text-cyan-400 hover:bg-cyan-100 transition-colors">
+              <Download className="w-3 h-3" /> Export Emotion Logs CSV
+            </button>
+          </div>
+        )}
+
+        {/* ── USERS TAB ── */}
+        {activeTab === "users" && (
+          <div className="space-y-2">
+            {usersLoading ? (
+              <div className="text-center py-12 text-muted-foreground">Loading users...</div>
+            ) : filteredUsers.length === 0 ? (
+              <div className="text-center py-12 text-muted-foreground">No users found</div>
+            ) : (
+              filteredUsers.map(user => (
+                <UserRow
+                  key={user.id}
+                  user={user}
+                  onBan={id => banMutation.mutate(id)}
+                  onUnban={id => unbanMutation.mutate(id)}
+                  onRemove={id => removeMutation.mutate(id)}
+                  onManagePermissions={u => setPermissionsUser(u)}
+                />
+              ))
+            )}
+          </div>
+        )}
+
+        {/* ── REMOVED TAB ── */}
+        {activeTab === "removed" && (
+          <div className="space-y-2">
+            {removedLoading ? (
+              <div className="text-center py-12 text-muted-foreground">Loading removed users...</div>
+            ) : filteredRemoved.length === 0 ? (
+              <div className="text-center py-12">
+                <UserX className="w-10 h-10 text-muted-foreground/40 mx-auto mb-3" />
+                <p className="text-muted-foreground font-medium">No removed users</p>
+                <p className="text-xs text-muted-foreground/70 mt-1">Users you remove will appear here as a permanent record.</p>
+              </div>
+            ) : (
+              <>
+                <p className="text-xs text-muted-foreground mb-3">
+                  These users have been removed. Their records are kept here for reference.
+                </p>
+                {filteredRemoved.map(user => (
+                  <RemovedUserRow key={user.id} user={user} />
+                ))}
+              </>
+            )}
+          </div>
+        )}
+
+        {/* ── ACTIVITIES TAB ── */}
+        {activeTab === "activities" && (
+          <div className="space-y-2">
+            {activitiesLoading ? (
+              <div className="text-center py-12 text-muted-foreground">Loading activities...</div>
+            ) : filteredActivities.length === 0 ? (
+              <div className="text-center py-12 text-muted-foreground">No activities found</div>
+            ) : (
+              filteredActivities.map(activity => {
+                const user = allUsers.find(u => u.id === activity.userId);
+                const name = user
+                  ? [user.firstName, user.lastName].filter(Boolean).join(" ") || user.email || `User ${user.id.slice(0, 8)}`
+                  : `User ${activity.userId.slice(0, 8)}`;
+                return <ActivityRow key={activity.id} activity={activity} userName={name} />;
+              })
+            )}
+          </div>
+        )}
+
+        {/* ── FEEDBACK TAB ── */}
+        {activeTab === "feedback" && <FeedbackTab />}
+
+        {/* Footer */}
+        <div className="mt-6 p-4 rounded-xl bg-violet-50 dark:bg-violet-900/10 border border-violet-200 dark:border-violet-800/30">
+          <div className="flex items-center gap-2 mb-1">
+            <TrendingUp className="w-4 h-4 text-violet-500" />
+            <span className="text-sm font-medium text-violet-700 dark:text-violet-400">Auto-Refresh Active</span>
+          </div>
+          <p className="text-xs text-violet-600/70 dark:text-violet-400/60">
+            Data refreshes every 10 seconds. New users and activities appear in real time.
           </p>
         </div>
-      )}
-
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-4">
-        <div className="flex gap-2 flex-wrap">
-          <button
-            onClick={() => setActiveTab("users")}
-            className={`px-4 py-2 rounded-xl text-sm font-medium transition-colors ${activeTab === "users" ? "bg-primary text-white" : "bg-white dark:bg-gray-900 text-muted-foreground border border-gray-200 dark:border-gray-800"}`}
-          >
-            <Users className="w-4 h-4 inline mr-1.5" />
-            Users ({allUsers.length})
-          </button>
-          <button
-            onClick={() => setActiveTab("removed")}
-            className={`px-4 py-2 rounded-xl text-sm font-medium transition-colors ${activeTab === "removed" ? "bg-gray-700 text-white" : "bg-white dark:bg-gray-900 text-muted-foreground border border-gray-200 dark:border-gray-800"}`}
-          >
-            <UserX className="w-4 h-4 inline mr-1.5" />
-            Removed ({removedUsersList.length})
-          </button>
-          <button
-            onClick={() => setActiveTab("activities")}
-            className={`px-4 py-2 rounded-xl text-sm font-medium transition-colors ${activeTab === "activities" ? "bg-primary text-white" : "bg-white dark:bg-gray-900 text-muted-foreground border border-gray-200 dark:border-gray-800"}`}
-          >
-            <Activity className="w-4 h-4 inline mr-1.5" />
-            Activity ({allActivities.length})
-          </button>
-        </div>
-
-        <div className="flex gap-2 w-full sm:w-auto">
-          <div className="relative flex-1 sm:w-64">
-            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-            <input
-              type="text"
-              placeholder={`Search ${activeTab}...`}
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-9 pr-4 py-2 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
-            />
-          </div>
-          <button
-            onClick={() => { refetchUsers(); refetchActivities(); refetchRemoved(); }}
-            className="p-2 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
-            title="Refresh"
-          >
-            <RefreshCw className="w-4 h-4 text-muted-foreground" />
-          </button>
-        </div>
       </div>
-
-      {activeTab === "users" && (
-        <div className="flex gap-2 mb-3 flex-wrap">
-          {(["all", "active", "banned"] as const).map(f => (
-            <button
-              key={f}
-              onClick={() => setUserFilter(f)}
-              className={`px-3 py-1.5 rounded-lg text-xs font-medium capitalize transition-colors ${
-                userFilter === f ? "bg-primary text-white" : "bg-white dark:bg-gray-900 text-muted-foreground border border-gray-200 dark:border-gray-700"
-              }`}
-            >
-              {f === "all" ? `All (${allUsers.length})` : f === "banned" ? `Banned (${bannedCount})` : `Active (${allUsers.length - bannedCount})`}
-            </button>
-          ))}
-        </div>
-      )}
-
-      <div className="flex flex-wrap gap-2 mb-4">
-        <button onClick={() => handleExport("users")} className="flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-lg bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 hover:bg-blue-100 transition-colors">
-          <Download className="w-3 h-3" /> Export Users CSV
-        </button>
-        <button onClick={() => handleExport("all-activities")} className="flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-lg bg-orange-50 dark:bg-orange-900/20 text-orange-600 dark:text-orange-400 hover:bg-orange-100 transition-colors">
-          <Download className="w-3 h-3" /> Export Activities CSV
-        </button>
-        <button onClick={() => handleExport("all-emotion-logs")} className="flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-lg bg-cyan-50 dark:bg-cyan-900/20 text-cyan-600 dark:text-cyan-400 hover:bg-cyan-100 transition-colors">
-          <Download className="w-3 h-3" /> Export Emotion Logs CSV
-        </button>
-      </div>
-
-      {activeTab === "users" && (
-        <div className="space-y-2">
-          {usersLoading ? (
-            <div className="text-center py-12 text-muted-foreground">Loading users...</div>
-          ) : filteredUsers.length === 0 ? (
-            <div className="text-center py-12 text-muted-foreground">No users found</div>
-          ) : (
-            filteredUsers.map(user => (
-              <UserRow
-                key={user.id}
-                user={user}
-                onBan={(id) => banMutation.mutate(id)}
-                onUnban={(id) => unbanMutation.mutate(id)}
-                onRemove={(id) => removeMutation.mutate(id)}
-              />
-            ))
-          )}
-        </div>
-      )}
-
-      {activeTab === "removed" && (
-        <div className="space-y-2">
-          {removedLoading ? (
-            <div className="text-center py-12 text-muted-foreground">Loading removed users...</div>
-          ) : filteredRemoved.length === 0 ? (
-            <div className="text-center py-12">
-              <UserX className="w-10 h-10 text-muted-foreground/40 mx-auto mb-3" />
-              <p className="text-muted-foreground font-medium">No removed users</p>
-              <p className="text-xs text-muted-foreground/70 mt-1">Users you remove will appear here as a permanent record.</p>
-            </div>
-          ) : (
-            <>
-              <p className="text-xs text-muted-foreground mb-3">
-                These users have been removed from the app. Their records are kept here for reference.
-              </p>
-              {filteredRemoved.map(user => (
-                <RemovedUserRow key={user.id} user={user} />
-              ))}
-            </>
-          )}
-        </div>
-      )}
-
-      {activeTab === "activities" && (
-        <div className="space-y-2">
-          {activitiesLoading ? (
-            <div className="text-center py-12 text-muted-foreground">Loading activities...</div>
-          ) : filteredActivities.length === 0 ? (
-            <div className="text-center py-12 text-muted-foreground">No activities found</div>
-          ) : (
-            filteredActivities.map(activity => {
-              const user = allUsers.find(u => u.id === activity.userId);
-              const name = user ? [user.firstName, user.lastName].filter(Boolean).join(" ") || user.email || `User ${user.id.slice(0,8)}` : `User ${activity.userId.slice(0,8)}`;
-              return <ActivityRow key={activity.id} activity={activity} userName={name} />;
-            })
-          )}
-        </div>
-      )}
-
-      <div className="mt-6 p-4 rounded-xl bg-violet-50 dark:bg-violet-900/10 border border-violet-200 dark:border-violet-800/30">
-        <div className="flex items-center gap-2 mb-1">
-          <TrendingUp className="w-4 h-4 text-violet-500" />
-          <span className="text-sm font-medium text-violet-700 dark:text-violet-400">Auto-Refresh Active</span>
-        </div>
-        <p className="text-xs text-violet-600/70 dark:text-violet-400/60">
-          Data refreshes every 10 seconds. New users and activities appear in real time.
-        </p>
-      </div>
-    </div>
+    </>
   );
 }

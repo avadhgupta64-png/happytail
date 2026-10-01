@@ -1,9 +1,10 @@
 import { useState, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Upload, MessageSquare, Loader2, Sparkles, Brain, Info, Dog, Activity, Heart, Volume2, AlertTriangle, CheckCircle } from "lucide-react";
+import { Upload, MessageSquare, Loader2, Sparkles, Brain, Info, Dog, Activity, Heart, Volume2, AlertTriangle, CheckCircle, Video } from "lucide-react";
+import CameraCapture, { type CaptureResult } from "@/components/CameraCapture";
 import { PageHeader } from "@/components/PageHeader";
 import { Button } from "@/components/ui/button";
-import { apiRequest } from "@/lib/queryClient";
+import { apiRequest, UnauthorizedError } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
@@ -81,9 +82,10 @@ export default function BarkTranslator() {
   const [extractionStatus, setExtractionStatus] = useState("");
   const [result, setResult] = useState<TranslationResult | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [showCamera, setShowCamera] = useState(false);
   const { toast } = useToast();
   const { t, lang } = useLanguage();
-  const { checkGuestAccess } = useGuest();
+  const { checkGuestAccess, setShowLoginPrompt } = useGuest();
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -97,6 +99,15 @@ export default function BarkTranslator() {
       }
       const url = URL.createObjectURL(file);
       setVideoSrc(url);
+      setResult(null);
+    }
+  };
+
+  const handleCameraCapture = (captureResult: CaptureResult) => {
+    setShowCamera(false);
+    if (captureResult.mode === "video") {
+      if (videoSrc && videoSrc.startsWith("blob:")) URL.revokeObjectURL(videoSrc);
+      setVideoSrc(captureResult.blobUrl);
       setResult(null);
     }
   };
@@ -118,7 +129,11 @@ export default function BarkTranslator() {
       const data = await res.json();
       setResult(data);
     } catch (err) {
-      toast({ title: "Translation failed", description: "Could not analyze the video. Please try again.", variant: "destructive" });
+      if (err instanceof UnauthorizedError) {
+        setShowLoginPrompt(true);
+      } else {
+        toast({ title: "Translation failed", description: "Could not analyze the video. Please try again.", variant: "destructive" });
+      }
     } finally {
       setIsAnalyzing(false);
       setExtractionStatus("");
@@ -154,21 +169,31 @@ export default function BarkTranslator() {
                 <div className="w-20 h-20 bg-gray-800 rounded-full flex items-center justify-center mb-6 mx-auto">
                   <MessageSquare className="w-10 h-10 text-gray-500" />
                 </div>
-                <Button 
-                  data-testid="button-upload-video"
-                  onClick={() => fileInputRef.current?.click()}
-                  className="bg-primary hover:bg-primary/90 text-white rounded-xl py-6 flex items-center gap-2"
-                >
-                  <Upload className="w-5 h-5" /> {t.barkTranslator.uploadVideo}
-                </Button>
-                <input 
-                  type="file" 
-                  ref={fileInputRef} 
-                  onChange={handleFileUpload} 
-                  accept="video/*" 
-                  className="hidden"
-                  data-testid="input-video-file"
-                />
+                <div className="flex flex-col gap-3 w-full max-w-xs mx-auto">
+                  <Button
+                    data-testid="button-record-video"
+                    onClick={() => setShowCamera(true)}
+                    className="bg-primary hover:bg-primary/90 text-white rounded-xl py-6 flex items-center gap-2"
+                  >
+                    <Video className="w-5 h-5" /> Record a Video
+                  </Button>
+                  <Button
+                    data-testid="button-upload-video"
+                    onClick={() => fileInputRef.current?.click()}
+                    variant="outline"
+                    className="bg-white/10 border-white/20 text-white hover:bg-white/20 rounded-xl py-6 flex items-center gap-2"
+                  >
+                    <Upload className="w-5 h-5" /> {t.barkTranslator.uploadVideo}
+                  </Button>
+                  <input
+                    type="file"
+                    ref={fileInputRef}
+                    onChange={handleFileUpload}
+                    accept="video/*"
+                    className="hidden"
+                    data-testid="input-video-file"
+                  />
+                </div>
               </div>
             ) : (
               <video src={videoSrc} controls className="w-full h-full object-contain" data-testid="video-preview" />
@@ -314,6 +339,14 @@ export default function BarkTranslator() {
           </AnimatePresence>
         </div>
       </div>
+
+      {showCamera && (
+        <CameraCapture
+          mode="video"
+          onCapture={handleCameraCapture}
+          onClose={() => setShowCamera(false)}
+        />
+      )}
     </div>
   );
 }

@@ -30,6 +30,7 @@ export function GuestProvider({ children }: { children: ReactNode }) {
     localStorage.removeItem(GUEST_USED_KEY);
     setIsGuest(false);
     setHasUsedFeature(false);
+    setShowLoginPrompt(false);
   }, []);
 
   const checkGuestAccess = useCallback((): boolean => {

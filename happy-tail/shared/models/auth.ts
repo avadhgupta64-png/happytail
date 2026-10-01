@@ -23,6 +23,13 @@ export const users = pgTable("users", {
   lastName: varchar("last_name"),
   profileImageUrl: varchar("profile_image_url"),
   bio: varchar("bio"),
+  // Email verification
+  emailVerified: boolean("email_verified").default(false).notNull(),
+  verificationToken: varchar("verification_token"),
+  verificationTokenExpiry: timestamp("verification_token_expiry"),
+  // Password reset
+  resetToken: varchar("reset_token"),
+  resetTokenExpiry: timestamp("reset_token_expiry"),
   isBanned: boolean("is_banned").default(false).notNull(),
   bannedAt: timestamp("banned_at"),
   banReason: varchar("ban_reason"),
