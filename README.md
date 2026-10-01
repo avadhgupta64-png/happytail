@@ -7,7 +7,6 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.6-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Neon-4169E1?logo=postgresql&logoColor=white)](https://neon.tech)
 [![Groq](https://img.shields.io/badge/AI-Groq-F55036?logo=groq&logoColor=white)](https://groq.com)
-[![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
 
 </div>
 
@@ -283,11 +282,6 @@ All AI responses adapt to the user's selected language automatically.
 
 ---
 
-## License
-
-MIT © [Happy Tail](https://github.com/your-username/happy-tail)
-
----
 
 <div align="center">
   <sub>Built with ❤️ for dog lovers everywhere</sub>
