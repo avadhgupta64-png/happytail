@@ -1,0 +1,33 @@
+import { Link } from "wouter";
+import { motion } from "framer-motion";
+import { ArrowLeft, HeartHandshake, PawPrint } from "lucide-react";
+
+const sections = [
+  { title: "1. Welcome to Happy Tail", body: "Happy Tail is an AI-powered companion for dog owners and pet lovers. By accessing or using the website, you agree to these Terms of Service. If you do not agree, please do not use the service." },
+  { title: "2. Eligibility and your account", body: "You must be legally able to use the service under the laws that apply to you. Keep your sign-in details secure and provide accurate account information. You are responsible for activity carried out through your account, except where applicable law says otherwise. Google sign-in is also subject to Google's terms." },
+  { title: "3. What Happy Tail provides", body: "Features may include dog emotion insights, bark and body-language analysis, health information, diet planning, AI chat, breed guides, nearby-place discovery, activity history and community tools. Features may change, become unavailable, or have limits as the service develops." },
+  { title: "4. AI and veterinary disclaimer", body: "Happy Tail provides informational support, not veterinary diagnosis or treatment. AI outputs can be incomplete, inaccurate or unsuitable for an individual animal. Do not delay professional care because of an AI response. For urgent symptoms, poisoning, breathing difficulty, severe pain or other emergencies, contact a qualified veterinarian or emergency animal hospital immediately. Diet and health suggestions should be checked with a veterinarian, especially for puppies, senior dogs, pregnant dogs or dogs with medical conditions." },
+  { title: "5. Responsible use", body: "Do not misuse the service, interfere with its operation, attempt unauthorised access, upload malicious code, impersonate others, harass users, or use the service for unlawful purposes. Do not submit content you do not have permission to share. You are responsible for the content you upload or publish." },
+  { title: "6. Community content", body: "You retain responsibility for content you post. By publishing content in community features, you give Happy Tail permission to host and display it as needed to provide those features. Do not post private information about another person without permission, abusive material, or content that endangers people or animals. We may remove content or restrict accounts to protect the community or service." },
+  { title: "7. Location and third-party services", body: "Nearby-place tools may use location information or third-party map and place data. AI, hosting, database, authentication and other providers may be involved in delivering features and may have their own terms and policies. Happy Tail does not control third-party services, their availability, or the accuracy of third-party listings." },
+  { title: "8. Intellectual property", body: "The Happy Tail name, branding, interface and original service materials are owned by or licensed to the people operating the service, except for third-party materials. You may use the service for personal, lawful purposes but may not copy, resell or exploit the service in a way that violates applicable rights or law." },
+  { title: "9. Availability and limitations", body: "We work to keep Happy Tail useful and available, but we do not promise uninterrupted service, error-free operation, or that every AI result will be accurate. To the extent permitted by law, the service is provided on an 'as available' basis. Nothing in these terms limits rights that cannot legally be excluded." },
+  { title: "10. Suspension or termination", body: "We may limit or suspend access where reasonably necessary for security, abuse prevention, legal compliance, or protection of users and the service. You may stop using Happy Tail at any time." },
+  { title: "11. Updates and contact", body: "These terms may be updated as Happy Tail develops. The current version will be posted on this page. For questions about these terms, contact avadhgupta64@gmail.com. Applicable mandatory consumer protections and laws continue to apply." },
+];
+
+export default function TermsOfService() {
+  return <motion.main initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mx-auto max-w-4xl space-y-8 pb-16">
+    <Link href="/" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary"><ArrowLeft className="h-4 w-4" /> Back to Happy Tail</Link>
+    <header className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-indigo-950 via-purple-900 to-pink-800 p-7 md:p-10 text-white shadow-xl">
+      <div className="absolute -right-8 -top-8 h-40 w-40 rounded-full bg-amber-300/20 blur-3xl" />
+      <div className="relative flex items-center gap-3"><div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/10"><HeartHandshake className="h-6 w-6 text-amber-200" /></div><div><p className="text-xs font-bold uppercase tracking-[0.25em] text-amber-200">Care with clarity</p><h1 className="text-3xl md:text-4xl font-bold">Terms of Service</h1></div></div>
+      <p className="relative mt-4 max-w-2xl text-sm leading-6 text-white/75">The simple ground rules for using Happy Tail, our AI-powered dog-care companion.</p>
+      <p className="relative mt-3 text-xs text-white/50">Effective date: October 19, 2026</p>
+    </header>
+    <div className="rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm leading-6 text-amber-950 dark:border-amber-900/60 dark:bg-amber-950/20 dark:text-amber-100"><PawPrint className="mr-2 inline h-4 w-4" /> Happy Tail supports responsible pet care; it does not replace a qualified veterinarian.</div>
+    <div className="space-y-6">{sections.map((section) => <section key={section.title} className="rounded-2xl border border-border bg-card p-5 md:p-6"><h2 className="mb-2 text-lg font-bold text-foreground">{section.title}</h2><p className="text-sm leading-7 text-muted-foreground">{section.body}</p></section>)}</div>
+    <p className="text-sm text-muted-foreground">Questions? Email <a className="font-medium text-primary underline underline-offset-4" href="mailto:avadhgupta64@gmail.com">avadhgupta64@gmail.com</a>.</p>
+    <div className="flex flex-wrap gap-4 border-t border-border pt-5 text-sm"><Link href="/privacy" className="text-primary underline underline-offset-4">Privacy Policy</Link><Link href="/about" className="text-primary underline underline-offset-4">About Happy Tail</Link></div>
+  </motion.main>;
+}
