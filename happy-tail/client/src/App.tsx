@@ -329,6 +329,11 @@ function AppContent() {
     );
   }
 
+  // Legal pages must remain publicly accessible before sign-in, including from the consent links.
+  if (!user && !isGuest && (window.location.pathname === "/privacy" || window.location.pathname === "/terms")) {
+    return <Router />;
+  }
+
   if (!user && !isGuest) {
     return <Landing />;
   }
