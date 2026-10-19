@@ -666,7 +666,7 @@ export default function Landing() {
             By continuing, you agree to our{" "}
             <a href="/terms" className="!text-pink-100 underline underline-offset-4 decoration-pink-200 hover:!text-white font-semibold">Terms of Service</a>{" "}
             and{" "}
-            <a href="/privacy" className="text-white/65 underline underline-offset-4 hover:text-white">Privacy Policy</a>.
+            <a href="/privacy" className="!text-pink-100 underline underline-offset-4 decoration-pink-200 hover:!text-white font-semibold">Privacy Policy</a>.
           </p>
         </div>
       </div>
