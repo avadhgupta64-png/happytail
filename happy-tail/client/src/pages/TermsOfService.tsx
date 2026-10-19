@@ -21,7 +21,7 @@ export default function TermsOfService() {
     <Link href="/" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary"><ArrowLeft className="h-4 w-4" /> Back to Happy Tail</Link>
     <header className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-indigo-950 via-purple-900 to-pink-800 p-7 md:p-10 text-white shadow-xl">
       <div className="absolute -right-8 -top-8 h-40 w-40 rounded-full bg-amber-300/20 blur-3xl" />
-      <div className="relative flex items-center gap-3"><div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/10"><HeartHandshake className="h-6 w-6 text-amber-200" /></div><div><p className="text-xs font-bold uppercase tracking-[0.25em] text-amber-200">Care with clarity</p><h1 className="text-3xl md:text-4xl font-bold">Terms of Service</h1></div></div>
+      <div className="relative flex items-center gap-3"><div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/10"><HeartHandshake className="h-6 w-6 text-amber-200" /></div><div><p className="text-xs font-bold uppercase tracking-[0.25em] text-amber-200">Care with clarity</p><h1 className="text-3xl md:text-4xl font-bold !text-pink-100">Terms of Service</h1></div></div>
       <p className="relative mt-4 max-w-2xl text-sm leading-6 text-white/75">The simple ground rules for using Happy Tail, our AI-powered dog-care companion.</p>
       <p className="relative mt-3 text-xs text-white/50">Effective date: October 19, 2026</p>
     </header>
