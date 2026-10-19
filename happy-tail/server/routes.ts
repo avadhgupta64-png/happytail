@@ -14,8 +14,13 @@ import { runBackup, listBackups, getBackupPath } from "./backup";
 import fs from "fs";
 
 // Initialize Groq client (OpenAI-compatible API)
+const groqApiKey = process.env.GROQ_API_KEY;
+if (!groqApiKey) {
+  console.warn("[AI] GROQ_API_KEY is not configured; AI-powered endpoints will not work until it is added.");
+}
 const openai = new OpenAI({
-  apiKey: process.env.GROQ_API_KEY,
+  // Allow the server and non-AI endpoints to start even before the owner configures Groq.
+  apiKey: groqApiKey || "groq-key-not-configured",
   baseURL: "https://api.groq.com/openai/v1",
 });
 
