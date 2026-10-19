@@ -1,7 +1,0 @@
-site: https://happytail-tan.vercel.app
-sitemap_format: xml
-urls:
-  - https://happytail-tan.vercel.app/
-  - https://happytail-tan.vercel.app/privacy
-  - https://happytail-tan.vercel.app/terms
-note: "Google Search Console accepts sitemap.xml, not this YAML file. This YAML file is a human-readable companion."
