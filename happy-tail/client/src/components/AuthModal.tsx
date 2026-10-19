@@ -381,7 +381,7 @@ export function AuthModal({ isOpen, onClose, defaultTab = "login" }: AuthModalPr
               <GoogleButton onClick={handleGoogle} />
               <p className="mt-2 text-center text-[11px] leading-5 text-muted-foreground">
                 By continuing, you agree to our{" "}
-                <a href="/terms" className="font-medium underline underline-offset-4 hover:text-primary">Terms of Service</a>{" "}
+                <a href="/terms" className="!text-violet-600 dark:!text-pink-300 font-semibold underline underline-offset-4 hover:!text-fuchsia-600 dark:hover:!text-pink-200">Terms of Service</a>{" "}
                 and{" "}
                 <a href="/privacy" className="font-medium underline underline-offset-4 hover:text-primary">Privacy Policy</a>.
               </p>
