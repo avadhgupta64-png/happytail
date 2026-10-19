@@ -379,6 +379,12 @@ export function AuthModal({ isOpen, onClose, defaultTab = "login" }: AuthModalPr
 
               {/* Google button — always visible */}
               <GoogleButton onClick={handleGoogle} />
+              <p className="mt-2 text-center text-[11px] leading-5 text-muted-foreground">
+                By continuing, you agree to our{" "}
+                <a href="/terms" className="font-medium underline underline-offset-4 hover:text-primary">Terms of Service</a>{" "}
+                and{" "}
+                <a href="/privacy" className="font-medium underline underline-offset-4 hover:text-primary">Privacy Policy</a>.
+              </p>
 
               <div className="flex items-center gap-3 my-4">
                 <Separator className="flex-1" />
