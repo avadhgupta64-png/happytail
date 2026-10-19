@@ -225,6 +225,17 @@ export default function About() {
         </motion.div>
       </section>
 
+      {/* Legal and privacy */}
+      <section className="rounded-3xl border border-pink-100 dark:border-pink-900/50 bg-gradient-to-br from-pink-50 via-white to-violet-50 dark:from-pink-950/20 dark:via-gray-900 dark:to-violet-950/20 p-6 md:p-8">
+        <p className="text-xs font-bold uppercase tracking-[0.25em] text-pink-600 dark:text-pink-300 mb-2">A little transparency</p>
+        <h2 className="text-xl font-display font-bold text-foreground mb-2">Care you can feel good about</h2>
+        <p className="text-sm leading-relaxed text-muted-foreground mb-5">Learn how Happy Tail handles information and the guidelines that keep this pet-loving space helpful and respectful.</p>
+        <div className="flex flex-wrap gap-3">
+          <a href="/privacy" className="inline-flex items-center rounded-xl bg-white dark:bg-gray-800 border border-pink-200 dark:border-pink-900 px-4 py-2.5 text-sm font-semibold text-foreground hover:border-pink-400 transition-colors">Privacy Policy</a>
+          <a href="/terms" className="inline-flex items-center rounded-xl bg-white dark:bg-gray-800 border border-violet-200 dark:border-violet-900 px-4 py-2.5 text-sm font-semibold text-foreground hover:border-violet-400 transition-colors">Terms of Service</a>
+        </div>
+      </section>
+
       {/* Footer note */}
       <div className="text-center text-xs text-muted-foreground pt-2 pb-4">
         <p>Made with <Heart className="inline w-3 h-3 text-pink-500 fill-pink-500 mx-0.5" /> for every dog that deserves to be understood.</p>
