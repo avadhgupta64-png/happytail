@@ -662,8 +662,11 @@ export default function Landing() {
             </div>
           </motion.div>
 
-          <p className="mt-6 text-xs text-white/20 text-center">
-            By continuing you agree to our Terms of Service and Privacy Policy.
+          <p className="mt-6 text-xs text-white/40 text-center leading-6">
+            By continuing, you agree to our{" "}
+            <a href="/terms" className="text-white/65 underline underline-offset-4 hover:text-white">Terms of Service</a>{" "}
+            and{" "}
+            <a href="/privacy" className="text-white/65 underline underline-offset-4 hover:text-white">Privacy Policy</a>.
           </p>
         </div>
       </div>
