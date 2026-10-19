@@ -28,6 +28,6 @@ export default function TermsOfService() {
     <div className="rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm leading-6 text-amber-950 dark:border-amber-900/60 dark:bg-amber-950/20 dark:text-amber-100"><PawPrint className="mr-2 inline h-4 w-4" /> Happy Tail supports responsible pet care; it does not replace a qualified veterinarian.</div>
     <div className="space-y-6">{sections.map((section) => <section key={section.title} className="rounded-2xl border border-border bg-card p-5 md:p-6"><h2 className="mb-2 text-lg font-bold text-foreground">{section.title}</h2><p className="text-sm leading-7 text-muted-foreground">{section.body}</p></section>)}</div>
     <p className="text-sm text-muted-foreground">Questions? Email <a className="font-medium text-primary underline underline-offset-4" href="mailto:avadhgupta64@gmail.com">avadhgupta64@gmail.com</a>.</p>
-    <div className="flex flex-wrap gap-4 border-t border-border pt-5 text-sm"><Link href="/privacy" className="text-primary underline underline-offset-4">Privacy Policy</Link><Link href="/about" className="text-primary underline underline-offset-4">About Happy Tail</Link></div>
+    <div className="flex flex-wrap gap-4 border-t border-border pt-5 text-sm"><Link href="/privacy" className="!text-fuchsia-700 dark:!text-pink-300 font-semibold underline underline-offset-4 hover:!text-violet-700 dark:hover:!text-pink-200">Privacy Policy</Link><Link href="/about" className="text-primary underline underline-offset-4">About Happy Tail</Link></div>
   </motion.main>;
 }
