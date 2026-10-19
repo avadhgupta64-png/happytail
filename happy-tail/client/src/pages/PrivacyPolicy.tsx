@@ -1,0 +1,32 @@
+import { Link } from "wouter";
+import { motion } from "framer-motion";
+import { ArrowLeft, ShieldCheck, PawPrint } from "lucide-react";
+
+const sections = [
+  { title: "1. Who we are", body: "Happy Tail is an AI-powered dog-care companion intended to help people learn about their dogs and organise everyday pet care. Website: https://happytail-tan.vercel.app. For privacy questions, contact avadhgupta64@gmail.com." },
+  { title: "2. Information we may collect", body: "Depending on the features you use, Happy Tail may process account details such as your name and email address; information you choose to enter about your dog; photos, videos, prompts and messages you submit to AI features; community posts and messages; saved activity or feature history; and technical information needed to operate the service, such as session identifiers, logs and basic device/browser information. If you use nearby-place features, your device may ask permission to share location. You can decline location access and enter a location manually where the feature allows it." },
+  { title: "3. Google sign-in", body: "If you choose Continue with Google, Google provides the account information permitted by the sign-in flow, such as your email address and basic profile information. Google handles its own data under Google's privacy policy. Happy Tail does not receive your Google password." },
+  { title: "4. How information is used", body: "Information is used to create and maintain your account, provide dog-care tools and AI responses, save history where available, support community features, protect the service against abuse, troubleshoot errors, and respond to support requests. We aim to use information only for purposes connected with operating and improving Happy Tail." },
+  { title: "5. AI features and third-party services", body: "When you submit content to an AI feature, the relevant text, image, video frames or other input may be sent to third-party AI or infrastructure providers so the feature can work. Authentication, hosting, database, mapping and other providers may also process information necessary to deliver the service. Those providers process data under their own terms and privacy practices. Do not submit passwords, financial information, or information you do not want processed by these services." },
+  { title: "6. Sharing and disclosure", body: "We do not sell your personal information. Information may be processed by service providers needed to run Happy Tail, shown to other users when you intentionally publish it in community areas, or disclosed when reasonably necessary to comply with law, protect users, investigate abuse, or safeguard the service." },
+  { title: "7. Storage, security and retention", body: "We use reasonable measures intended to protect information, but no website or transmission method can be guaranteed completely secure. Information may be retained for as long as needed to operate the service, maintain account and activity features, meet legitimate operational needs, or comply with legal obligations. Retention can vary by feature and provider." },
+  { title: "8. Your choices", body: "You can choose what information to submit, decline optional location permissions, and stop using a feature at any time. You may contact us to ask about accessing, correcting or deleting account-related information. We may need to verify a request and retain certain records where required or reasonably necessary." },
+  { title: "9. Children and young users", body: "Happy Tail is a general pet-care service and is not designed to knowingly collect personal information from children without appropriate permission where required by law. If you believe a child has provided personal information inappropriately, contact us so we can review the request." },
+  { title: "10. Changes to this policy", body: "We may update this policy as Happy Tail changes. The latest version will be published on this page with an updated effective date. Continued use after an update means the updated policy will apply to future use, subject to applicable law." },
+];
+
+export default function PrivacyPolicy() {
+  return <motion.main initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="mx-auto max-w-4xl space-y-8 pb-16">
+    <Link href="/" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary"><ArrowLeft className="h-4 w-4" /> Back to Happy Tail</Link>
+    <header className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-indigo-950 via-purple-900 to-pink-800 p-7 md:p-10 text-white shadow-xl">
+      <div className="absolute -right-8 -top-8 h-40 w-40 rounded-full bg-pink-400/20 blur-3xl" />
+      <div className="relative flex items-center gap-3"><div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/10"><ShieldCheck className="h-6 w-6 text-pink-200" /></div><div><p className="text-xs font-bold uppercase tracking-[0.25em] text-pink-200">Your trust matters</p><h1 className="text-3xl md:text-4xl font-bold">Privacy Policy</h1></div></div>
+      <p className="relative mt-4 max-w-2xl text-sm leading-6 text-white/75">A clear guide to the information Happy Tail uses to help you care for your four-legged family member.</p>
+      <p className="relative mt-3 text-xs text-white/50">Effective date: October 19, 2026</p>
+    </header>
+    <div className="rounded-2xl border border-pink-200 bg-pink-50 p-4 text-sm leading-6 text-pink-950 dark:border-pink-900/60 dark:bg-pink-950/20 dark:text-pink-100"><PawPrint className="mr-2 inline h-4 w-4" /> Pet-care guidance may involve personal information. Please share only what is needed for the feature you are using.</div>
+    <div className="space-y-6">{sections.map((section) => <section key={section.title} className="rounded-2xl border border-border bg-card p-5 md:p-6"><h2 className="mb-2 text-lg font-bold text-foreground">{section.title}</h2><p className="text-sm leading-7 text-muted-foreground">{section.body}</p></section>)}</div>
+    <p className="text-sm text-muted-foreground">Questions about privacy? Email <a className="font-medium text-primary underline underline-offset-4" href="mailto:avadhgupta64@gmail.com">avadhgupta64@gmail.com</a>.</p>
+    <div className="flex flex-wrap gap-4 border-t border-border pt-5 text-sm"><Link href="/terms" className="text-primary underline underline-offset-4">Terms of Service</Link><Link href="/about" className="text-primary underline underline-offset-4">About Happy Tail</Link></div>
+  </motion.main>;
+}
