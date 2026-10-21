@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import logoImg from "@assets/IMG-20260210-WA0048_1770744211559.jpg";
 import splashBg from "@/assets/images/splash-bg.png";
 
 export function SplashScreen({ onComplete }: { onComplete: () => void }) {
@@ -34,20 +33,6 @@ export function SplashScreen({ onComplete }: { onComplete: () => void }) {
           </div>
 
           <div className="relative z-10 flex flex-col items-center gap-6">
-            <motion.div
-              initial={{ scale: 0.5, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ duration: 0.6, ease: "easeOut" }}
-            >
-              <img
-                src={logoImg}
-                alt="Happy Tail Logo"
-                className="w-28 h-28 rounded-3xl object-cover shadow-2xl"
-                style={{ mixBlendMode: "multiply" }}
-                data-testid="img-splash-logo"
-              />
-            </motion.div>
-
             <motion.div
               initial={{ y: 20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
