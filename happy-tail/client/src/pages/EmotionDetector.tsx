@@ -19,6 +19,18 @@ import { AIUsageCounter } from "@/components/AIUsageCounter";
 import { AIUsageLimitRequest } from "@/components/AIUsageLimitRequest";
 
 // ─── Emotion helpers ───────────────────────────────────────────────
+const getFriendlyErrorMessage = (error: unknown, fallback: string) => {
+  const raw = error instanceof Error ? error.message : String(error || "");
+  try {
+    const parsed = JSON.parse(raw);
+    if (parsed?.featureKey && parsed?.limit) {
+      return `You've reached the ${parsed.limit}-use limit for this AI feature. Request additional access and wait for the admin's approval.`;
+    }
+    if (typeof parsed?.message === "string") return parsed.message;
+  } catch {}
+  return raw || fallback;
+};
+
 const emotionColors: Record<string, string> = {
   "Happy": "bg-green-100 text-green-700 border-green-200",
   "Sad": "bg-blue-100 text-blue-700 border-blue-200",
@@ -461,12 +473,19 @@ export default function EmotionDetector() {
                 </div>
 
                 {error && (
-                  <div className="bg-red-50 p-4 rounded-2xl flex gap-3 text-red-700 border border-red-100">
+                  <motion.div
+                    key={error.message}
+                    initial={{ x: 0 }}
+                    animate={error.message.includes("featureKey") || error.message.includes("limit") ? { x: [0, -7, 7, -5, 5, 0] } : { x: 0 }}
+                    transition={{ duration: 0.35 }}
+                    className="bg-red-50 p-4 rounded-2xl flex gap-3 text-red-700 border border-red-100"
+                    role="alert"
+                  >
                     <AlertCircle className="w-5 h-5 shrink-0" />
                     <div className="flex-1">
-                      <p className="text-sm">{error.message || "Something went wrong. Please try again."}</p>
+                      <p className="text-sm">{getFriendlyErrorMessage(error, "Something went wrong. Please try again.")}</p>
                     </div>
-                  </div>
+                  </motion.div>
                 )}
 
                 <div className="bg-blue-50 p-4 rounded-2xl flex gap-3 text-blue-700 border border-blue-100 shadow-sm">
