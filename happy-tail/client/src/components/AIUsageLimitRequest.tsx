@@ -5,8 +5,11 @@ interface AIUsageLimitRequestProps {
 }
 
 interface AccessRequest {
+  id?: number;
   featureKey: string;
   status: string;
+  requestedAt?: string;
+  reviewedAt?: string | null;
 }
 
 interface UsageSummary {
@@ -31,7 +34,14 @@ export function AIUsageLimitRequest({ featureKey }: AIUsageLimitRequestProps) {
         fetch("/api/ai/access-requests/mine", { credentials: "include" }),
       ]);
       if (usageResponse.ok) setUsage(await usageResponse.json());
-      if (requestsResponse.ok) setRequests(await requestsResponse.json());
+      if (requestsResponse.ok) {
+        const data = await requestsResponse.json();
+        if (Array.isArray(data)) {
+          setRequests(data.sort((a: AccessRequest, b: AccessRequest) =>
+            new Date(b.requestedAt || 0).getTime() - new Date(a.requestedAt || 0).getTime()
+          ));
+        }
+      }
     } catch {
       // Keep the existing status visible if a refresh briefly fails.
     }
@@ -40,7 +50,12 @@ export function AIUsageLimitRequest({ featureKey }: AIUsageLimitRequestProps) {
   useEffect(() => {
     void loadStatus();
     const interval = window.setInterval(() => void loadStatus(), 5000);
-    return () => window.clearInterval(interval);
+    const onFocus = () => void loadStatus();
+    window.addEventListener("focus", onFocus);
+    return () => {
+      window.clearInterval(interval);
+      window.removeEventListener("focus", onFocus);
+    };
   }, [featureKey]);
 
   const latestRequest = requests.find((request) => request.featureKey === featureKey);
@@ -79,20 +94,19 @@ export function AIUsageLimitRequest({ featureKey }: AIUsageLimitRequestProps) {
   return (
     <div className="mt-3 rounded-xl border border-red-200 bg-red-50 p-4 text-red-900 dark:border-red-900 dark:bg-red-950/30 dark:text-red-100" role="status" aria-live="polite">
       {reachedLimit && <p className="text-sm font-semibold">You’ve reached the {limit}-use limit for this AI feature.</p>}
-      {decisionStatus === "approved" && (
-        <p className="mt-2 text-sm font-semibold text-green-800 dark:text-green-300" role="status">
-          Your access request has been approved. Additional access is now active for this feature.
-        </p>
-      )}
-      {decisionStatus === "denied" && (
-        <p className="mt-2 text-sm font-semibold" role="status">
-          Your request for additional access was declined by the admin. You can submit a new request if you still need access.
-        </p>
-      )}
-      {decisionStatus === "revoked" && (
-        <p className="mt-2 text-sm font-semibold" role="status">
-          Your additional access to this feature has been revoked by the admin. The standard usage limit now applies.
-        </p>
+      {showDecisionNotice && (
+        <div className="mt-3 rounded-lg border border-red-300 bg-red-100 px-3 py-3 text-red-900 dark:border-red-800 dark:bg-red-950/60 dark:text-red-100" role="alert" aria-live="assertive">
+          <span className="mb-1 inline-flex items-center rounded-full border border-red-400 bg-red-200 px-2.5 py-1 text-xs font-extrabold uppercase tracking-wide text-red-900 dark:border-red-700 dark:bg-red-900 dark:text-red-100">
+            {decisionStatus === "approved" ? "Access approved" : decisionStatus === "denied" ? "Access request declined" : "Access revoked"}
+          </span>
+          <p className="text-sm font-semibold">
+            {decisionStatus === "approved"
+              ? "Your access request has been approved. Additional access is now active for this feature."
+              : decisionStatus === "denied"
+                ? "Your request for additional access was declined by the admin. You can submit a new request if you still need access."
+                : "Your additional access to this feature has been revoked by the admin. The standard usage limit now applies."}
+          </p>
+        </div>
       )}
       {reachedLimit && requestPending ? (
         <>
