@@ -301,7 +301,7 @@ function HeaderNotificationIndicator() {
     ...(!adminCheck?.isAdmin ? requests.filter((item: any) => ["approved", "denied", "revoked"].includes(item.status) && item.reviewedAt).map((item: any) => ({ key: `user-access-${item.id}-${item.status}-${item.reviewedAt}`, url: accessRequestTarget(item.featureKey) })) : []),
     ...(!adminCheck?.isAdmin ? feedback.filter((item: any) => item.adminComment || item.resolved).map((item: any) => ({ key: `user-feedback-${item.id}-${item.updatedAt || item.adminComment || item.resolved}` })) : []),
   ];
-  return notifications.some((item: any) => !readKeys.includes(item.key) && (!item.url || item.url === window.location.pathname))
+  return notifications.some((item: any) => !readKeys.includes(item.key))
     ? <span aria-label="Unread notifications" className="pointer-events-none absolute right-1 top-1 h-2.5 w-2.5 rounded-full border-2 border-white bg-red-600 dark:border-gray-950" />
     : null;
 }
