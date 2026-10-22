@@ -737,6 +737,7 @@ Rules:
         treatment: result.treatment || "",
         suggestion: result.suggestion || "No suggestion",
         deviceId: deviceId || "unknown",
+        userId: String(req.user?.claims?.sub),
       });
 
       const userId = req.user?.claims?.sub;
@@ -841,10 +842,16 @@ Rules:
     }
   });
 
-  app.get(api.emotions.history.path, async (req, res) => {
-    const deviceId = req.query.deviceId as string | undefined;
-    const history = await storage.getEmotionHistory(deviceId);
-    res.json(history);
+  // Emotion history is private to the signed-in account. Never trust a client-supplied deviceId for access control.
+  app.get(api.emotions.history.path, isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = String(req.user?.claims?.sub);
+      const history = await storage.getEmotionHistory(userId);
+      res.json(history);
+    } catch (error) {
+      console.error("Failed to fetch private emotion history:", error);
+      res.status(500).json({ message: "Failed to fetch emotion history" });
+    }
   });
 
   app.patch("/api/locations/:id", async (req, res) => {
@@ -912,9 +919,10 @@ Rules:
       await storage.incrementUsage(userId, featureKey);
       return true;
     } catch (err) {
-      console.error("Usage check failed:", err);
-      // On DB error, allow the request through (fail open) rather than blocking users
-      return true;
+      console.error("Usage check failed; denying AI request for safety:", err);
+      // Fail closed: if usage cannot be verified, do not bypass the limit.
+      res.status(503).json({ message: "Usage limit service is temporarily unavailable. Please try again shortly." });
+      return false;
     }
   };
 
