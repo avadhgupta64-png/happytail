@@ -67,6 +67,34 @@ function AppSidebar() {
     },
   });
 
+  const { data: pendingAccessRequests = [] } = useQuery({
+    queryKey: ["/api/admin/ai-access-requests"],
+    queryFn: async () => {
+      const res = await fetch("/api/admin/ai-access-requests", { credentials: "include" });
+      if (!res.ok) return [];
+      return res.json();
+    },
+    enabled: !!adminCheck?.isAdmin,
+    refetchInterval: 10000,
+  });
+
+  const { data: myAccessRequests = [] } = useQuery({
+    queryKey: ["/api/ai/access-requests/mine"],
+    queryFn: async () => {
+      const res = await fetch("/api/ai/access-requests/mine", { credentials: "include" });
+      if (!res.ok) return [];
+      return res.json();
+    },
+    enabled: !!adminCheck && !adminCheck?.isAdmin,
+    refetchInterval: 10000,
+  });
+
+  const accessUpdateCount = myAccessRequests.filter((request: any) =>
+    ["approved", "denied", "revoked"].includes(request.status) &&
+    request.reviewedAt &&
+    Date.now() - new Date(request.reviewedAt).getTime() < 24 * 60 * 60 * 1000
+  ).length;
+
   const navItems = [
     { title: t.nav.home, url: "/", icon: HomeIcon },
     { title: t.nav.emotionDetector, url: "/detector", icon: Dog },
@@ -114,6 +142,16 @@ function AppSidebar() {
                         <span className={`text-sm ${isActive ? "font-semibold !text-primary" : "!text-sidebar-foreground"}`}>
                           {item.title}
                         </span>
+                        {item.url === "/admin" && pendingAccessRequests.length > 0 && (
+                          <span aria-label={`${pendingAccessRequests.length} pending AI access requests`} className="ml-auto inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-red-600 px-1.5 text-[11px] font-bold text-white">
+                            {pendingAccessRequests.length}
+                          </span>
+                        )}
+                        {item.url === "/feedback" && accessUpdateCount > 0 && (
+                          <span aria-label={`${accessUpdateCount} recent AI access updates`} className="ml-auto inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-red-600 px-1.5 text-[11px] font-bold text-white">
+                            {accessUpdateCount}
+                          </span>
+                        )}
                       </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
