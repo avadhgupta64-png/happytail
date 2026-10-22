@@ -465,7 +465,6 @@ export default function EmotionDetector() {
                     <AlertCircle className="w-5 h-5 shrink-0" />
                     <div className="flex-1">
                       <p className="text-sm">{error.message || "Something went wrong. Please try again."}</p>
-}
                     </div>
                   </div>
                 )}
