@@ -35,7 +35,7 @@ const features = [
   {
     icon: Bot,
     title: "Vet Chat",
-    desc: "Chat with an AI vet assistant any time of the day. Ask anything about your dog's behaviour, health, grooming, training, or general care and get expert-level guidance instantly.",
+    desc: "Chat with an AI vet assistant any time of the day. Ask anything about your dog's behaviour, health, grooming, training, or general care and get general AI-generated guidance.",
     color: "text-violet-500",
     bg: "bg-violet-500/10",
   },
@@ -101,7 +101,7 @@ export default function About() {
         </div>
         <div>
           <h2 className="font-bold text-emerald-800 dark:text-emerald-300 text-base mb-1">
-            Verified & Professionally Reviewed
+            AI Guidance — With Transparency
           </h2>
           <p className="text-emerald-700 dark:text-emerald-400 text-sm leading-relaxed">
             Happy Tail is an AI-powered companion designed to offer helpful, educational guidance about dog behaviour and care. AI outputs can be incomplete or incorrect and are not a veterinary diagnosis. For symptoms, treatment decisions, or emergencies, consult a qualified veterinarian.
