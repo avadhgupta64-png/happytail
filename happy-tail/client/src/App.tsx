@@ -149,9 +149,7 @@ function AppSidebar() {
   const hasUnreadNotifications = unreadNotificationItems.length > 0;
 
   useEffect(() => {
-    const targetUrl = location === "/admin" || location.startsWith("/admin/") ? "/admin"
-      : location === "/feedback" || location.startsWith("/feedback/") ? "/feedback" : null;
-    if (!targetUrl) return;
+    const targetUrl = location;
     const keys = notificationItems.filter((item: any) => item.url === targetUrl).map((item: any) => item.key);
     if (keys.length) markNotificationKeysRead(keys);
   }, [location, notificationItems.map((item: any) => item.key).join("|"), markNotificationKeysRead]);
