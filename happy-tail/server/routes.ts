@@ -4,7 +4,7 @@ import { storage, AI_FEATURE_LIMIT } from "./storage";
 import { api } from "@shared/routes";
 import { z } from "zod";
 import OpenAI from "openai";
-import { insertBreedSchema, insertLocationSchema, dogProfiles, visitorLogs, insertDogProfileSchema, activityLogs, emotionLogs, removedUsers, insertFeedbackSchema } from "@shared/schema";
+import { insertBreedSchema, insertLocationSchema, dogProfiles, visitorLogs, insertDogProfileSchema, activityLogs, emotionLogs, removedUsers, insertFeedbackSchema, aiAccessRequests } from "@shared/schema";
 import { users } from "@shared/models/auth";
 import { setupAuth, registerAuthRoutes, isAuthenticated, getSession } from "./replit_integrations/auth";
 import { db } from "./db";
@@ -1432,6 +1432,88 @@ Rules:
       });
     } catch (err) {
       res.status(500).json({ message: "Failed to fetch usage summary" });
+    }
+  });
+
+  // Users may request access only for known AI features. One pending request per user/feature.
+  app.get("/api/ai/access-requests/mine", isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = String(req.user?.claims?.sub);
+      const requests = await db.select().from(aiAccessRequests)
+        .where(eq(aiAccessRequests.userId, userId))
+        .orderBy(desc(aiAccessRequests.requestedAt));
+      res.json(requests.map(({ id, featureKey, status, requestedAt, reviewedAt }) => ({ id, featureKey, status, requestedAt, reviewedAt })));
+    } catch (error) {
+      console.error("Failed to fetch access requests:", error);
+      res.status(500).json({ message: "Failed to fetch access requests" });
+    }
+  });
+
+  app.post("/api/ai/access-requests", isAuthenticated, async (req: any, res) => {
+    try {
+      const { featureKey } = z.object({ featureKey: z.enum(["emotion_scan", "behavior_analysis", "bark_translation", "health_scan", "diet_plan", "vet_chat", "location_search"]) }).parse(req.body);
+      const userId = String(req.user?.claims?.sub);
+      const [userRow] = await db.select({ email: users.email }).from(users).where(eq(users.id, userId));
+      if (userRow && ADMIN_EMAILS.includes(userRow.email ?? "")) return res.status(400).json({ message: "Admins already have unlimited access." });
+      if (await storage.hasUnlimitedAccess(userId, featureKey)) return res.status(400).json({ message: "You already have access to this feature." });
+      const [pending] = await db.select({ id: aiAccessRequests.id }).from(aiAccessRequests)
+        .where(and(eq(aiAccessRequests.userId, userId), eq(aiAccessRequests.featureKey, featureKey), eq(aiAccessRequests.status, "pending")));
+      if (pending) return res.status(409).json({ message: "Your request is already pending." });
+      const [request] = await db.insert(aiAccessRequests).values({ userId, featureKey }).returning({ id: aiAccessRequests.id });
+      res.status(201).json({ success: true, requestId: request.id });
+    } catch (error) {
+      console.error("Failed to request AI access:", error);
+      res.status(400).json({ message: "Could not submit access request." });
+    }
+  });
+
+  app.get("/api/admin/ai-access-requests", isAuthenticated, isAdmin, async (_req, res) => {
+    try {
+      const requests = await db.select({
+        id: aiAccessRequests.id, userId: aiAccessRequests.userId, featureKey: aiAccessRequests.featureKey,
+        status: aiAccessRequests.status, requestedAt: aiAccessRequests.requestedAt,
+        email: users.email, firstName: users.firstName, lastName: users.lastName,
+      }).from(aiAccessRequests).leftJoin(users, eq(aiAccessRequests.userId, users.id))
+        .where(eq(aiAccessRequests.status, "pending"))
+        .orderBy(desc(aiAccessRequests.requestedAt));
+      res.json(requests);
+    } catch (error) {
+      console.error("Failed to fetch pending access requests:", error);
+      res.status(500).json({ message: "Failed to fetch pending requests" });
+    }
+  });
+
+  app.post("/api/admin/ai-access-requests/:id/approve", isAuthenticated, isAdmin, async (req: any, res) => {
+    try {
+      const id = Number(req.params.id);
+      const { featureKey } = z.object({ featureKey: z.enum(["emotion_scan", "behavior_analysis", "bark_translation", "health_scan", "diet_plan", "vet_chat", "location_search"]) }).parse(req.body);
+      const [request] = await db.select().from(aiAccessRequests).where(and(eq(aiAccessRequests.id, id), eq(aiAccessRequests.status, "pending")));
+      if (!request) return res.status(404).json({ message: "Pending request not found." });
+      if (request.featureKey !== featureKey) return res.status(400).json({ message: "Feature does not match the request." });
+      const adminId = String(req.user?.claims?.sub);
+      await db.transaction(async (tx) => {
+        await tx.insert(userFeaturePermissions).values({ userId: request.userId, featureKey, grantedBy: adminId, grantedAt: new Date() })
+          .onConflictDoUpdate({ target: [userFeaturePermissions.userId, userFeaturePermissions.featureKey], set: { grantedBy: adminId, grantedAt: new Date() } });
+        await tx.update(aiAccessRequests).set({ status: "approved", reviewedAt: new Date(), reviewedBy: adminId })
+          .where(eq(aiAccessRequests.id, id));
+      });
+      res.json({ success: true, featureKey, access: "unlimited" });
+    } catch (error) {
+      console.error("Failed to approve access request:", error);
+      res.status(500).json({ message: "Failed to approve access request." });
+    }
+  });
+
+  app.post("/api/admin/ai-access-requests/:id/deny", isAuthenticated, isAdmin, async (req: any, res) => {
+    try {
+      const id = Number(req.params.id);
+      const adminId = String(req.user?.claims?.sub);
+      const [updated] = await db.update(aiAccessRequests).set({ status: "denied", reviewedAt: new Date(), reviewedBy: adminId })
+        .where(and(eq(aiAccessRequests.id, id), eq(aiAccessRequests.status, "pending"))).returning({ id: aiAccessRequests.id });
+      if (!updated) return res.status(404).json({ message: "Pending request not found." });
+      res.json({ success: true });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to deny access request." });
     }
   });
 
