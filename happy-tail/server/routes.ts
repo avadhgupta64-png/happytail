@@ -1534,6 +1534,13 @@ Rules:
       }).parse(req.body);
       const adminId = String(req.user?.claims?.sub);
       await storage.grantUnlimitedAccess(req.params.id, featureKey, adminId);
+      await db.insert(aiAccessRequests).values({
+        userId: req.params.id,
+        featureKey,
+        status: "approved",
+        reviewedAt: new Date(),
+        reviewedBy: adminId,
+      });
       res.json({ success: true, message: `Unlimited access granted for ${featureKey}` });
     } catch (err) {
       res.status(400).json({ message: "Failed to grant permission" });
@@ -1542,8 +1549,25 @@ Rules:
 
   app.delete("/api/admin/users/:id/permissions/:feature", isAuthenticated, isAdmin, async (req: any, res) => {
     try {
-      await storage.revokeUnlimitedAccess(req.params.id, req.params.feature);
-      res.json({ success: true, message: `Permission revoked for ${req.params.feature}` });
+      const userId = String(req.params.id);
+      const featureKey = String(req.params.feature);
+      await storage.revokeUnlimitedAccess(userId, featureKey);
+      const [latestRequest] = await db.select({ id: aiAccessRequests.id }).from(aiAccessRequests)
+        .where(and(eq(aiAccessRequests.userId, userId), eq(aiAccessRequests.featureKey, featureKey)))
+        .orderBy(desc(aiAccessRequests.requestedAt)).limit(1);
+      if (latestRequest) {
+        await db.update(aiAccessRequests).set({ status: "revoked", reviewedAt: new Date(), reviewedBy: String(req.user?.claims?.sub) })
+          .where(eq(aiAccessRequests.id, latestRequest.id));
+      } else {
+        await db.insert(aiAccessRequests).values({
+          userId,
+          featureKey,
+          status: "revoked",
+          reviewedAt: new Date(),
+          reviewedBy: String(req.user?.claims?.sub),
+        });
+      }
+      res.json({ success: true, message: `Permission revoked for ${featureKey}` });
     } catch (err) {
       res.status(500).json({ message: "Failed to revoke permission" });
     }
