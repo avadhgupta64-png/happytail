@@ -96,7 +96,7 @@ export default function VetChat() {
   return (
     <div className="max-w-3xl mx-auto flex flex-col h-[calc(100vh-120px)]" data-testid="vet-chat-page">
       <AIUsageCounter featureKey="vet_chat" />
-      {usageLimitReached && <AIUsageLimitRequest featureKey="vet_chat" />}
+      <AIUsageLimitRequest featureKey="vet_chat" />
       <div className="flex items-center gap-3 mb-4 shrink-0">
         <Link href="/health">
           <Button variant="ghost" size="icon" data-testid="button-back-health">
