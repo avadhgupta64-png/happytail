@@ -8,9 +8,9 @@ import { UnauthorizedError } from "@/lib/queryClient";
 export function useEmotionHistory() {
   const deviceId = getDeviceId();
   return useQuery({
-    queryKey: [api.emotions.history.path, deviceId],
+    queryKey: [api.emotions.history.path],
     queryFn: async () => {
-      const res = await fetch(`${api.emotions.history.path}?deviceId=${deviceId}`);
+      const res = await fetch(api.emotions.history.path, { credentials: "include" });
       if (!res.ok) throw new Error("Failed to fetch history");
       return api.emotions.history.responses[200].parse(await res.json());
     },
@@ -41,7 +41,7 @@ export function useAnalyzeEmotion() {
       return api.emotions.analyze.responses[200].parse(await res.json());
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [api.emotions.history.path, deviceId] });
+      queryClient.invalidateQueries({ queryKey: [api.emotions.history.path] });
     },
   });
 }
