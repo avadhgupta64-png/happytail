@@ -38,6 +38,8 @@ export const emotionLogs = pgTable("emotion_logs", {
   explanation: text("explanation").notNull().default(""),
   treatment: text("treatment").notNull().default(""),
   deviceId: text("device_id").notNull().default("unknown"),
+  // Server-authenticated owner of this scan; deviceId is analytics only, never authorization.
+  userId: text("user_id").notNull().default("unknown"),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
