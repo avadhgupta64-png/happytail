@@ -11,6 +11,7 @@ import { Card } from "@/components/ui/card";
 import { useLanguage } from "@/lib/language-context";
 import { useGuest } from "@/lib/guest-context";
 import { AIUsageLimitRequest } from "@/components/AIUsageLimitRequest";
+import { AIUsageCounter } from "@/components/AIUsageCounter";
 
 interface TranslationResult {
   breed: string;
@@ -159,6 +160,7 @@ export default function BarkTranslator() {
 
   return (
     <div className="max-w-5xl mx-auto">
+      <AIUsageCounter featureKey="bark_translation" />
       {usageLimitReached && <AIUsageLimitRequest featureKey="bark_translation" />}
       <PageHeader 
         title={t.barkTranslator.title} 
