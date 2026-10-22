@@ -5,7 +5,7 @@
 [![Node.js](https://img.shields.io/badge/Node.js-24-339933?logo=node.js&logoColor=white)](https://nodejs.org)
 [![React](https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=black)](https://react.dev)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.6-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org)
-[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Neon-4169E1?logo=postgresql&logoColor=white)](https://neon.tech)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Render-46E3B7?logo=postgresql&logoColor=white)](https://neon.tech)
 [![Groq](https://img.shields.io/badge/AI-Groq-F55036?logo=groq&logoColor=white)](https://groq.com)
 
 </div>
@@ -14,7 +14,7 @@
 
 ## What is Happy Tail?
 
-Happy Tail is a full-stack web app that helps dog owners understand and care for their pets using AI. Upload a photo to detect your dog's emotion, translate a bark from video, get a personalised diet plan, chat with an AI vet, discover dog-friendly places nearby, and connect with a community of dog lovers — all in one place, in 21 languages.
+Happy Tail is an AI-assisted dog-care companion that helps owners explore possible emotional cues, behaviour, everyday care, and pet-welfare information. AI outputs are estimates and may be incorrect; they are not a veterinary diagnosis or a substitute for a qualified veterinarian. The app includes account-based history, per-feature usage limits, and admin-managed access requests.
 
 ---
 
@@ -31,10 +31,10 @@ Happy Tail is a full-stack web app that helps dog owners understand and care for
 | 🐕 **Breed Guide** | Browsable guide with traits, care tips, and descriptions for all major breeds |
 | 👥 **Community Chat** | Real-time chat room powered by WebSockets |
 | 📊 **Activity History** | Full timeline of all your AI analyses with delete and export |
-| 🔐 **Google Sign-In** | One-click sign in with Google — no passwords |
+| 🔐 **Google Sign-In** | Sign in with Google and account-based access to private scan history |
 | 🌍 **21 Languages** | Full UI and AI response translation across 21 languages |
 | 🌙 **Dark Mode** | Full light/dark theme support |
-| 🛡️ **Admin Dashboard** | User management, ban/unban, stats, CSV exports, DB backups |
+| 🛡️ **Admin Dashboard** | User management, ban/unban, stats, CSV exports, access-request review, and permission grants |
 
 ---
 
@@ -55,7 +55,7 @@ Happy Tail is a full-stack web app that helps dog owners understand and care for
 - **Node.js 24** + **Express 5** — HTTP server
 - **TypeScript** via `tsx` — native TS execution
 - **Drizzle ORM** — type-safe PostgreSQL queries
-- **PostgreSQL** (Neon) — serverless database
+- **PostgreSQL** — hosted on Render
 - **Passport.js** + **Google OAuth 2.0** — authentication
 - **express-session** + **connect-pg-simple** — persistent sessions
 - **Groq API** (`qwen3.8-27b`) — vision and text AI
@@ -286,3 +286,12 @@ All AI responses adapt to the user's selected language automatically.
 <div align="center">
   <sub>Built with ❤️ for dog lovers everywhere</sub>
 </div>
+
+
+## Usage limits and privacy
+
+- Normal accounts receive three uses per AI feature before a request is required.
+- Admin accounts have unlimited AI access.
+- AI access requests are reviewed by an administrator; approval enables access to the requested feature.
+- Emotion scan history is scoped to the signed-in account. Device identifiers are not used as access control.
+- AI outputs are informational only and should not be treated as veterinary diagnosis or treatment advice.
