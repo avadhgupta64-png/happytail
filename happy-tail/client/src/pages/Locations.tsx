@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/lib/language-context";
 import { AIUsageLimitRequest } from "@/components/AIUsageLimitRequest";
+import { AIUsageCounter } from "@/components/AIUsageCounter";
 
 interface Place {
   id: string;
@@ -397,6 +398,7 @@ export default function Locations() {
 
   return (
     <div className="max-w-5xl mx-auto">
+      <AIUsageCounter featureKey="location_search" />
       {usageLimitReached && <AIUsageLimitRequest featureKey="location_search" />}
       <PageHeader
         title={t.locations.title}
