@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/lib/language-context";
+import { AIUsageLimitRequest } from "@/components/AIUsageLimitRequest";
 
 interface Place {
   id: string;
@@ -238,6 +239,7 @@ function GeofenceAlert({ place, distance, onDismiss }: { place: Place; distance:
 }
 
 export default function Locations() {
+  const [usageLimitReached, setUsageLimitReached] = useState(false);
   const [activeTab, setActiveTab] = useState("all");
   const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
@@ -290,6 +292,7 @@ export default function Locations() {
         toast({ title: "Places found!", description: `Found ${Array.isArray(data) ? data.length : 0} dog-friendly places near you.` });
       }
     } catch (err: any) {
+      if (err instanceof Error && /Usage limit reached/i.test(err.message)) setUsageLimitReached(true);
       if (err?.name === "AbortError") return;
       console.error("Failed to fetch nearby places:", err);
       if (!controller.signal.aborted) {
@@ -394,6 +397,7 @@ export default function Locations() {
 
   return (
     <div className="max-w-5xl mx-auto">
+      {usageLimitReached && <AIUsageLimitRequest featureKey="location_search" />}
       <PageHeader
         title={t.locations.title}
         description={t.locations.subtitle}
