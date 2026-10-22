@@ -123,6 +123,19 @@ export const aiUsageLogs = pgTable(
 // === USER FEATURE PERMISSIONS ===
 // Admin-granted unlimited access for a specific user + feature (or "all").
 // featureKey = "all" means unlimited on every feature.
+export const aiAccessRequests = pgTable(
+  "ai_access_requests",
+  {
+    id: serial("id").primaryKey(),
+    userId: text("user_id").notNull(),
+    featureKey: text("feature_key").notNull(),
+    status: text("status").notNull().default("pending"),
+    requestedAt: timestamp("requested_at").defaultNow(),
+    reviewedAt: timestamp("reviewed_at"),
+    reviewedBy: text("reviewed_by"),
+  },
+);
+
 export const userFeaturePermissions = pgTable(
   "user_feature_permissions",
   {
