@@ -777,6 +777,34 @@ export default function AdminDashboard() {
     },
   });
 
+  const { data: accessRequests = [], refetch: refetchAccessRequests } = useQuery<any[]>({
+    queryKey: ["/api/admin/ai-access-requests"],
+    queryFn: async () => {
+      const res = await fetch("/api/admin/ai-access-requests", { credentials: "include" });
+      if (!res.ok) throw new Error("Failed to load access requests");
+      return res.json();
+    },
+    enabled: adminCheck?.isAdmin === true,
+    refetchInterval: 10000,
+  });
+
+  const reviewAccessRequest = useMutation({
+    mutationFn: async ({ id, action, featureKey }: { id: number; action: "approve" | "deny"; featureKey: string }) => {
+      const res = await fetch(`/api/admin/ai-access-requests/${id}/${action}`, {
+        method: "POST", credentials: "include", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ featureKey }),
+      });
+      if (!res.ok) throw new Error("Request review failed");
+      return res.json();
+    },
+    onSuccess: (_, vars) => {
+      toast({ title: vars.action === "approve" ? "Access activated" : "Request declined", description: vars.action === "approve" ? "The user now has unlimited access to the requested feature." : "The request was declined." });
+      refetchAccessRequests();
+      queryClient.invalidateQueries({ queryKey: ["/api/ai/usage-summary"] });
+    },
+    onError: () => toast({ title: "Could not review request", variant: "destructive" }),
+  });
+
   // ── Stats ──
   const { data: stats } = useQuery<AdminStats>({
     queryKey: ["/api/admin/stats"],
@@ -998,6 +1026,33 @@ export default function AdminDashboard() {
             <StatCard icon={Dog}      label="Dog Profiles"    value={stats.totalDogProfiles}  gradient="from-emerald-500 to-green-600" />
             <StatCard icon={Eye}      label="Unique Visitors" value={stats.uniqueVisitors}    gradient="from-purple-500 to-violet-600" />
           </div>
+        )}
+
+        {accessRequests.length > 0 && (
+          <section className="mb-5 rounded-2xl border border-amber-200 dark:border-amber-800/50 bg-amber-50/70 dark:bg-amber-950/20 p-4">
+            <div className="flex items-center justify-between gap-3 mb-3">
+              <div>
+                <h2 className="font-bold text-foreground">AI access requests</h2>
+                <p className="text-xs text-muted-foreground">Review requests from users who have reached their three-use limit.</p>
+              </div>
+              <span className="rounded-full bg-amber-500 text-white text-xs font-bold px-2.5 py-1">{accessRequests.length} pending</span>
+            </div>
+            <div className="space-y-2">
+              {accessRequests.map((request: any) => (
+                <div key={request.id} className="rounded-xl border border-amber-100 dark:border-amber-900/50 bg-white dark:bg-gray-900 p-3 flex flex-col sm:flex-row sm:items-center gap-3">
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-semibold text-foreground">{[request.firstName, request.lastName].filter(Boolean).join(" ") || "Happy Tail user"}</p>
+                    <p className="text-xs text-muted-foreground break-all">{request.email || request.userId}</p>
+                    <p className="text-xs mt-1 font-medium text-amber-700 dark:text-amber-300">Feature: {String(request.featureKey).replace(/_/g, " ")}</p>
+                  </div>
+                  <div className="flex gap-2">
+                    <button disabled={reviewAccessRequest.isPending} onClick={() => reviewAccessRequest.mutate({ id: request.id, action: "approve", featureKey: request.featureKey })} className="px-3 py-2 rounded-lg text-xs font-bold bg-emerald-600 text-white disabled:opacity-50">Approve access</button>
+                    <button disabled={reviewAccessRequest.isPending} onClick={() => reviewAccessRequest.mutate({ id: request.id, action: "deny", featureKey: request.featureKey })} className="px-3 py-2 rounded-lg text-xs font-bold bg-gray-100 dark:bg-gray-800 text-foreground disabled:opacity-50">Decline</button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
         )}
 
         {/* Alerts */}
