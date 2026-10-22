@@ -352,6 +352,7 @@ export default function EmotionDetector() {
 
   return (
     <div className="max-w-5xl mx-auto" data-testid="emotion-detector-page">
+      <AIUsageCounter featureKey={activeTab === "behavior" ? "behavior_analysis" : "emotion_scan"} />
       <PageHeader
         title={t.emotionDetector.title}
         description={t.emotionDetector.subtitle}
@@ -462,7 +463,6 @@ export default function EmotionDetector() {
                     <AlertCircle className="w-5 h-5 shrink-0" />
                     <div className="flex-1">
                       <p className="text-sm">{error.message || "Something went wrong. Please try again."}</p>
-                      <AIUsageCounter featureKey={activeTab === "behavior" ? "behavior_analysis" : "emotion_scan"} />
                       {error.message?.includes("Usage limit reached") && (
                         <button
                           className="mt-3 px-3 py-2 rounded-lg bg-indigo-600 text-white text-xs font-semibold disabled:opacity-50"
