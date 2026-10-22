@@ -904,19 +904,19 @@ Rules:
       // Check admin-granted unlimited access (per-feature or "all")
       const unlimited = await storage.hasUnlimitedAccess(userId, featureKey);
       if (unlimited) return true;
-      // Check current usage count
-      const count = await storage.getUsageCount(userId, featureKey);
-      if (count >= AI_FEATURE_LIMIT) {
+      // Atomically enforce the three-use cap even when multiple requests arrive together.
+      const consumed = await storage.tryConsumeUsage(userId, featureKey, AI_FEATURE_LIMIT);
+      if (!consumed) {
+        const count = await storage.getUsageCount(userId, featureKey);
         res.status(429).json({
           message: "Usage limit reached",
           featureKey,
           used: count,
           limit: AI_FEATURE_LIMIT,
+          canRequestAccess: true,
         });
         return false;
       }
-      // Increment usage
-      await storage.incrementUsage(userId, featureKey);
       return true;
     } catch (err) {
       console.error("Usage check failed; denying AI request for safety:", err);
