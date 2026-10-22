@@ -108,8 +108,11 @@ export class DatabaseStorage implements IStorage {
     return newLog;
   }
 
-  async getEmotionHistory(_deviceId?: string): Promise<EmotionLog[]> {
-    return await db.select().from(emotionLogs).orderBy(desc(emotionLogs.createdAt)).limit(50);
+  async getEmotionHistory(userId: string): Promise<EmotionLog[]> {
+    return await db.select().from(emotionLogs)
+      .where(eq(emotionLogs.userId, userId))
+      .orderBy(desc(emotionLogs.createdAt))
+      .limit(50);
   }
 
   // ── Activity Logs ────────────────────────────────────────────────────────────
