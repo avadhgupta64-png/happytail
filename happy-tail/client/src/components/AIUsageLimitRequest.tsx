@@ -94,7 +94,7 @@ export function AIUsageLimitRequest({ featureKey }: AIUsageLimitRequestProps) {
           {sending ? "Sending request…" : "Request more access"}
         </button>
       )}
-      {message && <p className="mt-2 text-sm">{message}</p>}
+      {message && !requestPending && <p className="mt-2 text-sm">{message}</p>}
     </div>
   );
 }
