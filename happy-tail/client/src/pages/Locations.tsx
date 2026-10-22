@@ -284,8 +284,8 @@ export default function Locations() {
         body: JSON.stringify({ latitude: lat, longitude: lng }),
         signal: controller.signal,
       });
-      if (!res.ok) throw new Error("Failed to find places");
-      const data = await res.json();
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.message || "Failed to find places");
       if (!controller.signal.aborted) {
         setPlaces(Array.isArray(data) ? data : []);
         setAiLoading(false);
