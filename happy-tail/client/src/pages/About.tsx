@@ -104,7 +104,7 @@ export default function About() {
             Verified & Professionally Reviewed
           </h2>
           <p className="text-emerald-700 dark:text-emerald-400 text-sm leading-relaxed">
-            The AI models and health information used in Happy Tail have been reviewed and validated by professional veterinarians. Every feature — from emotion detection to health scanning — has been tested to ensure accuracy, reliability, and the safety of your dog.
+            Happy Tail is an AI-powered companion designed to offer helpful, educational guidance about dog behaviour and care. AI outputs can be incomplete or incorrect and are not a veterinary diagnosis. For symptoms, treatment decisions, or emergencies, consult a qualified veterinarian.
           </p>
         </div>
       </motion.div>
@@ -133,7 +133,7 @@ export default function About() {
       <section>
         <h2 className="text-2xl font-display font-bold text-foreground mb-2">About Happy Tail</h2>
         <p className="text-muted-foreground text-sm leading-relaxed mb-6">
-          Happy Tail is an AI-powered dog care companion built to bridge the communication gap between dogs and their owners. Using cutting-edge computer vision and large language models, Happy Tail gives every dog owner the power to understand, care for, and advocate for their pet — no experience required. Whether you're a first-time dog owner or a lifelong pet lover, Happy Tail puts professional-level insights in your pocket.
+          Happy Tail is an AI-assisted dog-care companion built to help owners explore possible emotional cues, behaviour, everyday care, and pet-welfare information. It combines AI-powered tools with practical guidance, while making clear that predictions are estimates—not certainty or a substitute for professional veterinary care.
         </p>
         <div className="grid sm:grid-cols-2 gap-4">
           {features.map((f, i) => (
@@ -206,11 +206,11 @@ export default function About() {
               </p>
 
               <p className="text-sm text-muted-foreground leading-relaxed mb-4">
-                At just <strong className="text-foreground">14 years old</strong>, Avadh Gupta conceptualised and built Happy Tail from the ground up — entirely on his own — as part of the prestigious <strong className="text-foreground">Impact Summit 2026</strong>. Driven by a deep love for dogs and a belief that every animal deserves to be heard and cared for, Avadh set out to create a tool that gives a voice to the voiceless.
+                Avadh Gupta began building Happy Tail as a youth-led AI and animal-welfare project, developing its features iteratively through prototyping, testing, and deployment. Driven by a deep love for dogs and a belief that every animal deserves to be understood and cared for, he continues improving the app based on real-world feedback.
               </p>
 
               <p className="text-sm text-muted-foreground leading-relaxed mb-4">
-                A student at <strong className="text-foreground">Bhai Parmanand Vidya Mandir School</strong>, Avadh combines his passion for technology and animal welfare to build meaningful solutions that make a real difference. Happy Tail is his way of proving that age is never a barrier to impact.
+                Avadh is a student and technology enthusiast who combines his interest in AI with animal welfare to build practical tools. Happy Tail is an ongoing project, and its features and reliability continue to evolve.
               </p>
 
               <div className="flex flex-wrap gap-2 justify-center sm:justify-start">
