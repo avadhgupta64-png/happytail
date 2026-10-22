@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Link } from "wouter";
 import { useLanguage } from "@/lib/language-context";
 import { useGuest } from "@/lib/guest-context";
+import { AIUsageLimitRequest } from "@/components/AIUsageLimitRequest";
 
 interface HealthResult {
   breed: string;
@@ -18,6 +19,7 @@ interface HealthResult {
 }
 
 export default function HealthCheckup() {
+  const [usageLimitReached, setUsageLimitReached] = useState(false);
   const { t, lang } = useLanguage();
   const [images, setImages] = useState<string[]>([]);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -56,6 +58,7 @@ export default function HealthCheckup() {
       const data = await res.json();
       setResult(data);
     } catch (err) {
+      if (err instanceof Error && /Usage limit reached/i.test(err.message)) setUsageLimitReached(true);
       if (err instanceof UnauthorizedError) {
         setShowLoginPrompt(true);
       } else {
@@ -68,6 +71,7 @@ export default function HealthCheckup() {
 
   return (
     <div className="max-w-6xl mx-auto">
+      {usageLimitReached && <AIUsageLimitRequest featureKey="health_scan" />}
       <div className="flex items-center gap-3 mb-8">
         <Link href="/health">
           <Button variant="ghost" size="icon" data-testid="button-back-health">
