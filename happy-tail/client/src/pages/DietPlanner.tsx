@@ -10,6 +10,7 @@ import { Link } from "wouter";
 import { useGuest } from "@/lib/guest-context";
 import { useLanguage } from "@/lib/language-context";
 import { AIUsageLimitRequest } from "@/components/AIUsageLimitRequest";
+import { AIUsageCounter } from "@/components/AIUsageCounter";
 
 interface MealPlan {
   summary: string;
@@ -64,6 +65,7 @@ export default function DietPlanner() {
 
   return (
     <div className="max-w-4xl mx-auto" data-testid="diet-planner-page">
+      <AIUsageCounter featureKey="diet_plan" />
       {usageLimitReached && <AIUsageLimitRequest featureKey="diet_plan" />}
       <div className="flex items-center gap-3 mb-8">
         <Link href="/health">
