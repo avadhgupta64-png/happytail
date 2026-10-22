@@ -34,7 +34,7 @@ Happy Tail is an AI-assisted dog-care companion that helps owners explore possib
 | 🔐 **Google Sign-In** | Sign in with Google and account-based access to private scan history |
 | 🌍 **21 Languages** | Full UI and AI response translation across 21 languages |
 | 🌙 **Dark Mode** | Full light/dark theme support |
-| 🛡️ **Admin Dashboard** | User management, ban/unban, stats, CSV exports, access-request review, and permission grants |
+| 🛡️ **Admin Dashboard** | User management, access-request review, permission controls, feedback review, operational activity records, statistics, and exports |
 
 ---
 
@@ -287,6 +287,14 @@ All AI responses adapt to the user's selected language automatically.
   <sub>Built with ❤️ for dog lovers everywhere</sub>
 </div>
 
+
+## Access governance and audit trail
+
+Happy Tail applies account-based, per-feature usage controls to AI-powered tools. Standard accounts receive three uses per feature before they can request additional access. Approved grants are scoped to the relevant feature, and access can be revoked.
+
+The server records key operational events in the activity log, including AI feature usage, AI access requests, approval or denial decisions, manual access grants and revocations, and feedback submissions. These records support operational review and troubleshooting. The audit trail is being expanded as additional account and pet-management workflows are integrated; it should not be interpreted as a record of every interaction in the application.
+
+Activity records are separate from the user's personal AI history. Logging is designed to capture relevant event metadata without storing passwords, session tokens, or unnecessary private input.
 
 ## Usage limits and privacy
 
