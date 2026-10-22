@@ -4,7 +4,7 @@ import { storage, AI_FEATURE_LIMIT } from "./storage";
 import { api } from "@shared/routes";
 import { z } from "zod";
 import OpenAI from "openai";
-import { insertBreedSchema, insertLocationSchema, dogProfiles, visitorLogs, insertDogProfileSchema, activityLogs, emotionLogs, removedUsers, insertFeedbackSchema, aiAccessRequests } from "@shared/schema";
+import { insertBreedSchema, insertLocationSchema, dogProfiles, visitorLogs, insertDogProfileSchema, activityLogs, emotionLogs, removedUsers, insertFeedbackSchema, aiAccessRequests, userFeaturePermissions } from "@shared/schema";
 import { users } from "@shared/models/auth";
 import { setupAuth, registerAuthRoutes, isAuthenticated, getSession } from "./replit_integrations/auth";
 import { db } from "./db";
