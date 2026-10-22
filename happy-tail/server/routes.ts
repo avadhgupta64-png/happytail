@@ -1563,6 +1563,8 @@ Rules:
         reviewedAt: new Date(),
         reviewedBy: adminId,
       });
+      await logUserActivity(String(req.params.id), "ai_access_granted", "AI access granted", `Admin granted additional access to ${featureKey.replace(/_/g, " ")}.`, { featureKey, grantedBy: adminId });
+      await logUserActivity(adminId, "admin_access_granted", "AI access granted manually", `Granted a user's access to ${featureKey.replace(/_/g, " ")}.`, { targetUserId: String(req.params.id), featureKey });
       res.json({ success: true, message: `Unlimited access granted for ${featureKey}` });
     } catch (err) {
       res.status(400).json({ message: "Failed to grant permission" });
@@ -1589,6 +1591,8 @@ Rules:
           reviewedBy: String(req.user?.claims?.sub),
         });
       }
+      await logUserActivity(userId, "ai_access_revoked", "AI access revoked", `Admin revoked additional access to ${featureKey.replace(/_/g, " ")}.`, { featureKey, revokedBy: String(req.user?.claims?.sub) });
+      await logUserActivity(String(req.user?.claims?.sub), "admin_access_revoked", "AI access revoked manually", `Revoked a user's access to ${featureKey.replace(/_/g, " ")}.`, { targetUserId: userId, featureKey });
       res.json({ success: true, message: `Permission revoked for ${featureKey}` });
     } catch (err) {
       res.status(500).json({ message: "Failed to revoke permission" });
