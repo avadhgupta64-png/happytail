@@ -16,6 +16,7 @@ import { useGuest } from "@/lib/guest-context";
 import { useMutation } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { AIUsageCounter } from "@/components/AIUsageCounter";
+import { AIUsageLimitRequest } from "@/components/AIUsageLimitRequest";
 
 // ─── Emotion helpers ───────────────────────────────────────────────
 const emotionColors: Record<string, string> = {
@@ -353,6 +354,7 @@ export default function EmotionDetector() {
   return (
     <div className="max-w-5xl mx-auto" data-testid="emotion-detector-page">
       <AIUsageCounter featureKey={activeTab === "behavior" ? "behavior_analysis" : "emotion_scan"} />
+                <AIUsageLimitRequest featureKey={activeTab === "behavior" ? "behavior_analysis" : "emotion_scan"} />
       <PageHeader
         title={t.emotionDetector.title}
         description={t.emotionDetector.subtitle}
@@ -463,25 +465,7 @@ export default function EmotionDetector() {
                     <AlertCircle className="w-5 h-5 shrink-0" />
                     <div className="flex-1">
                       <p className="text-sm">{error.message || "Something went wrong. Please try again."}</p>
-                      {error.message?.includes("Usage limit reached") && (
-                        <button
-                          className="mt-3 px-3 py-2 rounded-lg bg-indigo-600 text-white text-xs font-semibold disabled:opacity-50"
-                          onClick={async () => {
-                            try {
-                              const res = await fetch("/api/ai/access-requests", {
-                                method: "POST", credentials: "include",
-                                headers: { "Content-Type": "application/json" },
-                                body: JSON.stringify({ featureKey: activeTab === "behavior" ? "behavior_analysis" : "emotion_scan" }),
-                              });
-                              const data = await res.json().catch(() => ({}));
-                              if (!res.ok) throw new Error(data.message || "Could not submit request");
-                              toast({ title: "Request sent", description: "Your request has been sent to the Happy Tail admin." });
-                            } catch (err: any) {
-                              toast({ title: "Request not sent", description: err.message, variant: "destructive" });
-                            }
-                          }}
-                        >Request more access</button>
-                      )}
+}
                     </div>
                   </div>
                 )}
