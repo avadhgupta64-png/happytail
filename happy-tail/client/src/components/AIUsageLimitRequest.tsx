@@ -72,19 +72,36 @@ export function AIUsageLimitRequest({ featureKey }: AIUsageLimitRequestProps) {
     }
   };
 
-  if (!reachedLimit) return null;
+  const decisionStatus = latestRequest?.status;
+  const showDecisionNotice = decisionStatus === "approved" || decisionStatus === "denied" || decisionStatus === "revoked";
+  if (!reachedLimit && !showDecisionNotice) return null;
 
   return (
     <div className="mt-3 rounded-xl border border-red-200 bg-red-50 p-4 text-red-900 dark:border-red-900 dark:bg-red-950/30 dark:text-red-100" role="status" aria-live="polite">
-      <p className="text-sm font-semibold">You’ve reached the {limit}-use limit for this AI feature.</p>
-      {requestPending ? (
+      {reachedLimit && <p className="text-sm font-semibold">You’ve reached the {limit}-use limit for this AI feature.</p>}
+      {decisionStatus === "approved" && (
+        <p className="mt-2 text-sm font-semibold text-green-800 dark:text-green-300" role="status">
+          Your access request has been approved. Additional access is now active for this feature.
+        </p>
+      )}
+      {decisionStatus === "denied" && (
+        <p className="mt-2 text-sm font-semibold" role="status">
+          Your request for additional access was declined by the admin. You can submit a new request if you still need access.
+        </p>
+      )}
+      {decisionStatus === "revoked" && (
+        <p className="mt-2 text-sm font-semibold" role="status">
+          Your additional access to this feature has been revoked by the admin. The standard usage limit now applies.
+        </p>
+      )}
+      {reachedLimit && requestPending ? (
         <>
           <button type="button" disabled className="mt-3 cursor-not-allowed rounded-lg bg-gray-400 px-4 py-2 text-sm font-semibold text-white opacity-80">
             Request sent — awaiting approval
           </button>
           <p className="mt-2 text-sm">Your request has been sent to the admin. Please wait for approval.</p>
         </>
-      ) : (
+      ) : reachedLimit ? (
         <button
           type="button"
           onClick={requestAccess}
