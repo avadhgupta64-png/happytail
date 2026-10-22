@@ -894,6 +894,16 @@ Rules:
     }
   };
 
+  // Persist meaningful account actions in the existing activity log for the admin audit trail.
+  const logUserActivity = async (userId: string, activityType: string, title: string, summary: string, details?: Record<string, any>) => {
+    try {
+      await db.insert(activityLogs).values({ userId, activityType, title, summary, details: details ?? {} });
+    } catch (error) {
+      // Activity logging should not break the primary user action, but failures are recorded server-side.
+      console.error("Failed to record activity log:", error);
+    }
+  };
+
   // Helper: check AI usage limit before invoking AI. Returns true if allowed, false if blocked (also sends 429).
   const checkAndIncrementUsage = async (req: any, res: any, featureKey: string): Promise<boolean> => {
     try {
@@ -906,6 +916,9 @@ Rules:
       if (unlimited) return true;
       // Atomically enforce the three-use cap even when multiple requests arrive together.
       const consumed = await storage.tryConsumeUsage(userId, featureKey, AI_FEATURE_LIMIT);
+      if (consumed) {
+        await logUserActivity(userId, "ai_usage", "AI feature used", `User used ${featureKey.replace(/_/g, " ")}.`, { featureKey });
+      }
       if (!consumed) {
         const count = await storage.getUsageCount(userId, featureKey);
         res.status(429).json({
@@ -946,6 +959,7 @@ Rules:
         "Anonymous";
       const data = insertFeedbackSchema.parse({ ...req.body, userId, userName });
       const entry = await storage.createFeedback(data);
+      await logUserActivity(userId, "feedback_submitted", "Feedback submitted", "User submitted feedback to Happy Tail.", { feedbackId: entry.id });
       res.status(201).json(entry);
     } catch (error) {
       res.status(400).json({ message: "Invalid feedback data" });
@@ -1460,6 +1474,7 @@ Rules:
         .where(and(eq(aiAccessRequests.userId, userId), eq(aiAccessRequests.featureKey, featureKey), eq(aiAccessRequests.status, "pending")));
       if (pending) return res.status(409).json({ message: "Your request is already pending." });
       const [request] = await db.insert(aiAccessRequests).values({ userId, featureKey }).returning({ id: aiAccessRequests.id });
+      await logUserActivity(userId, "ai_access_request", "AI access requested", `User requested additional access to ${featureKey.replace(/_/g, " ")}.`, { requestId: request.id, featureKey, status: "pending" });
       res.status(201).json({ success: true, requestId: request.id });
     } catch (error) {
       console.error("Failed to request AI access:", error);
@@ -1497,6 +1512,8 @@ Rules:
         await tx.update(aiAccessRequests).set({ status: "approved", reviewedAt: new Date(), reviewedBy: adminId })
           .where(eq(aiAccessRequests.id, id));
       });
+      await logUserActivity(request.userId, "ai_access_approved", "AI access approved", `Admin approved additional access to ${featureKey.replace(/_/g, " ")}.`, { requestId: id, featureKey, reviewedBy: adminId, status: "approved" });
+      await logUserActivity(adminId, "admin_access_approved", "AI access request approved", `Approved a user's request for ${featureKey.replace(/_/g, " ")}.`, { requestId: id, targetUserId: request.userId, featureKey });
       res.json({ success: true, featureKey, access: "unlimited" });
     } catch (error) {
       console.error("Failed to approve access request:", error);
@@ -1511,6 +1528,11 @@ Rules:
       const [updated] = await db.update(aiAccessRequests).set({ status: "denied", reviewedAt: new Date(), reviewedBy: adminId })
         .where(and(eq(aiAccessRequests.id, id), eq(aiAccessRequests.status, "pending"))).returning({ id: aiAccessRequests.id });
       if (!updated) return res.status(404).json({ message: "Pending request not found." });
+      const [request] = await db.select({ userId: aiAccessRequests.userId, featureKey: aiAccessRequests.featureKey }).from(aiAccessRequests).where(eq(aiAccessRequests.id, id));
+      if (request) {
+        await logUserActivity(request.userId, "ai_access_denied", "AI access request denied", `Admin denied additional access to ${request.featureKey.replace(/_/g, " ")}.`, { requestId: id, featureKey: request.featureKey, reviewedBy: adminId, status: "denied" });
+        await logUserActivity(adminId, "admin_access_denied", "AI access request denied", `Denied a user's request for ${request.featureKey.replace(/_/g, " ")}.`, { requestId: id, targetUserId: request.userId, featureKey: request.featureKey });
+      }
       res.json({ success: true });
     } catch (error) {
       res.status(500).json({ message: "Failed to deny access request." });
