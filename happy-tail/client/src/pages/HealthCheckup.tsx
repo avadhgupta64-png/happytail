@@ -73,7 +73,7 @@ export default function HealthCheckup() {
   return (
     <div className="max-w-6xl mx-auto">
       <AIUsageCounter featureKey="health_scan" />
-      {usageLimitReached && <AIUsageLimitRequest featureKey="health_scan" />}
+      <AIUsageLimitRequest featureKey="health_scan" />
       <div className="flex items-center gap-3 mb-8">
         <Link href="/health">
           <Button variant="ghost" size="icon" data-testid="button-back-health">
