@@ -4,6 +4,7 @@ import { serveStatic } from "./static";
 import { createServer } from "http";
 import { scheduleBackups } from "./backup";
 import { db } from "./db";
+import { sql } from "drizzle-orm";
 import path from "path";
 
 const app = express();
@@ -79,8 +80,28 @@ function startListening() {
 }
 
 (async () => {
-  // DB migrations: tables are pre-applied, skip auto-migrate to avoid re-run errors
-  console.log("[startup] DB ready");
+  // Idempotent additive migrations for account-private scans and access requests.
+  // These are intentionally additive and safe to run on every startup.
+  try {
+    await db.execute(sql`ALTER TABLE "emotion_logs" ADD COLUMN IF NOT EXISTS "user_id" text NOT NULL DEFAULT 'unknown'`);
+    await db.execute(sql`CREATE INDEX IF NOT EXISTS "emotion_logs_user_created_idx" ON "emotion_logs" ("user_id", "created_at" DESC)`);
+    await db.execute(sql`CREATE TABLE IF NOT EXISTS "ai_access_requests" (
+      "id" serial PRIMARY KEY,
+      "user_id" text NOT NULL,
+      "feature_key" text NOT NULL,
+      "status" text NOT NULL DEFAULT 'pending',
+      "requested_at" timestamp DEFAULT now(),
+      "reviewed_at" timestamp,
+      "reviewed_by" text
+    )`);
+    await db.execute(sql`CREATE INDEX IF NOT EXISTS "ai_access_requests_status_requested_idx" ON "ai_access_requests" ("status", "requested_at" DESC)`);
+    await db.execute(sql`CREATE INDEX IF NOT EXISTS "ai_access_requests_user_feature_idx" ON "ai_access_requests" ("user_id", "feature_key", "status")`);
+    console.log("[startup] Additive database migrations ready");
+  } catch (migrationError) {
+    console.error("[startup] Database migration failed:", migrationError);
+    // Do not start routes that depend on a missing schema.
+    throw migrationError;
+  }
 
   let routesOk = false;
 
