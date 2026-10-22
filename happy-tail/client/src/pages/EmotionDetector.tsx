@@ -459,7 +459,28 @@ export default function EmotionDetector() {
                 {error && (
                   <div className="bg-red-50 p-4 rounded-2xl flex gap-3 text-red-700 border border-red-100">
                     <AlertCircle className="w-5 h-5 shrink-0" />
-                    <p className="text-sm">{error.message || "Something went wrong. Please try again."}</p>
+                    <div className="flex-1">
+                      <p className="text-sm">{error.message || "Something went wrong. Please try again."}</p>
+                      {error.message?.includes("Usage limit reached") && (
+                        <button
+                          className="mt-3 px-3 py-2 rounded-lg bg-indigo-600 text-white text-xs font-semibold disabled:opacity-50"
+                          onClick={async () => {
+                            try {
+                              const res = await fetch("/api/ai/access-requests", {
+                                method: "POST", credentials: "include",
+                                headers: { "Content-Type": "application/json" },
+                                body: JSON.stringify({ featureKey: activeTab === "behavior" ? "behavior_analysis" : "emotion_scan" }),
+                              });
+                              const data = await res.json().catch(() => ({}));
+                              if (!res.ok) throw new Error(data.message || "Could not submit request");
+                              toast({ title: "Request sent", description: "Your request has been sent to the Happy Tail admin." });
+                            } catch (err: any) {
+                              toast({ title: "Request not sent", description: err.message, variant: "destructive" });
+                            }
+                          }}
+                        >Request more access</button>
+                      )}
+                    </div>
                   </div>
                 )}
 
