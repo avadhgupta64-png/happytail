@@ -56,6 +56,7 @@ export interface IStorage {
   // AI Usage Limits
   getUsageCount(userId: string, featureKey: string): Promise<number>;
   incrementUsage(userId: string, featureKey: string): Promise<number>;
+  tryConsumeUsage(userId: string, featureKey: string, limit: number): Promise<boolean>;
   getUserUsageSummary(userId: string): Promise<Record<string, number>>;
 
   // Feature Permissions (admin-granted unlimited)
@@ -180,6 +181,20 @@ export class DatabaseStorage implements IStorage {
       })
       .returning({ usageCount: aiUsageLogs.usageCount });
     return row.usageCount;
+  }
+
+  // Atomically reserve one use only while below the limit, preventing parallel requests bypassing the cap.
+  async tryConsumeUsage(userId: string, featureKey: string, limit: number): Promise<boolean> {
+    const rows = await db
+      .insert(aiUsageLogs)
+      .values({ userId, featureKey, usageCount: 1, updatedAt: new Date() })
+      .onConflictDoUpdate({
+        target: [aiUsageLogs.userId, aiUsageLogs.featureKey],
+        set: { usageCount: sql`${aiUsageLogs.usageCount} + 1`, updatedAt: new Date() },
+        where: sql`${aiUsageLogs.usageCount} < ${limit}`,
+      })
+      .returning({ usageCount: aiUsageLogs.usageCount });
+    return rows.length > 0;
   }
 
   async getUserUsageSummary(userId: string): Promise<Record<string, number>> {
