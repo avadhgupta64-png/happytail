@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { Switch, Route, Link, useLocation } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider, useQuery } from "@tanstack/react-query";
@@ -58,6 +58,18 @@ function ThemeToggle() {
 function AppSidebar() {
   const [location] = useLocation();
   const { t } = useLanguage();
+  const [readNotificationKeys, setReadNotificationKeys] = useState<string[]>(() => {
+    try { return JSON.parse(localStorage.getItem("happy-tail-read-notifications") || "[]"); }
+    catch { return []; }
+  });
+
+  const markNotificationKeysRead = useCallback((keys: string[]) => {
+    setReadNotificationKeys((current) => {
+      const next = Array.from(new Set([...current, ...keys]));
+      try { localStorage.setItem("happy-tail-read-notifications", JSON.stringify(next)); } catch {}
+      return next;
+    });
+  }, []);
 
   const { data: adminCheck } = useQuery({
     queryKey: ["/api/admin/check"],
@@ -89,11 +101,46 @@ function AppSidebar() {
     refetchInterval: 10000,
   });
 
-  const accessUpdateCount = myAccessRequests.filter((request: any) =>
-    ["approved", "denied", "revoked"].includes(request.status) &&
-    request.reviewedAt &&
-    Date.now() - new Date(request.reviewedAt).getTime() < 24 * 60 * 60 * 1000
-  ).length;
+  const { data: adminActivity = [] } = useQuery({
+    queryKey: ["/api/admin/all-activities"],
+    queryFn: async () => {
+      const res = await fetch("/api/admin/all-activities", { credentials: "include" });
+      if (!res.ok) return [];
+      return res.json();
+    },
+    enabled: !!adminCheck?.isAdmin,
+    refetchInterval: 10000,
+  });
+
+  const { data: feedbackItems = [] } = useQuery({
+    queryKey: [adminCheck?.isAdmin ? "/api/admin/feedback" : "/api/feedback"],
+    queryFn: async () => {
+      const endpoint = adminCheck?.isAdmin ? "/api/admin/feedback" : "/api/feedback";
+      const res = await fetch(endpoint, { credentials: "include" });
+      if (!res.ok) return [];
+      return res.json();
+    },
+    enabled: !!adminCheck,
+    refetchInterval: 10000,
+  });
+
+  const notificationItems = [
+    ...(adminCheck?.isAdmin ? pendingAccessRequests.map((request: any) => ({ key: `admin-access-${request.id}-${request.status || "pending"}`, url: "/admin" })) : []),
+    ...(adminCheck?.isAdmin ? adminActivity.map((activity: any) => ({ key: `admin-activity-${activity.id}`, url: "/admin" })) : []),
+    ...(adminCheck?.isAdmin ? feedbackItems.filter((item: any) => !item.resolved).map((item: any) => ({ key: `admin-feedback-${item.id}-${item.updatedAt || item.createdAt}`, url: "/feedback" })) : []),
+    ...(!adminCheck?.isAdmin ? myAccessRequests.filter((request: any) => ["approved", "denied", "revoked"].includes(request.status) && request.reviewedAt).map((request: any) => ({ key: `user-access-${request.id}-${request.status}-${request.reviewedAt}`, url: "/feedback" })) : []),
+    ...(!adminCheck?.isAdmin ? feedbackItems.filter((item: any) => item.adminComment || item.resolved).map((item: any) => ({ key: `user-feedback-${item.id}-${item.updatedAt || item.adminComment || item.resolved}`, url: "/feedback" })) : []),
+  ];
+  const unreadNotificationItems = notificationItems.filter((item: any) => !readNotificationKeys.includes(item.key));
+  const hasUnreadNotifications = unreadNotificationItems.length > 0;
+
+  useEffect(() => {
+    const targetUrl = location === "/admin" || location.startsWith("/admin/") ? "/admin"
+      : location === "/feedback" || location.startsWith("/feedback/") ? "/feedback" : null;
+    if (!targetUrl) return;
+    const keys = notificationItems.filter((item: any) => item.url === targetUrl).map((item: any) => item.key);
+    if (keys.length) markNotificationKeysRead(keys);
+  }, [location, notificationItems.map((item: any) => item.key).join("|"), markNotificationKeysRead]);
 
   const navItems = [
     { title: t.nav.home, url: "/", icon: HomeIcon },
@@ -142,15 +189,8 @@ function AppSidebar() {
                         <span className={`text-sm ${isActive ? "font-semibold !text-primary" : "!text-sidebar-foreground"}`}>
                           {item.title}
                         </span>
-                        {item.url === "/admin" && pendingAccessRequests.length > 0 && (
-                          <span aria-label={`${pendingAccessRequests.length} pending AI access requests`} className="ml-auto inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-red-600 px-1.5 text-[11px] font-bold text-white">
-                            {pendingAccessRequests.length}
-                          </span>
-                        )}
-                        {item.url === "/feedback" && accessUpdateCount > 0 && (
-                          <span aria-label={`${accessUpdateCount} recent AI access updates`} className="ml-auto inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-red-600 px-1.5 text-[11px] font-bold text-white">
-                            {accessUpdateCount}
-                          </span>
+                        {unreadNotificationItems.some((notification: any) => notification.url === item.url) && (
+                          <span aria-label="Unread notification" className="ml-auto h-2.5 w-2.5 rounded-full bg-red-600" />
                         )}
                       </Link>
                     </SidebarMenuButton>
@@ -219,7 +259,10 @@ function AuthenticatedApp() {
         <div className="flex flex-col flex-1 overflow-hidden">
           <header className="flex items-center justify-between px-4 py-3 border-b border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-950">
             <div className="flex items-center gap-3">
-              <SidebarTrigger data-testid="button-sidebar-toggle" />
+              <span className="relative inline-flex">
+                <SidebarTrigger data-testid="button-sidebar-toggle" />
+                {location === "/" && hasUnreadNotifications && <span aria-label="Unread notifications" className="pointer-events-none absolute right-1 top-1 h-2.5 w-2.5 rounded-full border-2 border-white bg-red-600 dark:border-gray-950" />}
+              </span>
               <div className="flex items-center gap-2">
                 <img
                   src={logoImg}
