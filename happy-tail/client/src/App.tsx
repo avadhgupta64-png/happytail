@@ -232,6 +232,68 @@ function Router() {
   );
 }
 
+function HeaderNotificationIndicator() {
+  const { data: adminCheck } = useQuery({
+    queryKey: ["/api/admin/check"],
+    queryFn: async () => {
+      const res = await fetch("/api/admin/check", { credentials: "include" });
+      if (!res.ok) return { isAdmin: false };
+      return res.json();
+    },
+  });
+  const { data: requests = [] } = useQuery({
+    queryKey: [adminCheck?.isAdmin ? "/api/admin/ai-access-requests" : "/api/ai/access-requests/mine"],
+    queryFn: async () => {
+      const endpoint = adminCheck?.isAdmin ? "/api/admin/ai-access-requests" : "/api/ai/access-requests/mine";
+      const res = await fetch(endpoint, { credentials: "include" });
+      if (!res.ok) return [];
+      const data = await res.json();
+      return Array.isArray(data) ? data : [];
+    },
+    enabled: !!adminCheck,
+    refetchInterval: 10000,
+  });
+  const { data: activities = [] } = useQuery({
+    queryKey: ["/api/admin/all-activities"],
+    queryFn: async () => {
+      const res = await fetch("/api/admin/all-activities", { credentials: "include" });
+      if (!res.ok) return [];
+      const data = await res.json();
+      return Array.isArray(data) ? data : [];
+    },
+    enabled: !!adminCheck?.isAdmin,
+    refetchInterval: 10000,
+  });
+  const { data: feedback = [] } = useQuery({
+    queryKey: [adminCheck?.isAdmin ? "/api/admin/feedback" : "/api/feedback"],
+    queryFn: async () => {
+      const endpoint = adminCheck?.isAdmin ? "/api/admin/feedback" : "/api/feedback";
+      const res = await fetch(endpoint, { credentials: "include" });
+      if (!res.ok) return [];
+      const data = await res.json();
+      return Array.isArray(data) ? data : [];
+    },
+    enabled: !!adminCheck,
+    refetchInterval: 10000,
+  });
+  const readKeys: string[] = (() => {
+    try {
+      const value = JSON.parse(localStorage.getItem("happy-tail-read-notifications") || "[]");
+      return Array.isArray(value) ? value : [];
+    } catch { return []; }
+  })();
+  const notifications = [
+    ...(adminCheck?.isAdmin ? requests.map((item: any) => ({ key: `admin-access-${item.id}-${item.status || "pending"}` })) : []),
+    ...(adminCheck?.isAdmin ? activities.map((item: any) => ({ key: `admin-activity-${item.id}` })) : []),
+    ...(adminCheck?.isAdmin ? feedback.filter((item: any) => !item.resolved).map((item: any) => ({ key: `admin-feedback-${item.id}-${item.updatedAt || item.createdAt}` })) : []),
+    ...(!adminCheck?.isAdmin ? requests.filter((item: any) => ["approved", "denied", "revoked"].includes(item.status) && item.reviewedAt).map((item: any) => ({ key: `user-access-${item.id}-${item.status}-${item.reviewedAt}` })) : []),
+    ...(!adminCheck?.isAdmin ? feedback.filter((item: any) => item.adminComment || item.resolved).map((item: any) => ({ key: `user-feedback-${item.id}-${item.updatedAt || item.adminComment || item.resolved}` })) : []),
+  ];
+  return notifications.some((item: any) => !readKeys.includes(item.key))
+    ? <span aria-label="Unread notifications" className="pointer-events-none absolute right-1 top-1 h-2.5 w-2.5 rounded-full border-2 border-white bg-red-600 dark:border-gray-950" />
+    : null;
+}
+
 function AuthenticatedApp() {
   const { user, logout } = useAuth();
   const { isGuest, exitGuestMode } = useGuest();
@@ -261,7 +323,7 @@ function AuthenticatedApp() {
             <div className="flex items-center gap-3">
               <span className="relative inline-flex">
                 <SidebarTrigger data-testid="button-sidebar-toggle" />
-                {hasUnreadNotifications && <span aria-label="Unread notifications" className="pointer-events-none absolute right-1 top-1 h-2.5 w-2.5 rounded-full border-2 border-white bg-red-600 dark:border-gray-950" />}
+                <HeaderNotificationIndicator />
               </span>
               <div className="flex items-center gap-2">
                 <img
