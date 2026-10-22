@@ -55,6 +55,20 @@ function ThemeToggle() {
   );
 }
 
+function accessRequestTarget(featureKey: string) {
+  const routes: Record<string, string> = {
+    emotion_scan: "/detector",
+    behavior_analysis: "/detector",
+    location_search: "/locations",
+    geofencing: "/locations",
+    bark_translation: "/bark-translator",
+    health_scan: "/health/scan",
+    diet_plan: "/health/diet",
+    vet_chat: "/health/chat",
+  };
+  return routes[featureKey] || "/"; 
+}
+
 function AppSidebar() {
   const [location] = useLocation();
   const { t } = useLanguage();
@@ -128,7 +142,7 @@ function AppSidebar() {
     ...(adminCheck?.isAdmin ? pendingAccessRequests.map((request: any) => ({ key: `admin-access-${request.id}-${request.status || "pending"}`, url: "/admin" })) : []),
     ...(adminCheck?.isAdmin ? adminActivity.map((activity: any) => ({ key: `admin-activity-${activity.id}`, url: "/admin" })) : []),
     ...(adminCheck?.isAdmin ? feedbackItems.filter((item: any) => !item.resolved).map((item: any) => ({ key: `admin-feedback-${item.id}-${item.updatedAt || item.createdAt}`, url: "/feedback" })) : []),
-    ...(!adminCheck?.isAdmin ? myAccessRequests.filter((request: any) => ["approved", "denied", "revoked"].includes(request.status) && request.reviewedAt).map((request: any) => ({ key: `user-access-${request.id}-${request.status}-${request.reviewedAt}`, url: "/feedback" })) : []),
+    ...(!adminCheck?.isAdmin ? myAccessRequests.filter((request: any) => ["approved", "denied", "revoked"].includes(request.status) && request.reviewedAt).map((request: any) => ({ key: `user-access-${request.id}-${request.status}-${request.reviewedAt}`, url: accessRequestTarget(request.featureKey) })) : []),
     ...(!adminCheck?.isAdmin ? feedbackItems.filter((item: any) => item.adminComment || item.resolved).map((item: any) => ({ key: `user-feedback-${item.id}-${item.updatedAt || item.adminComment || item.resolved}`, url: "/feedback" })) : []),
   ];
   const unreadNotificationItems = notificationItems.filter((item: any) => !readNotificationKeys.includes(item.key));
@@ -286,10 +300,10 @@ function HeaderNotificationIndicator() {
     ...(adminCheck?.isAdmin ? requests.map((item: any) => ({ key: `admin-access-${item.id}-${item.status || "pending"}` })) : []),
     ...(adminCheck?.isAdmin ? activities.map((item: any) => ({ key: `admin-activity-${item.id}` })) : []),
     ...(adminCheck?.isAdmin ? feedback.filter((item: any) => !item.resolved).map((item: any) => ({ key: `admin-feedback-${item.id}-${item.updatedAt || item.createdAt}` })) : []),
-    ...(!adminCheck?.isAdmin ? requests.filter((item: any) => ["approved", "denied", "revoked"].includes(item.status) && item.reviewedAt).map((item: any) => ({ key: `user-access-${item.id}-${item.status}-${item.reviewedAt}` })) : []),
+    ...(!adminCheck?.isAdmin ? requests.filter((item: any) => ["approved", "denied", "revoked"].includes(item.status) && item.reviewedAt).map((item: any) => ({ key: `user-access-${item.id}-${item.status}-${item.reviewedAt}`, url: accessRequestTarget(item.featureKey) })) : []),
     ...(!adminCheck?.isAdmin ? feedback.filter((item: any) => item.adminComment || item.resolved).map((item: any) => ({ key: `user-feedback-${item.id}-${item.updatedAt || item.adminComment || item.resolved}` })) : []),
   ];
-  return notifications.some((item: any) => !readKeys.includes(item.key))
+  return notifications.some((item: any) => !readKeys.includes(item.key) && (!item.url || item.url === window.location.pathname))
     ? <span aria-label="Unread notifications" className="pointer-events-none absolute right-1 top-1 h-2.5 w-2.5 rounded-full border-2 border-white bg-red-600 dark:border-gray-950" />
     : null;
 }
