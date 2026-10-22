@@ -399,7 +399,7 @@ export default function Locations() {
   return (
     <div className="max-w-5xl mx-auto">
       <AIUsageCounter featureKey="location_search" />
-      {usageLimitReached && <AIUsageLimitRequest featureKey="location_search" />}
+      <AIUsageLimitRequest featureKey="location_search" />
       <PageHeader
         title={t.locations.title}
         description={t.locations.subtitle}
