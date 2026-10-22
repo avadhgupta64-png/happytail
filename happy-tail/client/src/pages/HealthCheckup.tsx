@@ -9,6 +9,7 @@ import { Link } from "wouter";
 import { useLanguage } from "@/lib/language-context";
 import { useGuest } from "@/lib/guest-context";
 import { AIUsageLimitRequest } from "@/components/AIUsageLimitRequest";
+import { AIUsageCounter } from "@/components/AIUsageCounter";
 
 interface HealthResult {
   breed: string;
@@ -71,6 +72,7 @@ export default function HealthCheckup() {
 
   return (
     <div className="max-w-6xl mx-auto">
+      <AIUsageCounter featureKey="health_scan" />
       {usageLimitReached && <AIUsageLimitRequest featureKey="health_scan" />}
       <div className="flex items-center gap-3 mb-8">
         <Link href="/health">
