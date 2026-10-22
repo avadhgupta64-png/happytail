@@ -9,6 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Link } from "wouter";
 import { useGuest } from "@/lib/guest-context";
 import { useLanguage } from "@/lib/language-context";
+import { AIUsageLimitRequest } from "@/components/AIUsageLimitRequest";
 
 interface MealPlan {
   summary: string;
@@ -27,6 +28,7 @@ interface MealPlan {
 }
 
 export default function DietPlanner() {
+  const [usageLimitReached, setUsageLimitReached] = useState(false);
   const [breed, setBreed] = useState("");
   const [age, setAge] = useState("");
   const [weight, setWeight] = useState("");
@@ -49,6 +51,7 @@ export default function DietPlanner() {
       const data = await res.json();
       setPlan(data);
     } catch (err) {
+      if (err instanceof Error && /Usage limit reached/i.test(err.message)) setUsageLimitReached(true);
       if (err instanceof UnauthorizedError) {
         setShowLoginPrompt(true);
       } else {
@@ -61,6 +64,7 @@ export default function DietPlanner() {
 
   return (
     <div className="max-w-4xl mx-auto" data-testid="diet-planner-page">
+      {usageLimitReached && <AIUsageLimitRequest featureKey="diet_plan" />}
       <div className="flex items-center gap-3 mb-8">
         <Link href="/health">
           <Button variant="ghost" size="icon" data-testid="button-back-health">
