@@ -909,7 +909,7 @@ Rules:
       if (!consumed) {
         const count = await storage.getUsageCount(userId, featureKey);
         res.status(429).json({
-          message: "Usage limit reached",
+          message: "You’ve reached the 3-use limit for this AI feature. You can request additional access from the Happy Tail admin.",
           featureKey,
           used: count,
           limit: AI_FEATURE_LIMIT,
