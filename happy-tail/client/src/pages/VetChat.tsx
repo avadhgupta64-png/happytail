@@ -7,6 +7,7 @@ import { apiRequest, UnauthorizedError } from "@/lib/queryClient";
 import { Link } from "wouter";
 import { useLanguage } from "@/lib/language-context";
 import { useGuest } from "@/lib/guest-context";
+import { AIUsageLimitRequest } from "@/components/AIUsageLimitRequest";
 
 interface Message {
   role: "user" | "assistant";
@@ -36,6 +37,7 @@ const VET_SUGGESTIONS: Partial<Record<string, string[]>> = {
 };
 
 export default function VetChat() {
+  const [usageLimitReached, setUsageLimitReached] = useState(false);
   const { t, lang } = useLanguage();
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
@@ -69,6 +71,7 @@ export default function VetChat() {
       const data = await res.json();
       setMessages([...updatedMessages, { role: "assistant", content: data.reply }]);
     } catch (err) {
+      if (err instanceof Error && /Usage limit reached/i.test(err.message)) setUsageLimitReached(true);
       if (err instanceof UnauthorizedError) {
         setShowLoginPrompt(true);
         // Remove the user message we already appended
@@ -91,6 +94,7 @@ export default function VetChat() {
 
   return (
     <div className="max-w-3xl mx-auto flex flex-col h-[calc(100vh-120px)]" data-testid="vet-chat-page">
+      {usageLimitReached && <AIUsageLimitRequest featureKey="vet_chat" />}
       <div className="flex items-center gap-3 mb-4 shrink-0">
         <Link href="/health">
           <Button variant="ghost" size="icon" data-testid="button-back-health">
