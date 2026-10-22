@@ -66,7 +66,7 @@ export default function DietPlanner() {
   return (
     <div className="max-w-4xl mx-auto" data-testid="diet-planner-page">
       <AIUsageCounter featureKey="diet_plan" />
-      {usageLimitReached && <AIUsageLimitRequest featureKey="diet_plan" />}
+      <AIUsageLimitRequest featureKey="diet_plan" />
       <div className="flex items-center gap-3 mb-8">
         <Link href="/health">
           <Button variant="ghost" size="icon" data-testid="button-back-health">
