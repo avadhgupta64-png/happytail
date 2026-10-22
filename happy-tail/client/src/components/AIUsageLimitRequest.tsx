@@ -89,7 +89,7 @@ export function AIUsageLimitRequest({ featureKey }: AIUsageLimitRequestProps) {
 
   const decisionStatus = latestRequest?.status;
   const showDecisionNotice = decisionStatus === "approved" || decisionStatus === "denied" || decisionStatus === "revoked";
-  if (!reachedLimit && !showDecisionNotice) return null;
+  if (isUnlimited && !showDecisionNotice) return null;
 
   return (
     <div className="mt-3 rounded-xl border border-red-200 bg-red-50 p-4 text-red-900 dark:border-red-900 dark:bg-red-950/30 dark:text-red-100" role="status" aria-live="polite">
@@ -108,21 +108,21 @@ export function AIUsageLimitRequest({ featureKey }: AIUsageLimitRequestProps) {
           </p>
         </div>
       )}
-      {reachedLimit && requestPending ? (
+      {!isUnlimited && requestPending ? (
         <>
           <button type="button" disabled className="mt-3 cursor-not-allowed rounded-lg bg-gray-400 px-4 py-2 text-sm font-semibold text-white opacity-80">
-            Request sent — awaiting approval
+            Unlimited access requested — awaiting approval
           </button>
           <p className="mt-2 text-sm">Your request has been sent to the admin. Please wait for approval.</p>
         </>
-      ) : reachedLimit ? (
+      ) : !isUnlimited ? (
         <button
           type="button"
           onClick={requestAccess}
           disabled={sending}
           className="mt-3 rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700 disabled:cursor-not-allowed disabled:bg-gray-400"
         >
-          {sending ? "Sending request…" : "Request more access"}
+          {sending ? "Sending request…" : "Request unlimited access"}
         </button>
       ) : null}
       {message && !requestPending && <p className="mt-2 text-sm">{message}</p>}
