@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { useLanguage } from "@/lib/language-context";
 import { useGuest } from "@/lib/guest-context";
+import { AIUsageLimitRequest } from "@/components/AIUsageLimitRequest";
 
 interface TranslationResult {
   breed: string;
@@ -77,6 +78,7 @@ function extractFramesFromVideo(videoSrc: string, numFrames: number = 6): Promis
 }
 
 export default function BarkTranslator() {
+  const [usageLimitReached, setUsageLimitReached] = useState(false);
   const [videoSrc, setVideoSrc] = useState<string | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [extractionStatus, setExtractionStatus] = useState("");
@@ -129,6 +131,7 @@ export default function BarkTranslator() {
       const data = await res.json();
       setResult(data);
     } catch (err) {
+      if (err instanceof Error && /Usage limit reached/i.test(err.message)) setUsageLimitReached(true);
       if (err instanceof UnauthorizedError) {
         setShowLoginPrompt(true);
       } else {
@@ -156,6 +159,7 @@ export default function BarkTranslator() {
 
   return (
     <div className="max-w-5xl mx-auto">
+      {usageLimitReached && <AIUsageLimitRequest featureKey="bark_translation" />}
       <PageHeader 
         title={t.barkTranslator.title} 
         description={t.barkTranslator.subtitle}
