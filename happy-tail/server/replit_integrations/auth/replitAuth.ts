@@ -5,6 +5,7 @@ import type { Express, RequestHandler } from "express";
 import connectPg from "connect-pg-simple";
 import { randomBytes } from "crypto";
 import { db, users } from "../../db";
+import { removedUsers } from "@shared/schema";
 import { eq } from "drizzle-orm";
 import type { User } from "@shared/models/auth";
 
@@ -15,6 +16,7 @@ export interface LocalUser extends Express.User {
     email: string;
   };
   isAdmin?: boolean;
+  isRemoved?: boolean;
 }
 
 export function getSession() {
@@ -81,6 +83,21 @@ export async function setupAuth(app: Express) {
             const email = profile.emails?.[0]?.value?.toLowerCase().trim();
             if (!email) return done(new Error("No email returned from Google"));
 
+            // A removal tombstone is permanent: never recreate an account for this email.
+            const [removedRecord] = await db
+              .select({ id: removedUsers.id })
+              .from(removedUsers)
+              .where(eq(removedUsers.email, email))
+              .limit(1);
+            if (removedRecord) {
+              const removedUser: LocalUser = {
+                claims: { sub: "permanently-removed", email },
+                dbUser: { email, isBanned: false } as User,
+                isRemoved: true,
+              };
+              return done(null, removedUser);
+            }
+
             let [dbUser] = await db.select().from(users).where(eq(users.email, email));
 
             if (!dbUser) {
@@ -115,6 +132,10 @@ export async function setupAuth(app: Express) {
       "/api/auth/google/callback",
       passport.authenticate("google", { failureRedirect: "/?auth_error=google_failed", session: true }),
       (req: any, res) => {
+        // Permanently removed emails are tombstoned and can never recreate an account.
+        if (req.user?.isRemoved) {
+          return req.logout(() => res.redirect("/?auth_error=removed"));
+        }
         // Allow OAuth to finish so banned accounts see the branded status page.
         if (req.user?.dbUser?.isBanned) {
           return req.logout(() => res.redirect("/?auth_error=banned"));
