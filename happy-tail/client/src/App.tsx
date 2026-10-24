@@ -524,28 +524,28 @@ function AppContent() {
       >
         <div className="pointer-events-none absolute inset-0 overflow-hidden">
           <motion.div
-            className="absolute left-1/2 top-1/2 h-[min(78vw,34rem)] w-[min(78vw,34rem)] -translate-x-1/2 -translate-y-1/2 rounded-full bg-pink-300/25 blur-[75px] dark:bg-fuchsia-600/20"
-            animate={{ scale: [0.82, 1.08, 0.92, 0.82], opacity: [0.45, 0.8, 0.55, 0.45] }}
+            className="absolute left-1/2 top-1/2 h-[min(62vw,22rem)] w-[min(62vw,22rem)] -translate-x-1/2 -translate-y-1/2 rounded-full bg-pink-300/15 dark:bg-fuchsia-600/15"
+            animate={{ opacity: [0.55, 0.8, 0.55] }}
             transition={{ duration: 5.5, repeat: Infinity, ease: "easeInOut" }}
           />
           <motion.div
-            className="absolute -left-20 top-[18%] h-48 w-48 rounded-full bg-rose-200/40 blur-3xl dark:bg-rose-500/10"
-            animate={{ x: [0, 30, 0], y: [0, 24, 0] }}
+            className="absolute -left-20 top-[18%] h-40 w-40 rounded-full bg-rose-200/25 dark:bg-rose-500/10"
+            animate={{ opacity: [0.6, 0.9, 0.6] }}
             transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
           />
           <motion.div
-            className="absolute -right-16 bottom-[14%] h-56 w-56 rounded-full bg-violet-200/40 blur-3xl dark:bg-violet-500/10"
-            animate={{ x: [0, -26, 0], y: [0, -22, 0] }}
+            className="absolute -right-16 bottom-[14%] h-44 w-44 rounded-full bg-violet-200/25 dark:bg-violet-500/10"
+            animate={{ opacity: [0.55, 0.85, 0.55] }}
             transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
           />
-          {[0, 1, 2, 3, 4, 5, 6, 7].map((particle) => (
+          {[0, 1, 2, 3].map((particle) => (
             <motion.span
               key={particle}
               aria-hidden="true"
               className="absolute left-1/2 top-1/2 h-1.5 w-1.5 rounded-full bg-pink-400/70 shadow-[0_0_14px_rgba(244,114,182,0.65)]"
               animate={{
-                x: [Math.cos((particle / 8) * Math.PI * 2) * 75, Math.cos((particle / 8) * Math.PI * 2) * 155],
-                y: [Math.sin((particle / 8) * Math.PI * 2) * 75, Math.sin((particle / 8) * Math.PI * 2) * 155],
+                x: [Math.cos((particle / 4) * Math.PI * 2) * 75, Math.cos((particle / 4) * Math.PI * 2) * 155],
+                y: [Math.sin((particle / 4) * Math.PI * 2) * 75, Math.sin((particle / 4) * Math.PI * 2) * 155],
                 opacity: [0, 1, 0],
                 scale: [0.5, 1.25, 0.5],
               }}
@@ -556,7 +556,7 @@ function AppContent() {
 
         <motion.div
           className="relative z-10 flex w-full max-w-sm flex-col items-center text-center"
-          initial={{ opacity: 0, y: 18, scale: 0.97 }}
+          initial={{ opacity: 0, y: 10, scale: 0.99 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
         >
