@@ -84,9 +84,7 @@ interface UserPermission {
 // ─── Constants ────────────────────────────────────────────────────────────────
 
 const ADMIN_EMAILS = [
-  "pawcare.tech@gmail.com",
   "avadhgupta64@gmail.com",
-  "avxdhgupta@gmail.com",
 ];
 
 const AI_FEATURE_LIMIT = 3;
