@@ -9,7 +9,7 @@ export function SplashScreen({ onComplete }: { onComplete: () => void }) {
     const timer = window.setTimeout(() => {
       setVisible(false);
       window.setTimeout(onComplete, 380);
-    }, 2600);
+    }, 3000);
     return () => window.clearTimeout(timer);
   }, [onComplete]);
 
@@ -68,7 +68,7 @@ export function SplashScreen({ onComplete }: { onComplete: () => void }) {
             animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
             transition={{ duration: 0.75, ease: [0.16, 1, 0.3, 1] }}
           >
-            <div className="relative mb-10 flex h-44 w-44 items-center justify-center">
+            <div className="relative mb-10 flex h-48 w-48 items-center justify-center">
               <motion.div
                 className="absolute inset-0 rounded-full border border-white/[0.10]"
                 animate={{ rotate: 360 }}
@@ -76,9 +76,20 @@ export function SplashScreen({ onComplete }: { onComplete: () => void }) {
               >
                 <span className="absolute left-1/2 top-0 h-1.5 w-1.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-pink-300 shadow-[0_0_12px_rgba(244,114,182,0.9)]" />
               </motion.div>
-              <div className="absolute inset-3 rounded-full border border-pink-200/[0.12]" />
               <motion.div
-                className="relative flex h-24 w-24 items-center justify-center rounded-[1.8rem] border border-white/[0.12] bg-white/[0.045] shadow-[0_0_80px_rgba(236,72,153,0.12)] backdrop-blur-xl"
+                aria-hidden="true"
+                className="absolute inset-3 rounded-full border border-pink-200/[0.12]"
+                animate={{ scale: [1, 1.07, 1], opacity: [0.35, 0.8, 0.35] }}
+                transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+              />
+              <motion.div
+                aria-hidden="true"
+                className="absolute -inset-3 rounded-full border border-white/[0.035]"
+                animate={{ rotate: -360 }}
+                transition={{ duration: 38, repeat: Infinity, ease: "linear" }}
+              />
+              <motion.div
+                className="relative flex h-24 w-24 items-center justify-center rounded-[1.8rem] border border-white/[0.16] bg-[#101116]/90 shadow-[0_0_90px_rgba(236,72,153,0.17),inset_0_1px_0_rgba(255,255,255,0.12)] backdrop-blur-xl"
                 animate={{ y: [0, -3, 0] }}
                 transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
               >
@@ -99,7 +110,7 @@ export function SplashScreen({ onComplete }: { onComplete: () => void }) {
             >A NEW STANDARD IN PET CARE</motion.p>
 
             <motion.h1
-              className="mt-4 text-[2.65rem] font-semibold tracking-[-0.075em] text-white"
+              className="mt-4 text-[2.65rem] font-semibold tracking-[-0.075em] text-white [text-shadow:0_0_32px_rgba(255,255,255,0.08)]"
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3, duration: 0.6 }}
@@ -113,7 +124,7 @@ export function SplashScreen({ onComplete }: { onComplete: () => void }) {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.48, duration: 0.5 }}
-            >Thoughtful care. Smarter companions.</motion.p>
+            >Built different. Made for the bond.</motion.p>
 
             <motion.div
               className="mt-12 w-44"
@@ -128,12 +139,20 @@ export function SplashScreen({ onComplete }: { onComplete: () => void }) {
                   transition={{ duration: 1.35, repeat: Infinity, ease: "easeInOut" }}
                 />
               </div>
-              <p className="mt-4 text-[0.58rem] font-medium uppercase tracking-[0.32em] text-white/30">Initializing experience</p>
+              <div className="mt-4 flex items-center justify-between text-[0.55rem] font-medium uppercase tracking-[0.22em] text-white/30">
+                <span>Initializing</span>
+                <motion.span
+                  className="font-mono text-pink-200/60"
+                  animate={{ opacity: [0.35, 1, 0.35] }}
+                  transition={{ duration: 1.2, repeat: Infinity, ease: "easeInOut" }}
+                >● LIVE</motion.span>
+              </div>
             </motion.div>
           </motion.div>
 
-          <div className="absolute bottom-8 left-0 right-0 text-center">
-            <p className="text-[0.55rem] font-medium uppercase tracking-[0.3em] text-white/20">Built for the bond</p>
+          <div className="absolute bottom-7 left-6 right-6 flex items-center justify-between">
+            <p className="text-[0.52rem] font-medium uppercase tracking-[0.24em] text-white/20">HAPPY TAIL®</p>
+            <p className="font-mono text-[0.52rem] tracking-[0.18em] text-white/20">SECURE • SMART • SIMPLE</p>
           </div>
         </motion.main>
       )}
