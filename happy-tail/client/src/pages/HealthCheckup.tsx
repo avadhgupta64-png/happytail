@@ -29,27 +29,34 @@ export default function HealthCheckup() {
   const { toast } = useToast();
   const { checkGuestAccess, setShowLoginPrompt } = useGuest();
 
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(e.target.files || []);
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const input = e.currentTarget;
+    const files = Array.from(input.files || []);
+    input.value = "";
     if (files.length === 0) return;
-    
-    if (images.length + files.length > 5) {
-      toast({ title: "Limit exceeded", description: "Please upload exactly 5 photos.", variant: "destructive" });
+    const remaining = 5 - images.length;
+    if (files.length > remaining) {
+      toast({ title: "Choose up to 5 photos", description: `You can add only ${remaining} more photo${remaining === 1 ? "" : "s"}.`, variant: "destructive" });
       return;
     }
-
-    files.forEach(file => {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImages(prev => [...prev, reader.result as string]);
-      };
-      reader.readAsDataURL(file);
-    });
+    const validFiles = files.filter(file => file.type.startsWith("image/"));
+    if (validFiles.length !== files.length) toast({ title: "Images only", description: "Please choose photo files.", variant: "destructive" });
+    try {
+      const dataUrls = await Promise.all(validFiles.map(file => new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => typeof reader.result === "string" ? resolve(reader.result) : reject(new Error("Could not read image"));
+        reader.onerror = () => reject(new Error("Could not read image"));
+        reader.readAsDataURL(file);
+      })));
+      setImages(current => [...current, ...dataUrls].slice(0, 5));
+    } catch {
+      toast({ title: "Photo could not be loaded", description: "Please try selecting the photo again.", variant: "destructive" });
+    }
   };
 
   const handleCheckup = async () => {
     if (images.length < 5) {
-      toast({ title: "More photos needed", description: "Please upload 5 photos for a complete analysis.", variant: "destructive" });
+      toast({ title: "More photos needed", description: "Please select exactly 5 photos before starting the health check.", variant: "destructive" });
       return;
     }
     if (!checkGuestAccess()) return;
@@ -123,7 +130,7 @@ export default function HealthCheckup() {
               onChange={handleFileUpload} 
               accept="image/*" 
               multiple 
-              className="hidden" 
+              className="absolute w-px h-px opacity-0 pointer-events-none" 
             />
 
             <Button 
@@ -215,7 +222,7 @@ export default function HealthCheckup() {
               <div className="h-full bg-white rounded-[2rem] border-2 border-dashed border-gray-200 flex flex-col items-center justify-center p-12 text-center text-gray-400">
                 <Stethoscope className="w-16 h-16 mb-4 opacity-10" />
                 <h3 className="text-2xl font-bold mb-2">{t.healthScan.title}</h3>
-                <p className="max-w-xs">Upload 5 clear photos of the affected area or the dog's skin for analysis.</p>
+                <p className="max-w-xs">Select exactly 5 clear photos of your dog. Add them in batches if needed; remove a photo to replace it.</p>
               </div>
             )}
           </AnimatePresence>
