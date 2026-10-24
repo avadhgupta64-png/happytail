@@ -898,10 +898,8 @@ Rules:
 
   // === Admin Routes (locked to admin emails) ===
   const ADMIN_EMAILS = [
-    "pawcare.tech@gmail.com",
-    "avadhgupta64@gmail.com",
-    "avxdhgupta@gmail.com",
-  ];
+  "avadhgupta64@gmail.com",
+];
 
   const isAdmin = async (req: any, res: any, next: any) => {
     try {
