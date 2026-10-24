@@ -6,7 +6,7 @@ import connectPg from "connect-pg-simple";
 import { randomBytes } from "crypto";
 import { db, users } from "../../db";
 import { removedUsers } from "@shared/schema";
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import type { User } from "@shared/models/auth";
 
 export interface LocalUser extends Express.User {
@@ -87,7 +87,7 @@ export async function setupAuth(app: Express) {
             const [removedRecord] = await db
               .select({ id: removedUsers.id })
               .from(removedUsers)
-              .where(eq(removedUsers.email, email))
+              .where(sql`lower(${removedUsers.email}) = ${email}`)
               .limit(1);
             if (removedRecord) {
               const removedUser: LocalUser = {
