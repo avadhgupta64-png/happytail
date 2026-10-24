@@ -50,25 +50,20 @@ jobs:
         run: |
           python3 - <<'PY'
           from pathlib import Path
-          candidates = [
-              Path("android/app/build.gradle.kts"),
-              Path("android/app/build.gradle"),
-          ]
+          import re
+          candidates = [Path("android/app/build.gradle.kts"), Path("android/app/build.gradle")]
           for p in candidates:
               if not p.exists():
                   continue
               s = p.read_text()
-              if "compileSdk = flutter.compileSdkVersion" in s:
-                  s = s.replace("compileSdk = flutter.compileSdkVersion", "compileSdk = 36")
-              elif "compileSdkVersion flutter.compileSdkVersion" in s:
-                  s = s.replace("compileSdkVersion flutter.compileSdkVersion", "compileSdkVersion 36")
-              else:
-                  continue
-              p.write_text(s)
-              print(f"Set compile SDK 36 in {p}")
-              break
+              updated, count = re.subn(r'(?m)^([ \\t]*compileSdk(?:Version)?\\s*(?:=\\s*)?)(?:flutter\\.compileSdkVersion|[0-9]+)', r'\\g<1>36', s, count=1)
+              if count:
+                  p.write_text(updated)
+                  print(f"Updated compile SDK to 36 in {p}")
+                  print("\\n".join(line for line in updated.splitlines() if "compileSdk" in line))
+                  break
           else:
-              raise SystemExit("Could not find generated Android compileSdk setting")
+              raise SystemExit("Could not find a compileSdk declaration in generated Android Gradle files")
           PY
 
       - name: Set Android launcher label and remove generated placeholder test
