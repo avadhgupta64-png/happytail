@@ -195,8 +195,9 @@ export default function BarkTranslator() {
                     type="file"
                     ref={fileInputRef}
                     onChange={handleFileUpload}
+                    onClick={(e) => { (e.currentTarget as HTMLInputElement).value = ""; }}
                     accept="video/*"
-                    className="hidden"
+                    className="absolute w-px h-px opacity-0 pointer-events-none"
                     data-testid="input-video-file"
                   />
                 </div>
