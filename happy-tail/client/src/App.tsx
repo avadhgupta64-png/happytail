@@ -441,8 +441,12 @@ function AuthErrorScreen({ type, reason }: { type: "banned" | "removed"; reason?
   };
 
   return (
-    <main className="relative flex min-h-[100dvh] items-center justify-center overflow-hidden bg-[#08090d] px-6 py-12 text-white">
-      <div aria-hidden="true" className="pointer-events-none absolute inset-0">
+    <main className="relative flex min-h-[100dvh] items-center justify-center overflow-hidden bg-background px-6 py-12 text-foreground transition-colors">
+      <div className="absolute right-4 top-4 z-20 flex items-center gap-2 rounded-2xl border border-border bg-card/90 p-1.5 shadow-lg backdrop-blur sm:right-6 sm:top-6">
+        <LanguageSwitcher />
+        <ThemeToggle />
+      </div>
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 opacity-70">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_35%,rgba(236,72,153,0.12),transparent_42%),radial-gradient(ellipse_at_85%_85%,rgba(99,102,241,0.08),transparent_35%)]" />
         <div className="absolute inset-0 opacity-[0.12] [background-image:linear-gradient(rgba(255,255,255,0.06)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.06)_1px,transparent_1px)] [background-size:48px_48px] [mask-image:radial-gradient(ellipse_at_center,black,transparent_80%)]" />
       </div>
@@ -451,19 +455,19 @@ function AuthErrorScreen({ type, reason }: { type: "banned" | "removed"; reason?
         initial={{ opacity: 0, y: 16, filter: "blur(8px)" }}
         animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
         transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
-        className="relative z-10 w-full max-w-md rounded-3xl border border-white/10 bg-[#101116]/90 p-7 text-center shadow-[0_0_80px_rgba(236,72,153,0.10)] backdrop-blur-xl sm:p-9"
+        className="relative z-10 mt-12 w-full max-w-md rounded-3xl border border-border bg-card/95 p-7 text-center shadow-[0_0_80px_rgba(236,72,153,0.10)] backdrop-blur-xl sm:mt-8 sm:p-9"
       >
         <div className={`mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl border ${isBanned ? "border-amber-300/20 bg-amber-400/10" : "border-red-300/20 bg-red-400/10"}`}>
           <ShieldAlert className={`h-8 w-8 ${isBanned ? "text-amber-300" : "text-red-300"}`} />
         </div>
 
-        <p className="text-[0.65rem] font-semibold uppercase tracking-[0.42em] text-white/40">
+        <p className="text-[0.65rem] font-semibold uppercase tracking-[0.42em] text-muted-foreground">
           HAPPY TAIL · ACCOUNT STATUS
         </p>
-        <h1 className="mt-3 text-3xl font-bold tracking-tight text-white">
+        <h1 className="mt-3 text-3xl font-bold tracking-tight text-foreground">
           {isBanned ? "Account Suspended" : "Account Removed"}
         </h1>
-        <p className="mt-4 text-sm leading-6 text-white/65">
+        <p className="mt-4 text-sm leading-6 text-muted-foreground">
           {isBanned
             ? "Access to Happy Tail has been restricted by an administrator. The app is unavailable for this account while the suspension is active."
             : "Your Happy Tail account has been permanently removed. This decision is final, and you will not be able to sign in or create another account using this email address. If you believe this happened in error, contact the administrator before taking any further action."}
@@ -476,27 +480,30 @@ function AuthErrorScreen({ type, reason }: { type: "banned" | "removed"; reason?
           </div>
         )}
 
-        {isBanned && (
-          <div className="mt-6 border-t border-white/10 pt-6">
-            <p className="text-sm text-white/65">If you believe this is a mistake, contact the admin.</p>
-            <a
-              href={`mailto:${adminEmail}?subject=${encodeURIComponent("Happy Tail account suspension appeal")}`}
-              className="mt-3 inline-flex max-w-full items-center justify-center gap-2 rounded-xl border border-pink-300/20 bg-pink-500/10 px-4 py-3 text-sm font-semibold text-pink-200 transition-colors hover:bg-pink-500/20"
-            >
-              Contact the admin
-            </a>
-            <p className="mt-3 break-all text-xs text-white/45">{adminEmail}</p>
-          </div>
-        )}
+        <div className="mt-6 border-t border-border pt-6">
+          <p className="text-sm text-muted-foreground">
+            {isBanned ? "If you believe this suspension is a mistake, contact the admin." : "If you believe this removal happened in error, contact the admin."}
+          </p>
+          <a
+            href={"mailto:" + adminEmail + "?subject=" + encodeURIComponent(isBanned ? "Happy Tail account suspension appeal" : "Happy Tail account removal appeal")}
+            className="mt-3 inline-flex max-w-full items-center justify-center gap-2 rounded-xl border border-pink-500/30 bg-pink-500/10 px-4 py-3 text-sm font-semibold text-pink-600 transition-colors hover:bg-pink-500/20 dark:text-pink-300"
+          >
+            Contact the admin
+          </a>
+          <p className="mt-3 break-all text-xs text-muted-foreground">{adminEmail}</p>
+        </div>
+        <Link href="/about" className="mt-4 inline-flex items-center justify-center gap-2 rounded-xl border border-border px-4 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-muted">
+          <Info className="h-4 w-4" /> About Happy Tail
+        </Link>
         <button
           type="button"
           onClick={handleLogout}
-          className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/[0.04] px-4 py-3 text-sm font-semibold text-white/80 transition-colors hover:bg-white/[0.09] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-pink-300"
+          className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-xl border border-border bg-muted/50 px-4 py-3 text-sm font-semibold text-foreground transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-pink-300"
           data-testid="button-suspended-logout"
         >
           <LogOut className="h-4 w-4" /> Log Out
         </button>
-        <p className="mt-7 text-[0.62rem] font-medium uppercase tracking-[0.28em] text-white/25">SECURE · SMART · SIMPLE</p>
+        <p className="mt-7 text-[0.62rem] font-medium uppercase tracking-[0.28em] text-muted-foreground">SECURE · SMART · SIMPLE</p>
       </motion.section>
     </main>
   );
