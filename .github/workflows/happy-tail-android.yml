@@ -29,6 +29,7 @@ jobs:
 
       - name: Use the uploaded Happy Tail logo
         run: |
+          python3 -m pip install --user --disable-pip-version-check Pillow
           test -s happy_tail_logo_optimized.png
           mkdir -p assets
           cp happy_tail_logo_optimized.png assets/happy_tail_logo.png
