@@ -1,4 +1,5 @@
 import { useState, useCallback, useEffect } from "react";
+import { motion } from "framer-motion";
 import { Switch, Route, Link, useLocation } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider, useQuery } from "@tanstack/react-query";
@@ -475,11 +476,127 @@ function AppContent() {
 
   if (isLoading) {
     return (
-      <div className="h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-950">
-        <div className="animate-pulse flex flex-col items-center gap-3">
-          <img src={logoImg} alt="Happy Tail" className="w-12 h-12 rounded-xl" style={{ mixBlendMode: "multiply" }} />
-          <p className="text-sm text-muted-foreground">Loading...</p>
+      <div
+        className="relative isolate flex min-h-[100dvh] w-full items-center justify-center overflow-hidden bg-[#fff9fc] px-6 text-slate-900 dark:bg-[#090711] dark:text-white"
+        role="status"
+        aria-live="polite"
+        aria-label="Loading Happy Tail"
+      >
+        <div className="pointer-events-none absolute inset-0 overflow-hidden">
+          <motion.div
+            className="absolute left-1/2 top-1/2 h-[min(78vw,34rem)] w-[min(78vw,34rem)] -translate-x-1/2 -translate-y-1/2 rounded-full bg-pink-300/25 blur-[75px] dark:bg-fuchsia-600/20"
+            animate={{ scale: [0.82, 1.08, 0.92, 0.82], opacity: [0.45, 0.8, 0.55, 0.45] }}
+            transition={{ duration: 5.5, repeat: Infinity, ease: "easeInOut" }}
+          />
+          <motion.div
+            className="absolute -left-20 top-[18%] h-48 w-48 rounded-full bg-rose-200/40 blur-3xl dark:bg-rose-500/10"
+            animate={{ x: [0, 30, 0], y: [0, 24, 0] }}
+            transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
+          />
+          <motion.div
+            className="absolute -right-16 bottom-[14%] h-56 w-56 rounded-full bg-violet-200/40 blur-3xl dark:bg-violet-500/10"
+            animate={{ x: [0, -26, 0], y: [0, -22, 0] }}
+            transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+          />
+          {[0, 1, 2, 3, 4, 5, 6, 7].map((particle) => (
+            <motion.span
+              key={particle}
+              aria-hidden="true"
+              className="absolute left-1/2 top-1/2 h-1.5 w-1.5 rounded-full bg-pink-400/70 shadow-[0_0_14px_rgba(244,114,182,0.65)]"
+              animate={{
+                x: [Math.cos((particle / 8) * Math.PI * 2) * 75, Math.cos((particle / 8) * Math.PI * 2) * 155],
+                y: [Math.sin((particle / 8) * Math.PI * 2) * 75, Math.sin((particle / 8) * Math.PI * 2) * 155],
+                opacity: [0, 1, 0],
+                scale: [0.5, 1.25, 0.5],
+              }}
+              transition={{ duration: 2.8, repeat: Infinity, delay: particle * 0.22, ease: "easeInOut" }}
+            />
+          ))}
         </div>
+
+        <motion.div
+          className="relative z-10 flex w-full max-w-sm flex-col items-center text-center"
+          initial={{ opacity: 0, y: 18, scale: 0.97 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <div className="relative mb-8 flex h-40 w-40 items-center justify-center">
+            <motion.div
+              aria-hidden="true"
+              className="absolute inset-0 rounded-full border border-pink-300/70 dark:border-fuchsia-300/25"
+              animate={{ rotate: 360, scale: [0.96, 1.04, 0.96] }}
+              transition={{ rotate: { duration: 12, repeat: Infinity, ease: "linear" }, scale: { duration: 3, repeat: Infinity, ease: "easeInOut" } }}
+            />
+            <motion.div
+              aria-hidden="true"
+              className="absolute inset-2 rounded-full border border-dashed border-rose-300/70 dark:border-pink-200/20"
+              animate={{ rotate: -360 }}
+              transition={{ duration: 18, repeat: Infinity, ease: "linear" }}
+            />
+            <motion.div
+              aria-hidden="true"
+              className="absolute inset-5 rounded-full bg-gradient-to-br from-pink-200/70 via-rose-100/30 to-violet-200/60 blur-xl dark:from-pink-500/20 dark:via-rose-400/10 dark:to-violet-500/20"
+              animate={{ opacity: [0.55, 1, 0.55], scale: [0.9, 1.08, 0.9] }}
+              transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}
+            />
+            <motion.div
+              className="relative flex h-24 w-24 items-center justify-center rounded-[2rem] border border-white/80 bg-white/75 shadow-[0_16px_55px_rgba(236,72,153,0.22)] backdrop-blur-xl dark:border-white/10 dark:bg-white/10 dark:shadow-[0_16px_55px_rgba(217,70,239,0.16)]"
+              animate={{ y: [0, -7, 0], rotate: [0, -2, 2, 0] }}
+              transition={{ duration: 3.2, repeat: Infinity, ease: "easeInOut" }}
+            >
+              <img
+                src={logoImg}
+                alt="Happy Tail"
+                className="h-[4.5rem] w-[4.5rem] rounded-[1.35rem] object-cover"
+                style={{ mixBlendMode: "multiply" }}
+              />
+            </motion.div>
+            <motion.span
+              aria-hidden="true"
+              className="absolute -right-0.5 top-5 text-xl drop-shadow-sm"
+              animate={{ y: [0, -8, 0], rotate: [0, 12, 0], scale: [0.9, 1.1, 0.9] }}
+              transition={{ duration: 2.1, repeat: Infinity, ease: "easeInOut" }}
+            >✦</motion.span>
+            <motion.span
+              aria-hidden="true"
+              className="absolute bottom-4 -left-1 text-lg text-pink-500"
+              animate={{ y: [0, 7, 0], rotate: [0, -15, 0], opacity: [0.55, 1, 0.55] }}
+              transition={{ duration: 2.6, repeat: Infinity, ease: "easeInOut", delay: 0.3 }}
+            >♥</motion.span>
+          </div>
+
+          <motion.p
+            className="text-[0.68rem] font-bold uppercase tracking-[0.38em] text-pink-600 dark:text-pink-300"
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.18, duration: 0.5 }}
+          >
+            TECH FOR PAWS
+          </motion.p>
+          <h1 className="mt-2 text-3xl font-bold tracking-tight text-slate-800 dark:text-white">
+            Happy <span className="bg-gradient-to-r from-pink-500 via-rose-500 to-violet-500 bg-clip-text text-transparent">Tail</span>
+          </h1>
+          <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
+            A little love is on its way.
+          </p>
+
+          <div className="mt-9 w-48">
+            <div className="h-1.5 overflow-hidden rounded-full bg-pink-100/90 dark:bg-white/10">
+              <motion.div
+                className="h-full w-2/5 rounded-full bg-gradient-to-r from-pink-500 via-rose-400 to-violet-500 shadow-[0_0_16px_rgba(236,72,153,0.45)]"
+                animate={{ x: ["-110%", "260%"] }}
+                transition={{ duration: 1.55, repeat: Infinity, ease: "easeInOut" }}
+              />
+            </div>
+            <motion.p
+              className="mt-3 text-[0.7rem] font-medium tracking-[0.18em] text-slate-400 dark:text-slate-500"
+              animate={{ opacity: [0.5, 1, 0.5] }}
+              transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
+            >
+              GETTING THINGS READY
+            </motion.p>
+          </div>
+        </motion.div>
       </div>
     );
   }
