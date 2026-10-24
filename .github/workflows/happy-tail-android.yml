@@ -50,19 +50,27 @@ jobs:
         run: |
           python3 - <<'PY'
           from pathlib import Path
-          import re
-          candidates = [Path("android/app/build.gradle.kts"), Path("android/app/build.gradle")]
-          for p in candidates:
-              if not p.exists():
-                  continue
-              s = p.read_text()
-              updated, count = re.subn(r'(?m)^([ \\t]*compileSdk(?:Version)?[ \\t]*(?:=[ \\t]*)?)(?:flutter\\.compileSdkVersion|[0-9]+)', r'\\g<1>36', s, count=1)
-              if count:
-                  p.write_text(updated)
-                  print(f"Updated {p} compile SDK to 36")
+          p = Path("android/app/build.gradle.kts")
+          if not p.exists():
+              p = Path("android/app/build.gradle")
+          s = p.read_text()
+          replacements = [
+              ("compileSdk = flutter.compileSdkVersion", "compileSdk = 36"),
+              ("compileSdkVersion flutter.compileSdkVersion", "compileSdkVersion 36"),
+              ("compileSdkVersion = flutter.compileSdkVersion", "compileSdkVersion = 36"),
+          ]
+          for old, new in replacements:
+              if old in s:
+                  s = s.replace(old, new, 1)
                   break
           else:
-              raise SystemExit("Could not find compileSdk setting in generated Android Gradle file")
+              # Handle newer generated Gradle templates by inserting the setting
+              # at the start of the app module's android block.
+              if "android {" not in s:
+                  raise SystemExit("Could not find android block in generated Gradle file")
+              s = s.replace("android {", "android {\\n    compileSdk = 36", 1)
+          p.write_text(s)
+          print(f"Android compile SDK set to 36 in {p}")
           PY
           grep -n 'compileSdk' android/app/build.gradle.kts android/app/build.gradle 2>/dev/null || true
 
