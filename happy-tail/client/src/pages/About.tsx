@@ -67,13 +67,13 @@ export default function About() {
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="w-full max-w-3xl mx-auto space-y-6 sm:space-y-8 pb-24 md:pb-16"
+      className="mx-auto w-full max-w-3xl space-y-5 px-2 sm:px-4 sm:space-y-7 pb-24 md:pb-16"
     >
       {/* Hero Banner */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="relative isolate w-full max-w-full min-w-0 overflow-hidden rounded-2xl sm:rounded-3xl bg-gradient-to-br from-indigo-900 via-purple-900 to-violet-900 px-4 py-5 sm:px-7 sm:py-7 md:px-10 md:py-9 text-center shadow-xl"
+        className="relative isolate mx-auto w-full max-w-[calc(100%-0.5rem)] min-w-0 overflow-hidden rounded-2xl sm:rounded-3xl bg-gradient-to-br from-indigo-900 via-purple-900 to-violet-900 px-3 py-4 sm:px-7 sm:py-7 md:px-10 md:py-9 text-center shadow-xl"
       >
         <div className="absolute inset-0 opacity-10"
           style={{ backgroundImage: "radial-gradient(circle at 20% 50%, #a855f7 0%, transparent 50%), radial-gradient(circle at 80% 20%, #6366f1 0%, transparent 40%)" }}
