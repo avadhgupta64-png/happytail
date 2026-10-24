@@ -1215,7 +1215,16 @@ export default function AdminDashboard() {
                   These users have been removed. Their records are kept here for reference.
                 </p>
                 {filteredRemoved.map(user => (
-                  <RemovedUserRow key={user.id} user={user} />
+                  <RemovedUserRow
+                    key={user.id}
+                    user={user}
+                    onRestore={() => {
+                      if (window.confirm("Restore " + (user.email || "this account") + "? This will remove the permanent-removal restriction and allow sign-in again.")) {
+                        restoreMutation.mutate(user.id);
+                      }
+                    }}
+                    restoring={restoreMutation.isPending && restoreMutation.variables === user.id}
+                  />
                 ))}
               </>
             )}
