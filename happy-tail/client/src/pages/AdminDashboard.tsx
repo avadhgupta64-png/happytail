@@ -1170,9 +1170,6 @@ export default function AdminDashboard() {
             <button onClick={() => handleExport("all-activities")} className="flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-lg bg-orange-50 dark:bg-orange-900/20 text-orange-600 dark:text-orange-400 hover:bg-orange-100 transition-colors">
               <Download className="w-3 h-3" /> Export Activities CSV
             </button>
-            <button onClick={() => handleExport("all-emotion-logs")} className="flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-lg bg-cyan-50 dark:bg-cyan-900/20 text-cyan-600 dark:text-cyan-400 hover:bg-cyan-100 transition-colors">
-              <Download className="w-3 h-3" /> Export Emotion Logs CSV
-            </button>
           </div>
         )}
 
