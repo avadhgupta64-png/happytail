@@ -18,7 +18,7 @@ export function SplashScreen({ onComplete }: { onComplete: () => void }) {
       {visible && (
         <motion.main
           initial={{ opacity: 1 }}
-          exit={{ opacity: 0, scale: 1.015, filter: "blur(5px)" }}
+          exit={{ opacity: 0, scale: 1.008 }}
           transition={{ duration: 0.38, ease: [0.22, 1, 0.36, 1] }}
           className="fixed inset-0 z-[9999] flex min-h-[100dvh] items-center justify-center overflow-hidden bg-[#08090d] px-6 pb-[env(safe-area-inset-bottom)] pt-[env(safe-area-inset-top)] text-white"
           data-testid="splash-screen"
@@ -43,18 +43,18 @@ export function SplashScreen({ onComplete }: { onComplete: () => void }) {
             />
             <motion.div
               aria-hidden="true"
-              className="absolute left-1/2 top-[42%] h-48 w-48 -translate-x-1/2 -translate-y-1/2 rounded-full bg-pink-500/[0.09] blur-[70px]"
-              animate={{ scale: [0.85, 1.12, 0.85], opacity: [0.55, 0.9, 0.55] }}
+              className="absolute left-1/2 top-[42%] h-40 w-40 -translate-x-1/2 -translate-y-1/2 rounded-full bg-pink-500/[0.07]"
+              animate={{ opacity: [0.55, 0.8, 0.55] }}
               transition={{ duration: 4.2, repeat: Infinity, ease: "easeInOut" }}
             />
-            {[0, 1, 2, 3, 4, 5].map((i) => (
+            {[0, 1, 2, 3].map((i) => (
               <motion.span
                 key={i}
                 aria-hidden="true"
                 className="absolute left-1/2 top-[42%] h-1 w-1 rounded-full bg-pink-200/70"
                 animate={{
-                  x: [Math.cos((i / 6) * Math.PI * 2) * 100, Math.cos((i / 6) * Math.PI * 2) * 145],
-                  y: [Math.sin((i / 6) * Math.PI * 2) * 100, Math.sin((i / 6) * Math.PI * 2) * 145],
+                  x: [Math.cos((i / 4) * Math.PI * 2) * 100, Math.cos((i / 4) * Math.PI * 2) * 145],
+                  y: [Math.sin((i / 4) * Math.PI * 2) * 100, Math.sin((i / 4) * Math.PI * 2) * 145],
                   opacity: [0, 0.65, 0],
                 }}
                 transition={{ duration: 3.4, repeat: Infinity, delay: i * 0.45, ease: "easeInOut" }}
@@ -64,8 +64,8 @@ export function SplashScreen({ onComplete }: { onComplete: () => void }) {
 
           <motion.div
             className="relative z-10 flex w-full max-w-sm flex-col items-center text-center"
-            initial={{ opacity: 0, y: 14, filter: "blur(8px)" }}
-            animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.75, ease: [0.16, 1, 0.3, 1] }}
           >
             <div className="relative mb-10 flex h-48 w-48 items-center justify-center">
