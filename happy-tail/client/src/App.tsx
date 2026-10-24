@@ -431,6 +431,20 @@ function AuthenticatedApp() {
 function AuthErrorScreen({ type, reason }: { type: "banned" | "removed"; reason?: string | null }) {
   const isBanned = type === "banned";
   const adminEmail = "avadhgupta64@gmail.com";
+  const { lang } = useLanguage();
+  const copy: Record<string, Record<string, string>> = {
+    en: { suspended: "Account Suspended", removed: "Account Removed", bannedText: "Access to Happy Tail has been restricted by an administrator. The app is unavailable for this account while the suspension is active.", removedText: "Your Happy Tail account has been permanently removed. If you believe this happened in error, contact the administrator.", appealBanned: "If you believe this suspension is a mistake, contact the admin.", appealRemoved: "If you believe this removal happened in error, contact the admin.", contact: "Contact the admin", about: "About Happy Tail", logout: "Log Out", reason: "Reason provided" },
+    hi: { suspended: "खाता निलंबित", removed: "खाता हटाया गया", bannedText: "प्रशासक ने Happy Tail तक आपकी पहुँच सीमित कर दी है। निलंबन सक्रिय रहने तक यह खाता ऐप का उपयोग नहीं कर सकता।", removedText: "आपका Happy Tail खाता स्थायी रूप से हटा दिया गया है। यदि आपको लगता है कि यह गलती से हुआ है, तो प्रशासक से संपर्क करें।", appealBanned: "यदि आपको लगता है कि निलंबन गलत है, तो प्रशासक से संपर्क करें।", appealRemoved: "यदि आपको लगता है कि खाता गलती से हटाया गया है, तो प्रशासक से संपर्क करें।", contact: "प्रशासक से संपर्क करें", about: "Happy Tail के बारे में", logout: "लॉग आउट", reason: "दिया गया कारण" },
+    ta: { suspended: "கணக்கு இடைநிறுத்தப்பட்டது", removed: "கணக்கு நீக்கப்பட்டது", bannedText: "நிர்வாகியால் Happy Tail அணுகல் கட்டுப்படுத்தப்பட்டுள்ளது. இடைநிறுத்தம் இருக்கும் வரை இந்தக் கணக்கால் பயன்பாட்டைப் பயன்படுத்த முடியாது.", removedText: "உங்கள் Happy Tail கணக்கு நிரந்தரமாக நீக்கப்பட்டது. இது தவறுதலாக நடந்ததாக நினைத்தால் நிர்வாகியைத் தொடர்புகொள்ளவும்.", appealBanned: "இடைநிறுத்தம் தவறு என நினைத்தால் நிர்வாகியைத் தொடர்புகொள்ளவும்.", appealRemoved: "கணக்கு தவறுதலாக நீக்கப்பட்டதாக நினைத்தால் நிர்வாகியைத் தொடர்புகொள்ளவும்.", contact: "நிர்வாகியைத் தொடர்புகொள்ளவும்", about: "Happy Tail பற்றி", logout: "வெளியேறு", reason: "காரணம்" },
+    es: { suspended: "Cuenta suspendida", removed: "Cuenta eliminada", bannedText: "Un administrador ha restringido el acceso a Happy Tail. Esta cuenta no podrá usar la aplicación mientras dure la suspensión.", removedText: "Tu cuenta de Happy Tail se ha eliminado permanentemente. Si crees que ha sido un error, contacta con el administrador.", appealBanned: "Si crees que la suspensión es un error, contacta con el administrador.", appealRemoved: "Si crees que la eliminación fue un error, contacta con el administrador.", contact: "Contactar con administración", about: "Acerca de Happy Tail", logout: "Cerrar sesión", reason: "Motivo indicado" },
+    fr: { suspended: "Compte suspendu", removed: "Compte supprimé", bannedText: "Un administrateur a restreint l’accès à Happy Tail. Ce compte ne peut pas utiliser l’application pendant la suspension.", removedText: "Votre compte Happy Tail a été supprimé définitivement. Si vous pensez qu’il s’agit d’une erreur, contactez l’administrateur.", appealBanned: "Si cette suspension vous semble incorrecte, contactez l’administrateur.", appealRemoved: "Si cette suppression vous semble incorrecte, contactez l’administrateur.", contact: "Contacter l’administrateur", about: "À propos de Happy Tail", logout: "Déconnexion", reason: "Motif indiqué" },
+    de: { suspended: "Konto gesperrt", removed: "Konto entfernt", bannedText: "Ein Administrator hat den Zugriff auf Happy Tail eingeschränkt. Dieses Konto kann die App während der Sperre nicht nutzen.", removedText: "Dein Happy-Tail-Konto wurde dauerhaft entfernt. Wenn du einen Fehler vermutest, kontaktiere bitte den Administrator.", appealBanned: "Wenn du die Sperre für einen Fehler hältst, kontaktiere den Administrator.", appealRemoved: "Wenn du die Entfernung für einen Fehler hältst, kontaktiere den Administrator.", contact: "Administrator kontaktieren", about: "Über Happy Tail", logout: "Abmelden", reason: "Angegebener Grund" },
+    pt: { suspended: "Conta suspensa", removed: "Conta removida", bannedText: "Um administrador restringiu o acesso ao Happy Tail. Esta conta não pode usar o aplicativo enquanto a suspensão estiver ativa.", removedText: "Sua conta Happy Tail foi removida permanentemente. Se acredita que isso foi um erro, entre em contato com o administrador.", appealBanned: "Se acredita que a suspensão foi um erro, entre em contato com o administrador.", appealRemoved: "Se acredita que a remoção foi um erro, entre em contato com o administrador.", contact: "Contactar o administrador", about: "Sobre o Happy Tail", logout: "Sair", reason: "Motivo informado" },
+    ja: { suspended: "アカウント停止中", removed: "アカウント削除済み", bannedText: "管理者により Happy Tail へのアクセスが制限されています。停止中はこのアカウントでアプリを利用できません。", removedText: "Happy Tail アカウントは完全に削除されました。誤りだと思われる場合は管理者にお問い合わせください。", appealBanned: "停止が誤りだと思われる場合は管理者にお問い合わせください。", appealRemoved: "削除が誤りだと思われる場合は管理者にお問い合わせください。", contact: "管理者に連絡", about: "Happy Tail について", logout: "ログアウト", reason: "理由" },
+    zh: { suspended: "账户已暂停", removed: "账户已删除", bannedText: "管理员已限制您访问 Happy Tail。暂停期间，此账户无法使用应用。", removedText: "您的 Happy Tail 账户已被永久删除。如果您认为这是错误，请联系管理员。", appealBanned: "如果您认为暂停有误，请联系管理员。", appealRemoved: "如果您认为删除有误，请联系管理员。", contact: "联系管理员", about: "关于 Happy Tail", logout: "退出登录", reason: "提供的原因" },
+    ar: { suspended: "الحساب موقوف", removed: "تم حذف الحساب", bannedText: "قيّد المسؤول الوصول إلى Happy Tail. لا يمكن لهذا الحساب استخدام التطبيق أثناء الإيقاف.", removedText: "تم حذف حساب Happy Tail نهائيًا. إذا كنت تعتقد أن ذلك حدث عن طريق الخطأ، فاتصل بالمسؤول.", appealBanned: "إذا كنت تعتقد أن الإيقاف خطأ، فاتصل بالمسؤول.", appealRemoved: "إذا كنت تعتقد أن الحذف خطأ، فاتصل بالمسؤول.", contact: "اتصل بالمسؤول", about: "حول Happy Tail", logout: "تسجيل الخروج", reason: "السبب المذكور" }
+  };
+  const text = copy[lang] || copy.en;
   const handleLogout = async () => {
     try {
       await fetch("/api/logout", { method: "POST", credentials: "include" });
@@ -465,35 +479,35 @@ function AuthErrorScreen({ type, reason }: { type: "banned" | "removed"; reason?
           HAPPY TAIL · ACCOUNT STATUS
         </p>
         <h1 className="mt-3 text-3xl font-bold tracking-tight text-foreground">
-          {isBanned ? "Account Suspended" : "Account Removed"}
+          {isBanned ? text.suspended : text.removed}
         </h1>
         <p className="mt-4 text-sm leading-6 text-muted-foreground">
           {isBanned
-            ? "Access to Happy Tail has been restricted by an administrator. The app is unavailable for this account while the suspension is active."
-            : "Your Happy Tail account has been permanently removed. This decision is final, and you will not be able to sign in or create another account using this email address. If you believe this happened in error, contact the administrator before taking any further action."}
+            ? text.bannedText
+            : text.removedText}
         </p>
 
         {isBanned && reason && (
           <div className="mt-5 rounded-xl border border-white/10 bg-white/[0.035] p-4 text-left">
-            <p className="text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-white/40">Reason provided</p>
+            <p className="text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-white/40">{text.reason}</p>
             <p className="mt-2 text-sm leading-6 text-white/80">{reason}</p>
           </div>
         )}
 
         <div className="mt-6 border-t border-border pt-6">
           <p className="text-sm text-muted-foreground">
-            {isBanned ? "If you believe this suspension is a mistake, contact the admin." : "If you believe this removal happened in error, contact the admin."}
+            {isBanned ? text.appealBanned : text.appealRemoved}
           </p>
           <a
             href={"mailto:" + adminEmail + "?subject=" + encodeURIComponent(isBanned ? "Happy Tail account suspension appeal" : "Happy Tail account removal appeal")}
             className="mt-3 inline-flex max-w-full items-center justify-center gap-2 rounded-xl border border-pink-500/30 bg-pink-500/10 px-4 py-3 text-sm font-semibold text-pink-600 transition-colors hover:bg-pink-500/20 dark:text-pink-300"
           >
-            Contact the admin
+            {text.contact}
           </a>
           <p className="mt-3 break-all text-xs text-muted-foreground">{adminEmail}</p>
         </div>
         <Link href="/about" className="mt-4 inline-flex items-center justify-center gap-2 rounded-xl border border-border px-4 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-muted">
-          <Info className="h-4 w-4" /> About Happy Tail
+          <Info className="h-4 w-4" /> {text.about}
         </Link>
         <button
           type="button"
@@ -501,7 +515,7 @@ function AuthErrorScreen({ type, reason }: { type: "banned" | "removed"; reason?
           className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-xl border border-border bg-muted/50 px-4 py-3 text-sm font-semibold text-foreground transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-pink-300"
           data-testid="button-suspended-logout"
         >
-          <LogOut className="h-4 w-4" /> Log Out
+          <LogOut className="h-4 w-4" /> {text.logout}
         </button>
         <p className="mt-7 text-[0.62rem] font-medium uppercase tracking-[0.28em] text-muted-foreground">SECURE · SMART · SIMPLE</p>
       </motion.section>
@@ -528,6 +542,9 @@ function AppContent() {
   if (showSplash) {
     return <SplashScreen onComplete={handleSplashComplete} />;
   }
+
+  // Keep About accessible to restricted accounts; it is informational and does not grant app access.
+  if (window.location.pathname === "/about") return <About />;
 
   // A banned account gets the branded status screen instead of any app UI.
   if (authError === "banned" || user?.isBanned) {
