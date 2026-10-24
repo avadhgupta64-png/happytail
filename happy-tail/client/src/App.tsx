@@ -431,6 +431,14 @@ function AuthenticatedApp() {
 function AuthErrorScreen({ type, reason }: { type: "banned" | "removed"; reason?: string | null }) {
   const isBanned = type === "banned";
   const adminEmail = "avadhgupta64@gmail.com";
+  const handleLogout = async () => {
+    try {
+      await fetch("/api/logout", { method: "POST", credentials: "include" });
+    } catch {
+      // Still return to the public landing page if the logout request fails.
+    }
+    window.location.replace("/");
+  };
 
   return (
     <main className="relative flex min-h-[100dvh] items-center justify-center overflow-hidden bg-[#08090d] px-6 py-12 text-white">
@@ -480,6 +488,14 @@ function AuthErrorScreen({ type, reason }: { type: "banned" | "removed"; reason?
             <p className="mt-3 break-all text-xs text-white/45">{adminEmail}</p>
           </div>
         )}
+        <button
+          type="button"
+          onClick={handleLogout}
+          className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/[0.04] px-4 py-3 text-sm font-semibold text-white/80 transition-colors hover:bg-white/[0.09] hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-pink-300"
+          data-testid="button-suspended-logout"
+        >
+          <LogOut className="h-4 w-4" /> Log Out
+        </button>
         <p className="mt-7 text-[0.62rem] font-medium uppercase tracking-[0.28em] text-white/25">SECURE · SMART · SIMPLE</p>
       </motion.section>
     </main>
