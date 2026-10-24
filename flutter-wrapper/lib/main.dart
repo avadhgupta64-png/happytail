@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:webview_flutter_android/webview_flutter_android.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:file_picker/file_picker.dart';
 
 const appUrl = 'https://happytail-tan.vercel.app';
 const brandOrange = Color(0xFFFFA000);
@@ -113,6 +114,29 @@ class _HappyTailWebShellState extends State<HappyTailWebShell> {
         },
       ))
       ..loadRequest(Uri.parse(appUrl));
+
+    if (_controller.platform is AndroidWebViewController) {
+      (_controller.platform as AndroidWebViewController).setOnShowFileSelector((params) async {
+        final accepted = params.acceptTypes.map((type) => type.toLowerCase()).toList();
+        final acceptsImages = accepted.any((type) => type.startsWith('image/'));
+        final acceptsVideos = accepted.any((type) => type.startsWith('video/'));
+        final acceptsAudio = accepted.any((type) => type.startsWith('audio/'));
+        final acceptsAny = accepted.isEmpty || accepted.contains('*/*');
+        var type = FileType.any;
+        if (!acceptsAny && acceptsImages && !acceptsVideos && !acceptsAudio) {
+          type = FileType.image;
+        } else if (!acceptsAny && acceptsVideos && !acceptsImages && !acceptsAudio) {
+          type = FileType.video;
+        } else if (!acceptsAny && acceptsAudio && !acceptsImages && !acceptsVideos) {
+          type = FileType.audio;
+        }
+        final result = await FilePicker.platform.pickFiles(
+          type: type,
+          allowMultiple: params.mode == FileSelectorMode.openMultiple,
+        );
+        return result?.files.where((file) => file.path != null).map((file) => file.path!).toList() ?? <String>[];
+      });
+    }
 
     // WebView media capture needs Android runtime permissions as well as
     // granting the website's camera/microphone request.
