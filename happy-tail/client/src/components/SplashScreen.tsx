@@ -119,7 +119,7 @@ export function SplashScreen({ onComplete }: { onComplete: () => void }) {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3, duration: 0.6 }}
             >
-              <span className="inline-block">happy</span><span className="ml-[0.12em] inline-block font-light text-pink-300">tail</span>
+              <span className="inline-block">Happy</span><span className="ml-[0.12em] inline-block font-light text-pink-300">Tail</span>
               <span className="ml-1 align-top text-sm font-medium tracking-normal text-pink-300">®</span>
             </motion.h1>
 
