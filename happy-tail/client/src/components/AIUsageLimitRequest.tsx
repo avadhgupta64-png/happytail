@@ -89,7 +89,8 @@ export function AIUsageLimitRequest({ featureKey }: AIUsageLimitRequestProps) {
 
   const decisionStatus = latestRequest?.status;
   const showDecisionNotice = decisionStatus === "approved" || decisionStatus === "denied" || decisionStatus === "revoked";
-  if (isUnlimited && !showDecisionNotice) return null;
+  // Current unlimited access takes precedence over stale revoked/denied request history.
+  if (isUnlimited) return null;
 
   return (
     <div className="mt-3 rounded-xl border border-red-200 bg-red-50 p-4 text-red-900 dark:border-red-900 dark:bg-red-950/30 dark:text-red-100" role="status" aria-live="polite">
