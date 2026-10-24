@@ -97,7 +97,11 @@ export function SplashScreen({ onComplete }: { onComplete: () => void }) {
                   src={logoImg}
                   alt="Happy Tail"
                   className="h-[4.5rem] w-[4.5rem] rounded-[1.25rem] object-cover"
-                  style={{ mixBlendMode: "multiply" }}
+                  style={{
+                    mixBlendMode: "normal",
+                    filter: "saturate(1.4) contrast(1.06)",
+                    boxShadow: "0 0 28px rgba(236,72,153,0.28)",
+                  }}
                 />
               </motion.div>
             </div>
