@@ -1063,6 +1063,26 @@ Rules:
     }
   });
 
+  app.post("/api/admin/removed-users/:id/restore", isAuthenticated, isAdmin, async (req: any, res) => {
+    try {
+      const removedId = Number(req.params.id);
+      if (!Number.isSafeInteger(removedId) || removedId <= 0) return res.status(400).json({ message: "Invalid removed-user record" });
+      const [archived] = await db.select().from(removedUsers).where(eq(removedUsers.id, removedId));
+      if (!archived) return res.status(404).json({ message: "Removed-user record not found" });
+      if (!archived.email) return res.status(400).json({ message: "This account has no email address and cannot be restored automatically." });
+      if (ADMIN_EMAILS.includes(archived.email)) return res.status(403).json({ message: "Admin accounts cannot be restored through this action." });
+      const [existing] = await db.select({ id: users.id }).from(users).where(eq(users.email, archived.email));
+      if (existing) return res.status(409).json({ message: "An account already exists with this email. Resolve the duplicate before restoring." });
+      await db.transaction(async (tx) => {
+        await tx.insert(users).values({ id: archived.originalId, email: archived.email, firstName: archived.firstName, lastName: archived.lastName, bio: archived.bio, profileImageUrl: archived.profileImageUrl, isBanned: false, bannedAt: null, banReason: null, emailVerified: false, updatedAt: new Date() });
+        await tx.delete(removedUsers).where(eq(removedUsers.id, removedId));
+      });
+      res.json({ message: "Account restored. The user can sign in again with Google." });
+    } catch (err) {
+      console.error("Restore removed user failed:", err);
+      res.status(500).json({ message: "Failed to restore account" });
+    }
+  });
   app.get("/api/admin/removed-users", isAuthenticated, isAdmin, async (_req, res) => {
     try {
       const removed = await db.select().from(removedUsers).orderBy(desc(removedUsers.removedAt));
