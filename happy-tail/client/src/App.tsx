@@ -428,26 +428,61 @@ function AuthenticatedApp() {
   );
 }
 
-function AuthErrorScreen({ type }: { type: "banned" | "removed" }) {
+function AuthErrorScreen({ type, reason }: { type: "banned" | "removed"; reason?: string | null }) {
   const isBanned = type === "banned";
+  const adminEmail = "pawcare.tech@gmail.com";
+
   return (
-    <div className="h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-950 p-6">
-      <div className="max-w-md w-full text-center space-y-5">
-        <div className={`inline-flex items-center justify-center w-16 h-16 rounded-full ${isBanned ? "bg-amber-100 dark:bg-amber-900/30" : "bg-red-100 dark:bg-red-900/30"}`}>
-          <ShieldAlert className={`w-8 h-8 ${isBanned ? "text-amber-600 dark:text-amber-400" : "text-red-600 dark:text-red-400"}`} />
-        </div>
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-            {isBanned ? "Account Suspended" : "Account Removed"}
-          </h1>
-          <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
-            {isBanned
-              ? "Your account has been suspended by an administrator. If you believe this is a mistake, please contact support."
-              : "Your account has been permanently removed and cannot be used to sign in."}
-          </p>
-        </div>
+    <main className="relative flex min-h-[100dvh] items-center justify-center overflow-hidden bg-[#08090d] px-6 py-12 text-white">
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_35%,rgba(236,72,153,0.12),transparent_42%),radial-gradient(ellipse_at_85%_85%,rgba(99,102,241,0.08),transparent_35%)]" />
+        <div className="absolute inset-0 opacity-[0.12] [background-image:linear-gradient(rgba(255,255,255,0.06)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.06)_1px,transparent_1px)] [background-size:48px_48px] [mask-image:radial-gradient(ellipse_at_center,black,transparent_80%)]" />
       </div>
-    </div>
+
+      <motion.section
+        initial={{ opacity: 0, y: 16, filter: "blur(8px)" }}
+        animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+        transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
+        className="relative z-10 w-full max-w-md rounded-3xl border border-white/10 bg-[#101116]/90 p-7 text-center shadow-[0_0_80px_rgba(236,72,153,0.10)] backdrop-blur-xl sm:p-9"
+      >
+        <div className={`mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl border ${isBanned ? "border-amber-300/20 bg-amber-400/10" : "border-red-300/20 bg-red-400/10"}`}>
+          <ShieldAlert className={`h-8 w-8 ${isBanned ? "text-amber-300" : "text-red-300"}`} />
+        </div>
+
+        <p className="text-[0.65rem] font-semibold uppercase tracking-[0.42em] text-white/40">
+          HAPPY TAIL · ACCOUNT STATUS
+        </p>
+        <h1 className="mt-3 text-3xl font-bold tracking-tight text-white">
+          {isBanned ? "Account Suspended" : "Account Removed"}
+        </h1>
+        <p className="mt-4 text-sm leading-6 text-white/65">
+          {isBanned
+            ? "Access to Happy Tail has been restricted by an administrator. The app is unavailable for this account while the suspension is active."
+            : "This account has been permanently removed and can no longer be used to access Happy Tail."}
+        </p>
+
+        {isBanned && reason && (
+          <div className="mt-5 rounded-xl border border-white/10 bg-white/[0.035] p-4 text-left">
+            <p className="text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-white/40">Reason provided</p>
+            <p className="mt-2 text-sm leading-6 text-white/80">{reason}</p>
+          </div>
+        )}
+
+        {isBanned && (
+          <div className="mt-6 border-t border-white/10 pt-6">
+            <p className="text-sm text-white/65">If you believe this is a mistake, contact the admin.</p>
+            <a
+              href={`mailto:${adminEmail}?subject=${encodeURIComponent("Happy Tail account suspension appeal")}`}
+              className="mt-3 inline-flex max-w-full items-center justify-center gap-2 rounded-xl border border-pink-300/20 bg-pink-500/10 px-4 py-3 text-sm font-semibold text-pink-200 transition-colors hover:bg-pink-500/20"
+            >
+              Contact the admin
+            </a>
+            <p className="mt-3 break-all text-xs text-white/45">{adminEmail}</p>
+          </div>
+        )}
+        <p className="mt-7 text-[0.62rem] font-medium uppercase tracking-[0.28em] text-white/25">SECURE · SMART · SIMPLE</p>
+      </motion.section>
+    </main>
   );
 }
 
@@ -457,11 +492,8 @@ function AppContent() {
   const { user, isLoading } = useAuth();
   const { isGuest } = useGuest();
 
-  // Check for auth error from login callback
+  // Check for auth error from login callback, but keep the branded splash first.
   const authError = new URLSearchParams(window.location.search).get("auth_error");
-  if (authError === "banned" || authError === "removed") {
-    return <AuthErrorScreen type={authError} />;
-  }
 
   // Show welcome toast after email verification
   const verified = new URLSearchParams(window.location.search).get("verified");
@@ -472,6 +504,14 @@ function AppContent() {
 
   if (showSplash) {
     return <SplashScreen onComplete={handleSplashComplete} />;
+  }
+
+  // A banned account gets the branded status screen instead of any app UI.
+  if (authError === "banned" || user?.isBanned) {
+    return <AuthErrorScreen type="banned" reason={user?.banReason} />;
+  }
+  if (authError === "removed") {
+    return <AuthErrorScreen type="removed" />;
   }
 
   if (isLoading) {
