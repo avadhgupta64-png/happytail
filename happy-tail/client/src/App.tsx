@@ -331,12 +331,12 @@ function AuthenticatedApp() {
         <AppSidebar />
         <div className="flex min-h-0 min-w-0 flex-col flex-1 overflow-hidden">
           <header className="sticky top-0 z-40 flex shrink-0 items-center justify-between px-3 sm:px-4 py-3 border-b border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-950">
-            <div className="flex items-center gap-3">
-              <span className="relative inline-flex">
-                <SidebarTrigger data-testid="button-sidebar-toggle" />
+            <div className="flex min-w-0 items-center gap-2 sm:gap-3">
+              <span className="relative inline-flex shrink-0 rounded-lg border border-gray-200 dark:border-gray-700">
+                <SidebarTrigger className="h-10 w-10" data-testid="button-sidebar-toggle" />
                 <HeaderNotificationIndicator />
               </span>
-              <div className="flex items-center gap-2">
+              <div className="flex min-w-0 items-center gap-2">
                 <img
                   src={logoImg}
                   alt="Happy Tail Logo"
@@ -344,10 +344,10 @@ function AuthenticatedApp() {
                   style={{ mixBlendMode: "multiply" }}
                   data-testid="img-header-logo"
                 />
-                <h1 className="text-lg font-bold font-display text-primary">Happy Tail</h1>
+                <h1 className="hidden xs:block text-base sm:text-lg font-bold font-display text-primary whitespace-nowrap">Happy Tail</h1>
               </div>
             </div>
-            <div className="flex items-center gap-1">
+            <div className="flex shrink-0 items-center gap-0.5 sm:gap-1">
               <Link href="/about">
                 <Button variant="ghost" size="icon" className="rounded-xl text-muted-foreground hover:text-primary" title="About Happy Tail" data-testid="button-about">
                   <Info className="w-4 h-4" />
@@ -355,6 +355,11 @@ function AuthenticatedApp() {
               </Link>
               <LanguageSwitcher />
               <ThemeToggle />
+              {user && (
+                <Button variant="ghost" size="icon" className="h-9 w-9 text-red-600 hover:text-red-700" title="Log out" aria-label="Log out" onClick={() => logout()} data-testid="button-header-logout">
+                  <LogOut className="h-4 w-4" />
+                </Button>
+              )}
               {isGuest && (
                 <Button
                   size="sm"
