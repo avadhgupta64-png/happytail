@@ -49,21 +49,22 @@ jobs:
       - name: Set Android compile SDK required by media picker
         run: |
           python3 - <<'PY'
+          import re
           from pathlib import Path
           candidates = [Path("android/app/build.gradle.kts"), Path("android/app/build.gradle")]
           for p in candidates:
               if not p.exists():
                   continue
-              lines = p.read_text().splitlines()
-              for i, line in enumerate(lines):
-                  if "compileSdk" in line and ("flutter.compileSdkVersion" in line or "compileSdkVersion" in line or "compileSdk =" in line):
-                      prefix = line.split("compileSdk")[0]
-                      lines[i] = prefix + ("compileSdkVersion 36" if "compileSdkVersion" in line else "compileSdk = 36")
-                      p.write_text("\n".join(lines) + "\n")
-                      print(f"Updated compile SDK to 36 in {p}: {lines[i].strip()}")
-                      raise SystemExit(0)
-          raise SystemExit("Could not find generated Android compileSdk setting")
+              s = p.read_text()
+              updated, count = re.subn(r'compileSdk(?:Version)?\s*(?:=\s*)?(?:flutter\.compileSdkVersion|\d+)', 'compileSdk = 36', s, count=1)
+              if count:
+                  p.write_text(updated)
+                  print(f"Set compile SDK 36 in {p}")
+                  break
+          else:
+              raise SystemExit("Could not locate compileSdk declaration in generated Android Gradle file")
           PY
+
       - name: Set Android launcher label and remove generated placeholder test
         run: |
           python3 - <<'PY'
