@@ -547,8 +547,7 @@ function AppContent() {
     return <SplashScreen onComplete={handleSplashComplete} />;
   }
 
-  // Keep About accessible to restricted accounts; it is informational and does not grant app access.
-  if (location === "/about") return <About />;
+  // About now renders inside the standard app shell so navigation and header controls remain available.
 
   // A banned account gets the branded status screen instead of any app UI.
   if (authError === "banned" || user?.isBanned) {
