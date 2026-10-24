@@ -430,7 +430,7 @@ function AuthenticatedApp() {
 
 function AuthErrorScreen({ type, reason }: { type: "banned" | "removed"; reason?: string | null }) {
   const isBanned = type === "banned";
-  const adminEmail = "pawcare.tech@gmail.com";
+  const adminEmail = "avadhgupta64@gmail.com";
 
   return (
     <main className="relative flex min-h-[100dvh] items-center justify-center overflow-hidden bg-[#08090d] px-6 py-12 text-white">
