@@ -30,7 +30,7 @@ jobs:
       - name: Generate Android and iOS platform projects
         run: flutter create --platforms=android,ios --org com.happytail --project-name happy_tail .
 
-      - name: Set Android launcher label
+      - name: Set Android launcher label and remove generated placeholder test
         run: |
           python3 - <<'PY'
           from pathlib import Path
@@ -38,6 +38,9 @@ jobs:
           s = p.read_text()
           s = s.replace('android:label="happy_tail"', 'android:label="Happy Tail"')
           p.write_text(s)
+          # flutter create generates a placeholder test that imports MyApp,
+          # but this project entry point is HappyTailApp. Remove that template test.
+          Path("test/widget_test.dart").unlink(missing_ok=True)
           PY
 
       - name: Resolve packages
