@@ -141,7 +141,6 @@ function AppSidebar() {
 
   const notificationItems = [
     ...(adminCheck?.isAdmin ? pendingAccessRequests.map((request: any) => ({ key: `admin-access-${request.id}-${request.status || "pending"}`, url: "/admin" })) : []),
-    ...(adminCheck?.isAdmin ? adminActivity.map((activity: any) => ({ key: `admin-activity-${activity.id}`, url: "/admin" })) : []),
     ...(adminCheck?.isAdmin ? feedbackItems.filter((item: any) => !item.resolved).map((item: any) => ({ key: `admin-feedback-${item.id}-${item.updatedAt || item.createdAt}`, url: "/feedback" })) : []),
     ...(!adminCheck?.isAdmin ? myAccessRequests.filter((request: any) => ["approved", "denied", "revoked"].includes(request.status) && request.reviewedAt).map((request: any) => ({ key: `user-access-${request.id}-${request.status}-${request.reviewedAt}`, url: accessRequestTarget(request.featureKey) })) : []),
     ...(!adminCheck?.isAdmin ? feedbackItems.filter((item: any) => item.adminComment || item.resolved).map((item: any) => ({ key: `user-feedback-${item.id}-${item.updatedAt || item.adminComment || item.resolved}`, url: "/feedback" })) : []),
@@ -297,7 +296,6 @@ function HeaderNotificationIndicator() {
   })();
   const notifications = [
     ...(adminCheck?.isAdmin ? requests.map((item: any) => ({ key: `admin-access-${item.id}-${item.status || "pending"}` })) : []),
-    ...(adminCheck?.isAdmin ? activities.map((item: any) => ({ key: `admin-activity-${item.id}` })) : []),
     ...(adminCheck?.isAdmin ? feedback.filter((item: any) => !item.resolved).map((item: any) => ({ key: `admin-feedback-${item.id}-${item.updatedAt || item.createdAt}` })) : []),
     ...(!adminCheck?.isAdmin ? requests.filter((item: any) => ["approved", "denied", "revoked"].includes(item.status) && item.reviewedAt).map((item: any) => ({ key: `user-access-${item.id}-${item.status}-${item.reviewedAt}`, url: accessRequestTarget(item.featureKey) })) : []),
     ...(!adminCheck?.isAdmin ? feedback.filter((item: any) => item.adminComment || item.resolved).map((item: any) => ({ key: `user-feedback-${item.id}-${item.updatedAt || item.adminComment || item.resolved}` })) : []),
