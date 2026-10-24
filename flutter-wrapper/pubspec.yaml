@@ -21,6 +21,8 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - assets/happy_tail_logo.png
 
 flutter_launcher_icons:
   android: true
