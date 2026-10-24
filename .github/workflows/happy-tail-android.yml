@@ -1,0 +1,58 @@
+name: Build Happy Tail Android APK
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "flutter-wrapper/**"
+      - ".github/workflows/happy-tail-android.yml"
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  build-apk:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: flutter-wrapper
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Generate Android and iOS platform projects
+        run: flutter create --platforms=android,ios --org com.happytail --project-name happy_tail .
+
+      - name: Set Android launcher label
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path("android/app/src/main/AndroidManifest.xml")
+          s = p.read_text()
+          s = s.replace('android:label="happy_tail"', 'android:label="Happy Tail"')
+          p.write_text(s)
+          PY
+
+      - name: Resolve packages
+        run: flutter pub get
+
+      - name: Analyze Flutter source
+        run: flutter analyze
+
+      - name: Build release APK
+        run: flutter build apk --release
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: happy-tail-android-apk
+          path: flutter-wrapper/build/app/outputs/flutter-apk/app-release.apk
+          if-no-files-found: error
+          retention-days: 14
