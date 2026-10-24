@@ -67,24 +67,24 @@ export default function About() {
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="max-w-3xl mx-auto space-y-10 pb-16"
+      className="w-full max-w-3xl mx-auto space-y-6 sm:space-y-8 pb-24 md:pb-16"
     >
       {/* Hero Banner */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-indigo-900 via-purple-900 to-violet-900 p-8 text-center shadow-2xl"
+        className="relative isolate overflow-hidden rounded-2xl sm:rounded-3xl bg-gradient-to-br from-indigo-900 via-purple-900 to-violet-900 px-5 py-7 sm:p-8 md:p-10 text-center shadow-2xl"
       >
         <div className="absolute inset-0 opacity-10"
           style={{ backgroundImage: "radial-gradient(circle at 20% 50%, #a855f7 0%, transparent 50%), radial-gradient(circle at 80% 20%, #6366f1 0%, transparent 40%)" }}
         />
-        <img src={logoImg} alt="Happy Tail" className="w-16 h-16 mx-auto rounded-2xl shadow-xl mb-4 border-2 border-white/20" />
-        <p className="text-xs font-bold tracking-[0.3em] text-purple-300 uppercase mb-2">Happy Tail Presents</p>
-        <h1 className="text-4xl md:text-5xl font-display font-bold text-white mb-3 leading-tight">
+        <img src={logoImg} alt="Happy Tail" className="w-14 h-14 sm:w-16 sm:h-16 mx-auto rounded-2xl shadow-xl mb-4 border-2 border-white/20 object-cover" />
+        <p className="text-[0.65rem] sm:text-xs font-bold tracking-[0.22em] sm:tracking-[0.3em] text-purple-300 uppercase mb-2">Happy Tail Presents</p>
+        <h1 className="text-3xl sm:text-4xl md:text-5xl font-display font-bold text-white mb-3 leading-tight break-words">
           VOICE for the<br />
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 to-pink-400">VOICELESS</span>
         </h1>
-        <p className="text-purple-200/80 text-base max-w-lg mx-auto leading-relaxed">
+        <p className="text-purple-100/90 text-sm sm:text-base max-w-lg mx-auto leading-relaxed">
           Because your dog can't tell you when they're hurting, scared, or just really, really happy — but now, they don't have to.
         </p>
       </motion.div>
@@ -94,7 +94,7 @@ export default function About() {
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
-        className="flex items-start gap-4 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 rounded-2xl p-5"
+        className="flex items-start gap-3 sm:gap-4 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 rounded-2xl p-4 sm:p-5"
       >
         <div className="shrink-0 w-12 h-12 rounded-xl bg-emerald-500 flex items-center justify-center shadow-lg">
           <ShieldCheck className="w-6 h-6 text-white" />
@@ -114,7 +114,7 @@ export default function About() {
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.15 }}
-        className="flex items-start gap-4 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-2xl p-5"
+        className="flex items-start gap-3 sm:gap-4 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800 rounded-2xl p-4 sm:p-5"
       >
         <div className="shrink-0 w-12 h-12 rounded-xl bg-amber-400 flex items-center justify-center shadow-lg">
           <TriangleAlert className="w-6 h-6 text-white" />
