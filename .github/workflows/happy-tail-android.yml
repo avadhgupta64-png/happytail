@@ -27,6 +27,14 @@ jobs:
           channel: stable
           cache: true
 
+      - name: Fetch the original Happy Tail logo
+        run: |
+          mkdir -p assets
+          curl --fail --location --silent --show-error \\
+            https://raw.githubusercontent.com/avadhgupta64-png/happytail/main/happy-tail/client/public/favicon.png \\
+            --output assets/happy_tail_logo.png
+          file assets/happy_tail_logo.png
+
       - name: Generate Android and iOS platform projects
         run: flutter create --platforms=android,ios --org com.happytail --project-name happy_tail .
 
@@ -45,6 +53,9 @@ jobs:
 
       - name: Resolve packages
         run: flutter pub get
+
+      - name: Generate branded Android and iOS launcher icons
+        run: dart run flutter_launcher_icons
 
       - name: Analyze Flutter source
         run: flutter analyze
