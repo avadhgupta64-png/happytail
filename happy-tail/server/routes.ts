@@ -632,43 +632,65 @@ Return ONLY a JSON object with these keys:
         messages: z.array(z.object({
           role: z.enum(["user", "assistant"]),
           content: z.string(),
-        })),
+        })).min(1),
         language: z.string().optional(),
       }).parse(req.body);
 
-      // Check + increment AI usage limit (only on first message to avoid counting each turn)
-      const isFirstMessage = messages.filter(m => m.role === "user").length === 1;
-      if (isFirstMessage) {
-        const allowed = await checkAndIncrementUsage(req, res, "vet_chat");
-        if (!allowed) return;
-      }
+      // Each user-submitted message consumes one Vet Chat use.
+      // The shared usage guard enforces the standard 3-use limit and admin/unlimited access.
+      const allowed = await checkAndIncrementUsage(req, res, "vet_chat");
+      if (!allowed) return;
+
+      const systemMessage = {
+        role: "system" as const,
+        content: `You are a friendly, knowledgeable AI veterinary assistant. Help dog owners understand their pets' health, symptoms, diet, behavior, and care needs.
+
+Rules:
+- Answer the user's latest question directly and completely, using clear, practical steps where appropriate.
+- Be thorough enough to be useful, but avoid unnecessary repetition.
+- Use short headings or numbered steps when they improve clarity.
+- Finish every point and sentence. Never stop mid-sentence or leave a list unfinished.
+- If you describe serious symptoms (difficulty breathing, seizures, suspected poisoning, bloating, collapse), clearly advise urgent veterinary care.
+- Give safe general guidance; do not claim to diagnose, prescribe medication, or replace a veterinarian.
+- Be warm and reassuring but honest.
+- For non-dog questions, politely redirect to dog-related topics.
+- Always end serious health advice with a reminder to consult a real vet.${getLangInstruction(language)}`
+      };
+
+      const conversation = messages.map(m => ({
+        role: m.role as "user" | "assistant",
+        content: m.content,
+      }));
 
       const response = await openai.chat.completions.create({
         reasoning_effort: "none" as any,
-        max_tokens: 800,
+        max_tokens: 1400,
         model: VISION_MODEL,
-        messages: [
-          {
-            role: "system",
-            content: `You are a friendly, knowledgeable AI veterinary assistant. You help dog owners understand their pets' health, symptoms, diet, behavior, and care needs. 
-
-Rules:
-- Answer all questions about dogs comprehensively and helpfully
-- If the user describes serious symptoms (difficulty breathing, seizures, poisoning, bloating, collapse), urgently tell them to visit a vet immediately
-- Provide practical home care tips when appropriate
-- Be warm and reassuring but honest
-- For non-dog questions, politely redirect to dog-related topics
-- Keep responses conversational and easy to understand
-- Always end serious health advice with a reminder to consult a real vet${getLangInstruction(language)}`
-          },
-          ...messages.map(m => ({ role: m.role as "user" | "assistant", content: m.content })),
-        ],
+        messages: [systemMessage, ...conversation],
       });
 
-      const reply = response.choices[0].message.content || "I'm sorry, I couldn't process that. Please try again.";
+      let reply = response.choices[0]?.message?.content?.trim() || "";
+      // If the model hits its output cap, ask it to finish the answer rather than
+      // returning a visibly truncated response.
+      if (response.choices[0]?.finish_reason === "length" && reply) {
+        const continuation = await openai.chat.completions.create({
+          reasoning_effort: "none" as any,
+          max_tokens: 900,
+          model: VISION_MODEL,
+          messages: [
+            systemMessage,
+            ...conversation,
+            { role: "assistant", content: reply },
+            { role: "user", content: "Continue exactly where your previous answer stopped. Do not repeat completed content. Finish all remaining points and end with a complete sentence." },
+          ],
+        });
+        const extra = continuation.choices[0]?.message?.content?.trim() || "";
+        if (extra) reply = `${reply}\n\n${extra}`;
+      }
+      if (!reply) reply = "I'm sorry, I couldn't process that. Please try again.";
 
       const userId = req.user?.claims?.sub;
-      const lastUserMsg = messages[messages.length - 1]?.content || "";
+      const lastUserMsg = [...messages].reverse().find(m => m.role === "user")?.content || "";
       if (userId) {
         storage.createActivityLog({
           userId,
