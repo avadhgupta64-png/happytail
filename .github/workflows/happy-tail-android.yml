@@ -30,9 +30,7 @@ jobs:
       - name: Fetch the original Happy Tail logo
         run: |
           mkdir -p assets
-          curl --fail --location --silent --show-error \\
-            https://raw.githubusercontent.com/avadhgupta64-png/happytail/main/happy-tail/client/public/favicon.png \\
-            --output assets/happy_tail_logo.png
+          curl --fail --location --silent --show-error "https://raw.githubusercontent.com/avadhgupta64-png/happytail/main/happy-tail/client/public/favicon.png" --output assets/happy_tail_logo.png
           file assets/happy_tail_logo.png
 
       - name: Generate Android and iOS platform projects
