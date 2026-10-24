@@ -435,7 +435,7 @@ export default function EmotionDetector() {
                           ref={fileInputRef}
                           onChange={handleFileUpload}
                           accept="image/*"
-                          className="hidden"
+                          className="absolute w-px h-px opacity-0 pointer-events-none"
                           data-testid="input-file-upload"
                         />
                       </div>
