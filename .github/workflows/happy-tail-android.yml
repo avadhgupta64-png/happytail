@@ -35,12 +35,11 @@ jobs:
           python3 - <<'PY'
           from PIL import Image
           source = Image.open("/tmp/happy_tail_source.png").convert("RGBA")
-          # Preserve the entire original artwork; upscale smoothly and add transparent
-          # breathing room so Android adaptive-icon masks do not crop it.
-          source.thumbnail((760, 760), Image.Resampling.LANCZOS)
-          canvas = Image.new("RGBA", (1024, 1024), (0, 0, 0, 0))
-          canvas.alpha_composite(source, ((1024 - source.width) // 2, (1024 - source.height) // 2))
-          canvas.save("assets/happy_tail_logo.png", optimize=True)
+          # Do not use thumbnail(): it never enlarges small favicons and made the
+          # logo tiny. Fill the square asset with the source artwork, without adding
+          # a second layer of padding (Android adaptive icons add their own safe zone).
+          source = source.resize((1024, 1024), Image.Resampling.LANCZOS)
+          source.save("assets/happy_tail_logo.png", optimize=True)
           print("Prepared logo:", Image.open("assets/happy_tail_logo.png").size)
           PY
 
