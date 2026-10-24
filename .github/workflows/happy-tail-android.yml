@@ -56,7 +56,19 @@ jobs:
           manifest = Path("android/app/src/main/AndroidManifest.xml")
           if 'android.permission.INTERNET' not in s:
               s = s.replace('<manifest ', '<manifest xmlns:android="http://schemas.android.com/apk/res/android" ', 1) if 'xmlns:android=' not in s else s
-              s = s.replace('<application', '    <uses-permission android:name="android.permission.INTERNET" />\n    <application', 1)
+              s = s.replace('<application', '    <application', 1)
+          permissions = [
+              'android.permission.INTERNET',
+              'android.permission.CAMERA',
+              'android.permission.RECORD_AUDIO',
+              'android.permission.READ_MEDIA_IMAGES',
+              'android.permission.READ_MEDIA_VIDEO',
+              'android.permission.READ_MEDIA_VISUAL_USER_SELECTED',
+              'android.permission.READ_EXTERNAL_STORAGE',
+          ]
+          for permission in permissions:
+              if f'android:name="{permission}"' not in s:
+                  s = s.replace('<application', f'    <uses-permission android:name="{permission}" />\\n    <application', 1)
           p.write_text(s)
           # flutter create generates a placeholder test that imports MyApp,
           # but this project entry point is HappyTailApp. Remove that template test.
