@@ -73,18 +73,18 @@ export default function About() {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="relative isolate overflow-hidden rounded-2xl sm:rounded-3xl bg-gradient-to-br from-indigo-900 via-purple-900 to-violet-900 px-5 py-7 sm:p-8 md:p-10 text-center shadow-2xl"
+        className="relative isolate w-full max-w-full min-w-0 overflow-hidden rounded-2xl sm:rounded-3xl bg-gradient-to-br from-indigo-900 via-purple-900 to-violet-900 px-4 py-5 sm:px-7 sm:py-7 md:px-10 md:py-9 text-center shadow-xl"
       >
         <div className="absolute inset-0 opacity-10"
           style={{ backgroundImage: "radial-gradient(circle at 20% 50%, #a855f7 0%, transparent 50%), radial-gradient(circle at 80% 20%, #6366f1 0%, transparent 40%)" }}
         />
-        <img src={logoImg} alt="Happy Tail" className="w-14 h-14 sm:w-16 sm:h-16 mx-auto rounded-2xl shadow-xl mb-4 border-2 border-white/20 object-cover" />
+        <img src={logoImg} alt="Happy Tail" className="w-12 h-12 sm:w-14 sm:h-14 mx-auto rounded-xl shadow-lg mb-3 border-2 border-white/20 object-cover" />
         <p className="text-[0.65rem] sm:text-xs font-bold tracking-[0.22em] sm:tracking-[0.3em] text-purple-300 uppercase mb-2">Happy Tail Presents</p>
-        <h1 className="text-3xl sm:text-4xl md:text-5xl font-display font-bold text-white mb-3 leading-tight break-words">
+        <h1 className="text-2xl sm:text-3xl md:text-4xl font-display font-bold text-white mb-2 leading-tight break-words">
           VOICE for the<br />
           <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 to-pink-400">VOICELESS</span>
         </h1>
-        <p className="text-purple-100/90 text-sm sm:text-base max-w-lg mx-auto leading-relaxed">
+        <p className="text-purple-100/90 text-sm sm:text-base max-w-lg mx-auto leading-snug sm:leading-relaxed">
           Because your dog can't tell you when they're hurting, scared, or just really, really happy — but now, they don't have to.
         </p>
       </motion.div>
