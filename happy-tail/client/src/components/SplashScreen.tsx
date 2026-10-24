@@ -114,12 +114,12 @@ export function SplashScreen({ onComplete }: { onComplete: () => void }) {
             >A NEW STANDARD IN PET CARE</motion.p>
 
             <motion.h1
-              className="mt-4 text-[2.65rem] font-semibold tracking-[-0.075em] text-white [text-shadow:0_0_32px_rgba(255,255,255,0.08)]"
+              className="mt-4 text-[2.55rem] font-semibold tracking-[-0.025em] text-white leading-[1.2] [text-shadow:0_0_32px_rgba(255,255,255,0.08)]"
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3, duration: 0.6 }}
             >
-              happy<span className="font-light text-pink-300">tail</span>
+              <span className="inline-block">happy</span><span className="ml-[0.12em] inline-block font-light text-pink-300">tail</span>
               <span className="ml-1 align-top text-sm font-medium tracking-normal text-pink-300">®</span>
             </motion.h1>
 
