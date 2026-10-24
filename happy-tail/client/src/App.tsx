@@ -524,6 +524,7 @@ function AuthErrorScreen({ type, reason }: { type: "banned" | "removed"; reason?
 }
 
 function AppContent() {
+  const [location] = useLocation();
   const [showSplash, setShowSplash] = useState(true);
   const handleSplashComplete = useCallback(() => setShowSplash(false), []);
   const { user, isLoading } = useAuth();
@@ -544,7 +545,7 @@ function AppContent() {
   }
 
   // Keep About accessible to restricted accounts; it is informational and does not grant app access.
-  if (window.location.pathname === "/about") return <About />;
+  if (location === "/about") return <About />;
 
   // A banned account gets the branded status screen instead of any app UI.
   if (authError === "banned" || user?.isBanned) {
