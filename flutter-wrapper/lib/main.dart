@@ -3,6 +3,8 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import 'package:webview_flutter_android/webview_flutter_android.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 const appUrl = 'https://happytail-tan.vercel.app';
 const brandOrange = Color(0xFFFFA000);
@@ -111,6 +113,42 @@ class _HappyTailWebShellState extends State<HappyTailWebShell> {
         },
       ))
       ..loadRequest(Uri.parse(appUrl));
+
+    // WebView media capture needs Android runtime permissions as well as
+    // granting the website's camera/microphone request.
+    if (_controller.platform is AndroidWebViewController) {
+      (_controller.platform as AndroidWebViewController)
+          .setOnPlatformPermissionRequest((request) async {
+        final wantsVideo = request.types.contains(WebViewPermissionResourceType.camera);
+        final wantsAudio = request.types.contains(WebViewPermissionResourceType.microphone);
+        final permissions = <Permission>[
+          if (wantsVideo) Permission.camera,
+          if (wantsAudio) Permission.microphone,
+        ];
+        if (permissions.isEmpty) {
+          request.deny();
+          return;
+        }
+        final results = await permissions.request();
+        final allGranted = results.values.every((status) => status.isGranted);
+        if (allGranted) {
+          request.grant();
+        } else {
+          request.deny();
+          if (mounted && results.values.any((status) => status.isPermanentlyDenied)) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: const Text('Enable camera or microphone permission in Android Settings to record media.'),
+                action: SnackBarAction(
+                  label: 'Settings',
+                  onPressed: openAppSettings,
+                ),
+              ),
+            );
+          }
+        }
+      });
+    }
 
     _connectivitySub = Connectivity().onConnectivityChanged.listen((results) {
       if (!mounted) return;
