@@ -1,0 +1,21 @@
+{
+  "id": "/",
+  "name": "Happy Tail",
+  "short_name": "Happy Tail",
+  "description": "AI-powered guidance for understanding and caring for your dog.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#101827",
+  "theme_color": "#101827",
+  "categories": ["lifestyle", "pets"],
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "any",
+      "type": "image/x-icon",
+      "purpose": "any"
+    }
+  ]
+}
