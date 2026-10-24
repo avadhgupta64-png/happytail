@@ -466,7 +466,7 @@ function AuthErrorScreen({ type, reason }: { type: "banned" | "removed"; reason?
         <p className="mt-4 text-sm leading-6 text-white/65">
           {isBanned
             ? "Access to Happy Tail has been restricted by an administrator. The app is unavailable for this account while the suspension is active."
-            : "This account has been permanently removed and can no longer be used to access Happy Tail."}
+            : "Your Happy Tail account has been permanently removed. This decision is final, and you will not be able to sign in or create another account using this email address. If you believe this happened in error, contact the administrator before taking any further action."}
         </p>
 
         {isBanned && reason && (
