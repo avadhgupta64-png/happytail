@@ -2,20 +2,20 @@ import { useEffect, useState } from "react";
 
 type Theme = "light" | "dark";
 
-const THEME_DEFAULT_MIGRATION_KEY = "happy-tail-theme-default-v1";
+const THEME_DEFAULT_MIGRATION_KEY = "happy-tail-theme-default-light-v2";
 
 function getInitialTheme(): Theme {
-  // Restore the classic dark theme once for existing users who had a stale light preference.
+  // Set the default to light once, while preserving future user selections.
   try {
     if (localStorage.getItem(THEME_DEFAULT_MIGRATION_KEY) !== "done") {
       localStorage.setItem(THEME_DEFAULT_MIGRATION_KEY, "done");
-      localStorage.setItem("theme", "dark");
-      return "dark";
+      localStorage.setItem("theme", "light");
+      return "light";
     }
     const savedTheme = localStorage.getItem("theme");
-    return savedTheme === "light" || savedTheme === "dark" ? savedTheme : "dark";
+    return savedTheme === "light" || savedTheme === "dark" ? savedTheme : "light";
   } catch {
-    return "dark";
+    return "light";
   }
 }
 
