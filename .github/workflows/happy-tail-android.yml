@@ -68,7 +68,7 @@ jobs:
           ]
           for permission in permissions:
               if f'android:name="{permission}"' not in s:
-                  s = s.replace('<application', f'    <uses-permission android:name="{permission}" />\\n    <application', 1)
+                  s = s.replace('<application', f'    <uses-permission android:name="{permission}" />\n    <application', 1)
           p.write_text(s)
           # flutter create generates a placeholder test that imports MyApp,
           # but this project entry point is HappyTailApp. Remove that template test.
