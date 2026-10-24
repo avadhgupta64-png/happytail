@@ -138,7 +138,7 @@ class _HappyTailWebShellState extends State<HappyTailWebShell> {
           if (mounted && results.values.any((status) => status.isPermanentlyDenied)) {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
-                content: const Text('Enable camera or microphone permission in Android Settings to record media.'),
+                content: Text('Enable camera or microphone permission in Android Settings to record media.'),
                 action: SnackBarAction(
                   label: 'Settings',
                   onPressed: openAppSettings,
