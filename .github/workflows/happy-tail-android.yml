@@ -27,11 +27,21 @@ jobs:
           channel: stable
           cache: true
 
-      - name: Fetch the original Happy Tail logo
+      - name: Fetch and prepare a crisp, safely padded Happy Tail logo
         run: |
           mkdir -p assets
-          curl --fail --location --silent --show-error "https://raw.githubusercontent.com/avadhgupta64-png/happytail/main/happy-tail/client/public/favicon.png" --output assets/happy_tail_logo.png
-          file assets/happy_tail_logo.png
+          curl --fail --location --silent --show-error "https://raw.githubusercontent.com/avadhgupta64-png/happytail/main/happy-tail/client/public/favicon.png" --output /tmp/happy_tail_source.png
+          python3 - <<'PY'
+          from PIL import Image
+          source = Image.open("/tmp/happy_tail_source.png").convert("RGBA")
+          # Preserve the entire original artwork; upscale smoothly and add transparent
+          # breathing room so Android adaptive-icon masks do not crop it.
+          source.thumbnail((760, 760), Image.Resampling.LANCZOS)
+          canvas = Image.new("RGBA", (1024, 1024), (0, 0, 0, 0))
+          canvas.alpha_composite(source, ((1024 - source.width) // 2, (1024 - source.height) // 2))
+          canvas.save("assets/happy_tail_logo.png", optimize=True)
+          print("Prepared logo:", Image.open("assets/happy_tail_logo.png").size)
+          PY
 
       - name: Generate Android and iOS platform projects
         run: flutter create --platforms=android,ios --org com.happytail --project-name happy_tail .
@@ -43,6 +53,10 @@ jobs:
           p = Path("android/app/src/main/AndroidManifest.xml")
           s = p.read_text()
           s = s.replace('android:label="happy_tail"', 'android:label="Happy Tail"')
+          manifest = Path("android/app/src/main/AndroidManifest.xml")
+          if 'android.permission.INTERNET' not in s:
+              s = s.replace('<manifest ', '<manifest xmlns:android="http://schemas.android.com/apk/res/android" ', 1) if 'xmlns:android=' not in s else s
+              s = s.replace('<application', '    <uses-permission android:name="android.permission.INTERNET" />\\n    <application', 1)
           p.write_text(s)
           # flutter create generates a placeholder test that imports MyApp,
           # but this project entry point is HappyTailApp. Remove that template test.
