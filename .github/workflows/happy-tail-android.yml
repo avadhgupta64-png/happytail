@@ -46,35 +46,6 @@ jobs:
       - name: Generate Android and iOS platform projects
         run: flutter create --platforms=android,ios --org com.happytail --project-name happy_tail .
 
-      - name: Align Android compile SDK across app and plugins
-        run: |
-          python3 - <<'PY'
-          from pathlib import Path
-          import re
-          roots = [Path("android"), Path.home() / ".pub-cache"]
-          changed = 0
-          for root in roots:
-              if not root.exists():
-                  continue
-              for p in root.rglob("build.gradle*"):
-                  try:
-                      s = p.read_text()
-                  except (OSError, UnicodeDecodeError):
-                      continue
-                  updated = re.sub(
-                      r'(?m)^(\s*compileSdk(?:Version)?\s*(?:=\s*)?)(?:flutter\.compileSdkVersion|[0-9]+)',
-                      lambda m: m.group(1) + "36",
-                      s,
-                  )
-                  if updated != s:
-                      p.write_text(updated)
-                      changed += 1
-                      print(f"Set compile SDK 36: {p}")
-          if changed == 0:
-              raise SystemExit("No Android compileSdk settings found to update")
-          print(f"Updated {changed} Gradle file(s) to compile SDK 36")
-          PY
-
       - name: Set Android launcher label and remove generated placeholder test
         run: |
           python3 - <<'PY'
@@ -106,6 +77,36 @@ jobs:
 
       - name: Resolve packages
         run: flutter pub get
+
+      - name: Align Android compile SDK across app and plugins
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import re
+          roots = [Path("android"), Path.home() / ".pub-cache"]
+          changed = 0
+          for root in roots:
+              if not root.exists():
+                  continue
+              for p in root.rglob("build.gradle*"):
+                  try:
+                      s = p.read_text()
+                  except (OSError, UnicodeDecodeError):
+                      continue
+                  updated = re.sub(
+                      r'(?m)^(\s*compileSdk(?:Version)?\s*(?:=\s*)?)(?:flutter\.compileSdkVersion|[0-9]+)',
+                      lambda m: m.group(1) + "36",
+                      s,
+                  )
+                  if updated != s:
+                      p.write_text(updated)
+                      changed += 1
+                      print(f"Set compile SDK 36: {p}")
+          if changed == 0:
+              raise SystemExit("No Android compileSdk settings found to update")
+          print(f"Updated {changed} Gradle file(s) to compile SDK 36")
+          PY
+
 
       - name: Generate branded Android and iOS launcher icons
         run: dart run flutter_launcher_icons
