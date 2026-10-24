@@ -29,6 +29,7 @@ jobs:
 
       - name: Fetch and prepare a crisp, safely padded Happy Tail logo
         run: |
+          python3 -m pip install --user --disable-pip-version-check Pillow
           mkdir -p assets
           curl --fail --location --silent --show-error "https://raw.githubusercontent.com/avadhgupta64-png/happytail/main/happy-tail/client/public/favicon.png" --output /tmp/happy_tail_source.png
           python3 - <<'PY'
