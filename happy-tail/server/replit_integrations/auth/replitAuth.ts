@@ -95,10 +95,6 @@ export async function setupAuth(app: Express) {
                   emailVerified: true,
                 })
                 .returning();
-            } else if (dbUser.isBanned) {
-              return done(null, false);
-            }
-
             const user: LocalUser = {
               claims: { sub: dbUser.id, email: dbUser.email! },
               dbUser,
@@ -116,7 +112,13 @@ export async function setupAuth(app: Express) {
     app.get(
       "/api/auth/google/callback",
       passport.authenticate("google", { failureRedirect: "/?auth_error=google_failed", session: true }),
-      (_req, res) => res.redirect("/"),
+      (req: any, res) => {
+        // Allow OAuth to finish so banned accounts see the branded status page.
+        if (req.user?.dbUser?.isBanned) {
+          return req.logout(() => res.redirect("/?auth_error=banned"));
+        }
+        res.redirect("/");
+      },
     );
 
     console.info("[auth] Google OAuth enabled");
