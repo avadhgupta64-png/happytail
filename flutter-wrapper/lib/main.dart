@@ -63,6 +63,7 @@ class _HappyTailWebShellState extends State<HappyTailWebShell> {
     _controller = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
       ..setBackgroundColor(const Color(0xFFF8FAFC))
+      ..clearCache()
       ..setNavigationDelegate(NavigationDelegate(
         onProgress: (progress) {
           if (!mounted) return;
@@ -166,10 +167,13 @@ class _HappyTailWebShellState extends State<HappyTailWebShell> {
                     borderRadius: BorderRadius.circular(12),
                   ),
                   clipBehavior: Clip.antiAlias,
-                  child: Image.network(
-                    'https://happytail-tan.vercel.app/favicon.png',
-                    fit: BoxFit.cover,
-                    errorBuilder: (_, __, ___) => Image.asset('assets/happy_tail_logo.png', fit: BoxFit.contain),
+                  child: Padding(
+                    padding: const EdgeInsets.all(3),
+                    child: Image.asset(
+                      'assets/happy_tail_logo.png',
+                      fit: BoxFit.contain,
+                      filterQuality: FilterQuality.high,
+                    ),
                   ),
                 ),
                 const SizedBox(width: 11),
@@ -223,7 +227,14 @@ class _HappyTailWebShellState extends State<HappyTailWebShell> {
                                 color: brandOrange.withValues(alpha: 0.12),
                                 borderRadius: BorderRadius.circular(24),
                               ),
-                              child: Image.asset('assets/happy_tail_logo.png', fit: BoxFit.contain, width: 48, height: 48),
+                              child: Padding(
+                                padding: const EdgeInsets.all(12),
+                                child: Image.asset(
+                                  'assets/happy_tail_logo.png',
+                                  fit: BoxFit.contain,
+                                  filterQuality: FilterQuality.high,
+                                ),
+                              ),
                             ),
                             const SizedBox(height: 22),
                             const Text('Let’s get you reconnected', textAlign: TextAlign.center,
