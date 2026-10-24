@@ -5,7 +5,7 @@ import {
   Users, Activity, Camera, Dog, Eye, Download,
   ChevronDown, ChevronUp, Search, RefreshCw,
   Shield, Clock, TrendingUp, Ban, Trash2, CheckCircle, AlertTriangle, UserX,
-  MessageSquare, Crown, Zap, ZapOff, Star, StarOff, Check, X
+  MessageSquare, Crown, Zap, ZapOff, Star, StarOff, Check, X, UserRoundCheck
 } from "lucide-react";
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
@@ -293,7 +293,7 @@ function UserRow({
   );
 }
 
-function RemovedUserRow({ user }: { user: RemovedUser }) {
+function RemovedUserRow({ user, onRestore, restoring }: { user: RemovedUser; onRestore: () => void; restoring: boolean }) {
   return (
     <div className="flex items-center gap-3 p-4 rounded-xl border bg-gray-50 dark:bg-gray-900/50 border-gray-200 dark:border-gray-800">
       {user.profileImageUrl ? (
@@ -324,9 +324,11 @@ function RemovedUserRow({ user }: { user: RemovedUser }) {
         {user.banReason && <p className="text-xs text-red-400 mt-0.5">Ban reason: {user.banReason}</p>}
         <p className="text-xs text-muted-foreground mt-0.5">Original ID: {user.originalId}</p>
       </div>
-      <div className="text-xs text-muted-foreground whitespace-nowrap flex items-center gap-1">
-        <Clock className="w-3 h-3" />
-        {formatDate(user.removedAt)}
+      <div className="flex flex-col items-end gap-2 shrink-0">
+        <div className="text-xs text-muted-foreground whitespace-nowrap flex items-center gap-1"><Clock className="w-3 h-3" />{formatDate(user.removedAt)}</div>
+        <button type="button" onClick={onRestore} disabled={restoring || !user.email} className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold bg-emerald-600 hover:bg-emerald-700 text-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors" title={!user.email ? "Cannot restore an account without an email address" : "Restore account"}>
+          <UserRoundCheck className="w-3.5 h-3.5" />{restoring ? "Restoring..." : "Restore Account"}
+        </button>
       </div>
     </div>
   );
@@ -905,6 +907,20 @@ export default function AdminDashboard() {
       queryClient.invalidateQueries({ queryKey: ["/api/admin/users"] });
     },
     onError: (err: Error) => toast({ title: "Error", description: err.message || "Could not unban user.", variant: "destructive" }),
+  });
+
+  const restoreMutation = useMutation({
+    mutationFn: async (removedId: number) => {
+      const res = await fetch(`/api/admin/removed-users/${removedId}/restore`, { method: "POST", credentials: "include" });
+      if (!res.ok) { const err = await res.json().catch(() => ({})); throw new Error(err.message || "Failed to restore account"); }
+      return res.json();
+    },
+    onSuccess: (data) => {
+      toast({ title: "Account restored", description: data.message || "The user can sign in again." });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/users"] });
+      queryClient.invalidateQueries({ queryKey: ["/api/admin/removed-users"] });
+    },
+    onError: (err: Error) => toast({ title: "Could not restore account", description: err.message, variant: "destructive" }),
   });
 
   const removeMutation = useMutation({
