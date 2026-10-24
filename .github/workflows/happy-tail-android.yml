@@ -27,22 +27,20 @@ jobs:
           channel: stable
           cache: true
 
-      - name: Fetch and prepare a crisp, safely padded Happy Tail logo
+      - name: Use the uploaded Happy Tail logo
         run: |
-          python3 -m pip install --user --disable-pip-version-check Pillow
+          test -s happy_tail_logo_optimized.png
           mkdir -p assets
-          curl --fail --location --silent --show-error "https://raw.githubusercontent.com/avadhgupta64-png/happytail/main/happy-tail/client/public/favicon.png" --output /tmp/happy_tail_source.png
+          cp happy_tail_logo_optimized.png assets/happy_tail_logo.png
           python3 - <<'PY'
           from PIL import Image
-          source = Image.open("/tmp/happy_tail_source.png").convert("RGBA")
-          # Do not use thumbnail(): it never enlarges small favicons and made the
-          # logo tiny. Fill the square asset with the source artwork, without adding
-          # a second layer of padding (Android adaptive icons add their own safe zone).
-          source = source.resize((1024, 1024), Image.Resampling.LANCZOS)
-          source.save("assets/happy_tail_logo.png", optimize=True)
-          print("Prepared logo:", Image.open("assets/happy_tail_logo.png").size)
+          from pathlib import Path
+          p = Path("assets/happy_tail_logo.png")
+          with Image.open(p) as im:
+              print(f"Using uploaded logo: {p} ({im.width}x{im.height}, {im.mode})")
+              if im.width < 256 or im.height < 256:
+                  raise SystemExit("Uploaded logo is unexpectedly small; refusing to build with a tiny logo.")
           PY
-
       - name: Generate Android and iOS platform projects
         run: flutter create --platforms=android,ios --org com.happytail --project-name happy_tail .
 
