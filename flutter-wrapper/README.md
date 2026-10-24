@@ -1,33 +1,39 @@
-# Happy Tail — Flutter wrapper
+# Happy Tail — Flutter mobile wrapper
 
-A polished Flutter Android/iOS shell for the existing Happy Tail web app. It keeps the current production app and backend in place while adding native system bars, an app header, page progress, reload, Android back navigation, and an offline/error recovery screen.
+This directory contains the Flutter source for a branded Android/iOS shell around the existing Happy Tail web app.
 
-## Requirements
+## What is included
 
-- Flutter stable (Dart 3.3+)
-- Android Studio / Android SDK for Android builds
-- Xcode on macOS for iOS builds
+- Branded **Happy Tail** app name and dark navy/orange styling
+- WebView connected to https://happytail-tan.vercel.app
+- Page-load progress, reload control, Android back navigation
+- Friendly connectivity/load error screen with retry
+- Safe basic PWA shell support in the website; authenticated API responses are not cached
+- GitHub Actions workflow to generate platform projects, run Flutter analysis, build a release APK, and publish it as a downloadable workflow artifact
 
-## Create platform folders
+## Build it yourself
 
-From this directory, run:
+Requires Flutter stable and Android tooling. From this directory:
 
 ```bash
-flutter create --platforms=android,ios .
+flutter create --platforms=android,ios --org com.happytail --project-name happy_tail .
 flutter pub get
+flutter analyze
 flutter run
 ```
 
-The wrapper points to `https://happytail-tan.vercel.app`. It does not bundle the website or replace its backend. Authentication, uploads, and other flows should be tested on a real device before release.
-
-## Build an Android APK
+Build the Android APK:
 
 ```bash
 flutter build apk --release
 ```
 
-APK output: `build/app/outputs/flutter-apk/app-release.apk`
+Output: `build/app/outputs/flutter-apk/app-release.apk`.
 
-## Brand assets
+## Build the APK in GitHub
 
-The in-app header attempts to load the existing site's favicon and falls back to a paw icon. Before publishing, replace that fallback with the original Happy Tail logo image asset and add Android launcher icons generated from the same original logo (for example with `flutter_launcher_icons`). Do not publish until the OAuth, camera/file upload, external payment links, and navigation flows have been tested on physical devices.
+Open [Actions](https://github.com/avadhgupta64-png/happytail/actions/workflows/happy-tail-android.yml), select **Build Happy Tail Android APK**, and run the workflow. When it completes successfully, download the `happy-tail-android-apk` artifact from the run.
+
+## Important release checks
+
+This wrapper loads the existing hosted web app; it does not bundle the website/backend offline. Verify Google sign-in and OAuth redirects, camera/photo upload, file selection, external links, and app lifecycle on a physical Android device before distributing. The PWA manifest uses the site's favicon as a fallback icon for now; use the original Happy Tail logo artwork to generate proper launcher and PWA icon sizes before a public release.
