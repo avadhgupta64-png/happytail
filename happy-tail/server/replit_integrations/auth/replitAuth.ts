@@ -95,6 +95,8 @@ export async function setupAuth(app: Express) {
                   emailVerified: true,
                 })
                 .returning();
+            }
+
             const user: LocalUser = {
               claims: { sub: dbUser.id, email: dbUser.email! },
               dbUser,
