@@ -1,4 +1,5 @@
 name: Build Happy Tail Android APK
+# Rebuild after AI Vet backend update; keep Android logo asset unchanged
 
 on:
   workflow_dispatch:
