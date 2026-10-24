@@ -408,16 +408,16 @@ export default function EmotionDetector() {
             {/* ── Emotion Analysis Layout ── */}
             <div className="grid lg:grid-cols-2 gap-8">
               <div className="space-y-6">
-                <div className="relative rounded-[2rem] overflow-hidden bg-black aspect-[4/3] shadow-2xl border-4 border-white ring-1 ring-gray-200">
+                <div className="relative rounded-[2rem] overflow-hidden bg-black w-full min-h-[340px] sm:aspect-[4/3] sm:min-h-0 shadow-2xl border-4 border-white ring-1 ring-gray-200">
                   {!imgSrc ? (
-                    <div className="w-full h-full bg-gray-900 flex flex-col items-center justify-center p-8 text-center">
+                    <div className="w-full min-h-[340px] flex flex-col items-center justify-center p-5 sm:p-8 text-center bg-gray-900">
                       <div className="w-20 h-20 bg-gray-800 rounded-full flex items-center justify-center mb-6">
                         <Camera className="w-10 h-10 text-gray-500" />
                       </div>
                       <div className="flex flex-col gap-3 w-full max-w-xs">
                         <Button
                           onClick={() => setShowEmotionCamera(true)}
-                          className="bg-primary hover:bg-primary/90 text-white rounded-xl py-6 flex items-center gap-2"
+                          className="w-full whitespace-normal bg-primary hover:bg-primary/90 text-white rounded-xl min-h-14 py-4 flex items-center justify-center gap-2"
                           data-testid="button-take-photo"
                         >
                           <Camera className="w-5 h-5" /> Take a Photo
@@ -425,7 +425,7 @@ export default function EmotionDetector() {
                         <Button
                           onClick={() => fileInputRef.current?.click()}
                           variant="outline"
-                          className="bg-white/10 border-white/20 text-white hover:bg-white/20 rounded-xl py-6 flex items-center gap-2"
+                          className="w-full whitespace-normal bg-white/10 border-white/20 text-white hover:bg-white/20 rounded-xl min-h-14 py-4 flex items-center justify-center gap-2"
                           data-testid="button-upload-photo"
                         >
                           <Upload className="w-5 h-5" /> {t.emotionDetector.uploadPrompt}
@@ -606,7 +606,7 @@ export default function EmotionDetector() {
             {/* ── Behavior Analysis Layout ── */}
             <div className="grid lg:grid-cols-2 gap-8">
               <div className="space-y-6">
-                <div className="relative rounded-[2rem] overflow-hidden bg-black aspect-[4/3] shadow-2xl border-4 border-white ring-1 ring-purple-200">
+                <div className="relative rounded-[2rem] overflow-hidden bg-black w-full min-h-[360px] sm:aspect-[4/3] sm:min-h-0 shadow-2xl border-4 border-white ring-1 ring-purple-200">
                   {!videoPreviewUrl ? (
                     <div className="w-full h-full bg-gray-900 flex flex-col items-center justify-center p-8 text-center">
                       <div className="w-20 h-20 bg-gray-800 rounded-full flex items-center justify-center mb-6">
@@ -618,7 +618,7 @@ export default function EmotionDetector() {
                       <div className="flex flex-col gap-3 w-full max-w-xs">
                         <Button
                           onClick={() => setShowBehaviorCamera(true)}
-                          className="bg-purple-600 hover:bg-purple-700 text-white rounded-xl py-6 flex items-center gap-2"
+                          className="w-full whitespace-normal bg-purple-600 hover:bg-purple-700 text-white rounded-xl min-h-14 py-4 flex items-center justify-center gap-2"
                         >
                           <Video className="w-5 h-5" /> Record a Video
                         </Button>
