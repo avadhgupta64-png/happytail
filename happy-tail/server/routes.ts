@@ -484,9 +484,27 @@ CRITICAL RULES:
       }
 
       res.json(result);
-    } catch (err) {
-      console.error("Bark translation failed:", err);
-      res.status(500).json({ message: "Failed to translate bark" });
+    } catch (err: any) {
+      const status = Number(err?.status || err?.statusCode || 0);
+      const providerMessage = typeof err?.message === "string" ? err.message : "Unknown server error";
+      // Keep the full diagnostic in server logs, but send a safe actionable message to the app.
+      console.error("Bark translation failed:", {
+        status,
+        code: err?.code,
+        message: providerMessage,
+        type: err?.type,
+        param: err?.param,
+      });
+      if (status === 429) {
+        return res.status(503).json({ message: "The AI service is temporarily busy. Please wait a minute and try again." });
+      }
+      if (status === 401 || status === 403) {
+        return res.status(503).json({ message: "The AI service is not authorized on the server. Please try again later." });
+      }
+      if (/image|vision|model|unsupported|not found/i.test(providerMessage) && status >= 400) {
+        return res.status(503).json({ message: "The AI service could not process these video frames. Please try a short MP4 clip, or try again later." });
+      }
+      res.status(500).json({ message: "Bark translation failed on the server. Please try a shorter MP4 video. If it keeps happening, the server logs will identify the cause." });
     }
   });
 
