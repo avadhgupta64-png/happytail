@@ -132,6 +132,29 @@ jobs:
           PY
 
 
+      - name: Align file picker plugin compile SDK with its Android lifecycle dependency
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import os
+          root = Path(os.environ.get("PUB_CACHE", Path.home() / ".pub-cache")) / "hosted" / "pub.dev"
+          candidates = sorted(root.glob("file_picker-*/android/build.gradle")) + sorted(root.glob("file_picker-*/android/build.gradle.kts"))
+          if not candidates:
+              raise SystemExit("Could not find resolved file_picker Android Gradle file")
+          for p in candidates:
+              s = p.read_text()
+              original = s
+              s = s.replace("compileSdkVersion 34", "compileSdkVersion 36")
+              s = s.replace("compileSdk = 34", "compileSdk = 36")
+              s = s.replace("compileSdkVersion flutter.compileSdkVersion", "compileSdkVersion 36")
+              s = s.replace("compileSdk = flutter.compileSdkVersion", "compileSdk = 36")
+              if s == original:
+                  print(f"No compileSdk 34/default pattern found in {p}; leaving file unchanged")
+              else:
+                  p.write_text(s)
+                  print(f"Patched {p} to compile against Android 36")
+          PY
+
       - name: Generate branded Android and iOS launcher icons
         run: dart run flutter_launcher_icons
 
