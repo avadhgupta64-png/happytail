@@ -28,54 +28,85 @@ interface TranslationResult {
   posture: string;
 }
 
-function extractFramesFromVideo(videoSrc: string, numFrames: number = 6): Promise<string[]> {
-  return new Promise((resolve, reject) => {
-    const video = document.createElement("video");
-    video.muted = true;
-    video.playsInline = true;
-    video.src = videoSrc;
+async function extractFramesFromVideo(videoSrc: string, numFrames: number = 6): Promise<string[]> {
+  const video = document.createElement("video");
+  video.muted = true;
+  video.playsInline = true;
+  video.preload = "auto";
+  video.crossOrigin = "anonymous";
+  video.src = videoSrc;
 
-    video.onloadedmetadata = () => {
-      const duration = video.duration;
-      const canvas = document.createElement("canvas");
-      canvas.width = 512;
-      canvas.height = 512;
-      const ctx = canvas.getContext("2d")!;
-      const frames: string[] = [];
-      let currentFrame = 0;
-
-      const intervals = Array.from({ length: numFrames }, (_, i) => {
-        if (numFrames === 1) return duration / 2;
-        return (duration * i) / (numFrames - 1);
-      });
-
-      const captureFrame = () => {
-        if (currentFrame >= intervals.length) {
-          resolve(frames);
-          return;
-        }
-        video.currentTime = Math.min(intervals[currentFrame], duration - 0.1);
+  const waitFor = (eventName: "loadedmetadata" | "loadeddata" | "error") =>
+    new Promise<void>((resolve, reject) => {
+      if (eventName === "loadedmetadata" && video.readyState >= HTMLMediaElement.HAVE_METADATA) return resolve();
+      if (eventName === "loadeddata" && video.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA) return resolve();
+      const cleanup = () => {
+        video.removeEventListener(eventName, onEvent);
+        video.removeEventListener("error", onError);
       };
+      const onEvent = () => { cleanup(); resolve(); };
+      const onError = () => { cleanup(); reject(new Error("The video could not be decoded on this device. Try an MP4 (H.264) video.")); };
+      video.addEventListener(eventName, onEvent, { once: true });
+      video.addEventListener("error", onError, { once: true });
+      video.load();
+    });
 
-      video.onseeked = () => {
-        const vw = video.videoWidth;
-        const vh = video.videoHeight;
-        const scale = Math.min(512 / vw, 512 / vh);
-        const dw = vw * scale;
-        const dh = vh * scale;
-        ctx.clearRect(0, 0, 512, 512);
-        ctx.drawImage(video, (512 - dw) / 2, (512 - dh) / 2, dw, dh);
-        frames.push(canvas.toDataURL("image/jpeg", 0.85));
-        currentFrame++;
-        captureFrame();
+  try {
+    await waitFor("loadedmetadata");
+    await waitFor("loadeddata");
+
+    const duration = video.duration;
+    if (!Number.isFinite(duration) || duration <= 0 || video.videoWidth === 0 || video.videoHeight === 0) {
+      throw new Error("This video has no readable frames. Please try a different video, preferably MP4.");
+    }
+
+    const canvas = document.createElement("canvas");
+    const maxDimension = 512;
+    const scale = Math.min(maxDimension / video.videoWidth, maxDimension / video.videoHeight, 1);
+    canvas.width = Math.max(1, Math.round(video.videoWidth * scale));
+    canvas.height = Math.max(1, Math.round(video.videoHeight * scale));
+    const ctx = canvas.getContext("2d");
+    if (!ctx) throw new Error("Could not prepare the video frame processor.");
+
+    const times = Array.from({ length: Math.max(1, numFrames) }, (_, i) =>
+      numFrames === 1 ? duration / 2 : (duration * i) / (numFrames - 1)
+    );
+    const frames: string[] = [];
+
+    const seekTo = (time: number) => new Promise<void>((resolve, reject) => {
+      const target = Math.min(Math.max(time, 0), Math.max(0, duration - 0.05));
+      if (Math.abs(video.currentTime - target) < 0.04 && video.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA) {
+        resolve();
+        return;
+      }
+      const cleanup = () => {
+        video.removeEventListener("seeked", onSeeked);
+        video.removeEventListener("error", onError);
       };
+      const onSeeked = () => { cleanup(); resolve(); };
+      const onError = () => { cleanup(); reject(new Error("Could not read a frame from this video. Try another video.")); };
+      video.addEventListener("seeked", onSeeked, { once: true });
+      video.addEventListener("error", onError, { once: true });
+      video.currentTime = target;
+    });
 
-      video.onerror = () => reject(new Error("Failed to load video"));
-      captureFrame();
-    };
-
-    video.onerror = () => reject(new Error("Failed to load video"));
-  });
+    for (const time of times) {
+      await seekTo(time);
+      if (video.videoWidth === 0 || video.videoHeight === 0) continue;
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      frames.push(canvas.toDataURL("image/jpeg", 0.78));
+    }
+    video.pause();
+    video.removeAttribute("src");
+    video.load();
+    if (frames.length === 0) throw new Error("No readable frames were found in this video.");
+    return frames;
+  } catch (error) {
+    video.pause();
+    video.removeAttribute("src");
+    video.load();
+    throw error;
+  }
 }
 
 export default function BarkTranslator() {
