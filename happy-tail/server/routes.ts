@@ -25,7 +25,7 @@ const openai = new OpenAI({
 });
 
 // Vision model: supports image inputs + JSON mode
-const VISION_MODEL = "qwen/qwen3.8-27b";
+const VISION_MODEL = "meta-llama/llama-4-scout-17b-16e-instruct";
 // Text model: for non-vision tasks (fast, cheap)
 const TEXT_MODEL = "qwen/qwen3.8-27b";
 
