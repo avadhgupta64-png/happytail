@@ -51,8 +51,9 @@ async function extractFramesFromVideo(videoSrc: string, numFrames: number = 6): 
     });
 
   try {
+    const metadataReady = waitFor("loadedmetadata");
     video.load();
-    await waitFor("loadedmetadata");
+    await metadataReady;
     await waitFor("loadeddata");
 
     const duration = video.duration;
