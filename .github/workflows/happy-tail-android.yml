@@ -71,7 +71,7 @@ jobs:
                               found = True
                               break
                   if found:
-                      p.write_text("\\n".join(lines) + "\\n")
+                      p.write_text("\n".join(lines) + "\n")
                       print(f"Configured compile SDK 36 in {p}")
                       break
           else:
