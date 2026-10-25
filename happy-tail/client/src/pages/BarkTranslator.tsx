@@ -48,10 +48,10 @@ async function extractFramesFromVideo(videoSrc: string, numFrames: number = 6): 
       const onError = () => { cleanup(); reject(new Error("The video could not be decoded on this device. Try an MP4 (H.264) video.")); };
       video.addEventListener(eventName, onEvent, { once: true });
       video.addEventListener("error", onError, { once: true });
-      video.load();
     });
 
   try {
+    video.load();
     await waitFor("loadedmetadata");
     await waitFor("loadeddata");
 
@@ -167,7 +167,14 @@ export default function BarkTranslator() {
       if (err instanceof UnauthorizedError) {
         setShowLoginPrompt(true);
       } else {
-        toast({ title: "Translation failed", description: "Could not analyze the video. Please try again.", variant: "destructive" });
+        const message = err instanceof Error ? err.message : "Unknown error";
+        toast({
+          title: "Translation failed",
+          description: message && message !== "Failed to translate bark"
+            ? message
+            : "The video could not be analyzed. Try a short MP4 video with the dog clearly visible, then retry.",
+          variant: "destructive",
+        });
       }
     } finally {
       setIsAnalyzing(false);
