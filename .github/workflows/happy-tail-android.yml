@@ -49,25 +49,33 @@ jobs:
       - name: Set Android compile SDK required by media picker
         run: |
           python3 - <<'PY'
-          import re
           from pathlib import Path
           candidates = [Path("android/app/build.gradle.kts"), Path("android/app/build.gradle")]
           for p in candidates:
-              if not p.exists():
-                  continue
-              s = p.read_text()
-              updated, count = re.subn(r'(?m)^([ \\t]*compileSdk(?:Version)?\\s*(?:=\\s*)?)(?:flutter\\.compileSdkVersion|\\d+)', r'\\g<1>36', s)
-              if count:
-                  p.write_text(updated)
-                  print(f"Updated {count} compile SDK declaration(s) in {p}")
-                  print("\\n".join(line for line in updated.splitlines() if "compileSdk" in line))
-                  break
+              if p.exists():
+                  s = p.read_text()
+                  lines = s.splitlines()
+                  found = False
+                  for i, line in enumerate(lines):
+                      stripped = line.strip()
+                      if stripped.startswith("compileSdk"):
+                          indent = line[:len(line) - len(line.lstrip())]
+                          lines[i] = indent + "compileSdk = 36" if p.suffix == ".kts" else indent + "compileSdkVersion 36"
+                          found = True
+                          break
+                  if not found:
+                      # Insert into android { ... } block for generated Gradle templates.
+                      for i, line in enumerate(lines):
+                          if line.strip() == "android {":
+                              lines.insert(i + 1, "    compileSdk = 36" if p.suffix == ".kts" else "    compileSdkVersion 36")
+                              found = True
+                              break
+                  if found:
+                      p.write_text("\\n".join(lines) + "\\n")
+                      print(f"Configured compile SDK 36 in {p}")
+                      break
           else:
               raise SystemExit("No Android app Gradle file found")
-          if "compileSdk" not in updated:
-              raise SystemExit("compileSdk declaration was not updated")
-          if not re.search(r'(?m)^\\s*compileSdk(?:Version)?\\s*(?:=\\s*)?36\\s*$', updated):
-              raise SystemExit("compileSdk 36 verification failed")
           PY
 
       - name: Set Android launcher label and remove generated placeholder test
