@@ -60,6 +60,9 @@ async function extractFramesFromVideo(videoSrc: string, numFrames: number = 6): 
     if (!Number.isFinite(duration) || duration <= 0 || video.videoWidth === 0 || video.videoHeight === 0) {
       throw new Error("This video has no readable frames. Please try a different video, preferably MP4.");
     }
+    if (duration > 30) {
+      throw new Error("Videos must be 30 seconds or shorter. Please trim this clip and try again.");
+    }
 
     const canvas = document.createElement("canvas");
     const maxDimension = 512;
@@ -125,6 +128,11 @@ export default function BarkTranslator() {
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      if (!file.type.startsWith("video/")) {
+        toast({ title: "Unsupported file", description: "Please choose a video file (MP4 recommended).", variant: "destructive" });
+        e.target.value = "";
+        return;
+      }
       if (file.size > 50 * 1024 * 1024) {
         toast({ title: "File too large", description: "Please upload a video smaller than 50MB.", variant: "destructive" });
         return;
@@ -153,7 +161,7 @@ export default function BarkTranslator() {
     setIsAnalyzing(true);
     setExtractionStatus("Extracting video frames...");
     try {
-      const frames = await extractFramesFromVideo(videoSrc, 6);
+      const frames = await extractFramesFromVideo(videoSrc, 5);
       if (frames.length === 0) {
         toast({ title: "No frames captured", description: "Could not extract frames from the video. Try a different file.", variant: "destructive" });
         setIsAnalyzing(false);
@@ -214,6 +222,7 @@ export default function BarkTranslator() {
                 <div className="w-20 h-20 bg-gray-800 rounded-full flex items-center justify-center mb-6 mx-auto">
                   <MessageSquare className="w-10 h-10 text-gray-500" />
                 </div>
+                <p className="text-xs text-gray-400 mb-4">Video limit: 30 seconds · 50 MB max · MP4 recommended</p>
                 <div className="flex flex-col gap-3 w-full max-w-xs mx-auto">
                   <Button
                     data-testid="button-record-video"
