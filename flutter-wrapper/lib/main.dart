@@ -134,7 +134,17 @@ class _HappyTailWebShellState extends State<HappyTailWebShell> {
           type: type,
           allowMultiple: params.mode == FileSelectorMode.openMultiple,
         );
-        return result?.files.where((file) => file.path != null).map((file) => Uri.file(file.path!).toString()).toList() ?? <String>[];
+        return result?.files.map((file) {
+          final identifier = file.identifier;
+          if (identifier != null) {
+            final uri = Uri.tryParse(identifier);
+            if (uri != null && (uri.scheme == 'content' || uri.scheme == 'file')) {
+              return uri.toString();
+            }
+          }
+          // Fall back only when the picker exposes no platform URI.
+          return file.path == null ? '' : Uri.file(file.path!).toString();
+        }).where((uri) => uri.isNotEmpty).toList() ?? <String>[];
       });
     }
 
