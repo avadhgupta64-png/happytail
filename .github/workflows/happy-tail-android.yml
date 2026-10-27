@@ -46,36 +46,68 @@ jobs:
       - name: Generate Android and iOS platform projects
         run: flutter create --platforms=android,ios --org com.happytail --project-name happy_tail .
 
-      - name: Set Android compile SDK required by media picker
+      - name: Set compile SDK 36 for app and Android plugins
         run: |
           python3 - <<'PY'
           from pathlib import Path
-          candidates = [Path("android/app/build.gradle.kts"), Path("android/app/build.gradle")]
-          for p in candidates:
-              if p.exists():
-                  s = p.read_text()
-                  lines = s.splitlines()
-                  found = False
-                  for i, line in enumerate(lines):
-                      stripped = line.strip()
-                      if stripped.startswith("compileSdk"):
-                          indent = line[:len(line) - len(line.lstrip())]
-                          lines[i] = indent + "compileSdk = 36" if p.suffix == ".kts" else indent + "compileSdkVersion 36"
-                          found = True
-                          break
-                  if not found:
-                      # Insert into android { ... } block for generated Gradle templates.
-                      for i, line in enumerate(lines):
-                          if line.strip() == "android {":
-                              lines.insert(i + 1, "    compileSdk = 36" if p.suffix == ".kts" else "    compileSdkVersion 36")
-                              found = True
-                              break
-                  if found:
-                      p.write_text("\n".join(lines) + "\n")
-                      print(f"Configured compile SDK 36 in {p}")
-                      break
+          app = Path("android/app/build.gradle.kts")
+          if app.exists():
+              s = app.read_text()
+              s = s.replace("compileSdk = flutter.compileSdkVersion", "compileSdk = 36")
+              app.write_text(s)
           else:
-              raise SystemExit("No Android app Gradle file found")
+              app = Path("android/app/build.gradle")
+              if not app.exists():
+                  raise SystemExit("Generated app Gradle file not found")
+              s = app.read_text().replace("compileSdkVersion flutter.compileSdkVersion", "compileSdkVersion 36")
+              app.write_text(s)
+          # Apply the same compile SDK to plugin subprojects too. The file picker
+          # pulls in Android lifecycle metadata that requires API 36.
+          root = Path("android/build.gradle.kts")
+          if root.exists():
+              s = root.read_text()
+              addition = """
+          subprojects {
+              afterEvaluate {
+                  val androidExtension = extensions.findByName("android")
+                  if (androidExtension != null) {
+                      try {
+                          androidExtension.javaClass.getMethod("setCompileSdk", Int::class.javaPrimitiveType).invoke(androidExtension, 36)
+                      } catch (_: NoSuchMethodException) {
+                          try {
+                              androidExtension.javaClass.getMethod("compileSdkVersion", Int::class.javaPrimitiveType).invoke(androidExtension, 36)
+                          } catch (_: NoSuchMethodException) {
+                              logger.lifecycle("Compile SDK override not available for $name")
+                          }
+                      }
+                  }
+              }
+          }
+          """
+              if "Compile SDK override not available" not in s:
+                  root.write_text(s + "\n" + addition)
+          else:
+              root = Path("android/build.gradle")
+              if not root.exists():
+                  raise SystemExit("Generated root Gradle file not found")
+              s = root.read_text()
+              addition = """
+          subprojects {
+              afterEvaluate {
+                  def androidExtension = extensions.findByName("android")
+                  if (androidExtension != null) {
+                      try {
+                          androidExtension.compileSdkVersion(36)
+                      } catch (Exception ignored) {
+                          logger.lifecycle("Compile SDK override not available for " + project.name)
+                      }
+                  }
+              }
+          }
+          """
+              if "Compile SDK override not available" not in s:
+                  root.write_text(s + "\n" + addition)
+          print("Configured Android compile SDK 36 for app and plugin subprojects")
           PY
 
       - name: Set Android launcher label and remove generated placeholder test
