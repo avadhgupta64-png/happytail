@@ -286,16 +286,27 @@ export default function EmotionDetector() {
 
   // Emotion handlers
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      if (file.size > 8 * 1024 * 1024) {
-        toast({ title: "File too large", description: "Please upload an image under 8MB.", variant: "destructive" });
-        return;
-      }
-      const reader = new FileReader();
-      reader.onloadend = () => setImgSrc(reader.result as string);
-      reader.readAsDataURL(file);
+    const input = e.currentTarget;
+    const file = input.files?.[0];
+    if (!file) return;
+    input.value = "";
+    if (!file.type.startsWith("image/")) {
+      toast({ title: "Unsupported file", description: "Choose an image such as JPG, PNG, or WEBP.", variant: "destructive" });
+      return;
     }
+    if (file.size > 8 * 1024 * 1024) {
+      toast({ title: "File too large", description: "Please upload an image under 8MB.", variant: "destructive" });
+      return;
+    }
+    const reader = new FileReader();
+    reader.onerror = () => toast({ title: "Could not read image", description: "Please choose the image again.", variant: "destructive" });
+    reader.onload = () => {
+      if (typeof reader.result === "string") {
+        setImgSrc(reader.result);
+        resetMutation();
+      }
+    };
+    reader.readAsDataURL(file);
   };
   const handleAnalyze = () => {
     if (!imgSrc) return;
@@ -322,16 +333,22 @@ export default function EmotionDetector() {
 
   // Behavior handlers
   const handleVideoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      if (file.size > 100 * 1024 * 1024) {
-        toast({ title: "File too large", description: "Please upload a video under 100MB.", variant: "destructive" });
-        return;
-      }
-      setVideoFile(file);
-      setVideoPreviewUrl(URL.createObjectURL(file));
-      setBehaviorResult(null);
+    const input = e.currentTarget;
+    const file = input.files?.[0];
+    if (!file) return;
+    input.value = "";
+    if (!file.type.startsWith("video/")) {
+      toast({ title: "Unsupported file", description: "Choose a video file (MP4, MOV, or WebM).", variant: "destructive" });
+      return;
     }
+    if (file.size > 100 * 1024 * 1024) {
+      toast({ title: "File too large", description: "Please upload a video under 100MB.", variant: "destructive" });
+      return;
+    }
+    if (videoPreviewUrl) URL.revokeObjectURL(videoPreviewUrl);
+    setVideoFile(file);
+    setVideoPreviewUrl(URL.createObjectURL(file));
+    setBehaviorResult(null);
   };
   const handleBehaviorAnalyze = async () => {
     if (!videoFile) return;
@@ -414,7 +431,7 @@ export default function EmotionDetector() {
                       <div className="w-20 h-20 bg-gray-800 rounded-full flex items-center justify-center mb-6">
                         <Camera className="w-10 h-10 text-gray-500" />
                       </div>
-                      <div className="flex flex-col gap-3 w-full max-w-xs">
+                      <div className="flex flex-col gap-3 w-full max-w-xs mx-auto">
                         <Button
                           onClick={() => setShowEmotionCamera(true)}
                           className="w-full whitespace-normal bg-primary hover:bg-primary/90 text-white rounded-xl min-h-14 py-4 flex items-center justify-center gap-2"
@@ -424,6 +441,7 @@ export default function EmotionDetector() {
                         </Button>
                         <Button
                           onClick={() => fileInputRef.current?.click()}
+                          type="button"
                           variant="outline"
                           className="w-full whitespace-normal bg-white/10 border-white/20 text-white hover:bg-white/20 rounded-xl min-h-14 py-4 flex items-center justify-center gap-2"
                           data-testid="button-upload-photo"
@@ -435,7 +453,7 @@ export default function EmotionDetector() {
                           ref={fileInputRef}
                           onChange={handleFileUpload}
                           accept="image/*"
-                          className="absolute w-px h-px opacity-0 pointer-events-none"
+                          className="sr-only"
                           data-testid="input-file-upload"
                         />
                       </div>
@@ -608,7 +626,7 @@ export default function EmotionDetector() {
               <div className="space-y-6">
                 <div className="relative rounded-[2rem] overflow-hidden bg-black w-full min-h-[360px] sm:aspect-[4/3] sm:min-h-0 shadow-2xl border-4 border-white ring-1 ring-purple-200">
                   {!videoPreviewUrl ? (
-                    <div className="w-full h-full bg-gray-900 flex flex-col items-center justify-center p-8 text-center">
+                    <div className="w-full min-h-[360px] flex flex-col items-center justify-center p-5 sm:p-8 text-center bg-gray-900">
                       <div className="w-20 h-20 bg-gray-800 rounded-full flex items-center justify-center mb-6">
                         <Video className="w-10 h-10 text-gray-500" />
                       </div>
@@ -624,8 +642,9 @@ export default function EmotionDetector() {
                         </Button>
                         <Button
                           onClick={() => videoInputRef.current?.click()}
+                          type="button"
                           variant="outline"
-                          className="bg-white/10 border-white/20 text-white hover:bg-white/20 rounded-xl py-6 flex items-center gap-2"
+                          className="w-full whitespace-normal bg-white/10 border-white/20 text-white hover:bg-white/20 rounded-xl min-h-14 py-4 flex items-center justify-center gap-2"
                         >
                           <Upload className="w-5 h-5" /> Upload Video
                         </Button>
@@ -634,7 +653,7 @@ export default function EmotionDetector() {
                           ref={videoInputRef}
                           onChange={handleVideoUpload}
                           accept="video/*"
-                          className="hidden"
+                          className="sr-only"
                         />
                       </div>
                     </div>
