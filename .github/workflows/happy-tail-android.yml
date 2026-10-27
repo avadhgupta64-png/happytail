@@ -42,6 +42,18 @@ jobs:
               print(f"Using uploaded logo: {p} ({im.width}x{im.height}, {im.mode})")
               if im.width < 256 or im.height < 256:
                   raise SystemExit("Uploaded logo is unexpectedly small; refusing to build with a tiny logo.")
+
+          # Build an OPAQUE launcher icon by compositing the transparent logo onto
+          # the brand navy background. The original logo artwork is unchanged; this
+          # only fills its transparent padding/corners so Android never renders the
+          # legacy/round launcher icon as a white square.
+          navy = (0x10, 0x18, 0x27, 255)  # #101827
+          with Image.open(p) as im:
+              im = im.convert("RGBA")
+              canvas = Image.new("RGBA", im.size, navy)
+              canvas.alpha_composite(im)
+              canvas.convert("RGB").save("assets/happy_tail_icon.png", format="PNG")
+          print("Generated opaque launcher icon: assets/happy_tail_icon.png")
           PY
       - name: Generate Android and iOS platform projects
         run: flutter create --platforms=android,ios --org com.happytail --project-name happy_tail .
