@@ -30,10 +30,11 @@ flutter:
 flutter_launcher_icons:
   android: true
   ios: true
-  # Opaque legacy/round launcher icon: the original transparent logo composited onto
-  # the brand navy background. Generated from happy_tail_logo_optimized.png by the
-  # build workflow so Android never renders the icon as a white square. The logo
-  # artwork itself is unchanged.
-  image_path: assets/happy_tail_icon.png
+  # The original transparent Happy Tail logo is used unchanged for the launcher
+  # icon (legacy + adaptive foreground) and the in-app header logo. Its
+  # transparency, colours and proportions are preserved exactly; nothing is
+  # composited, recoloured, cropped or regenerated. The adaptive background is
+  # the brand navy (#101827) shown behind the transparent foreground.
+  image_path: assets/happy_tail_logo.png
   adaptive_icon_background: '#101827'
   adaptive_icon_foreground: assets/happy_tail_logo.png
