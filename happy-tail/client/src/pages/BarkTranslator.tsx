@@ -126,8 +126,11 @@ export default function BarkTranslator() {
   const { checkGuestAccess, setShowLoginPrompt } = useGuest();
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
+    const input = e.currentTarget;
+    const file = input.files?.[0];
+    if (!file) return;
+    input.value = "";
+    {
       if (!file.type.startsWith("video/")) {
         toast({ title: "Unsupported file", description: "Please choose a video file (MP4 recommended).", variant: "destructive" });
         e.target.value = "";
@@ -234,6 +237,7 @@ export default function BarkTranslator() {
                   <Button
                     data-testid="button-upload-video"
                     onClick={() => fileInputRef.current?.click()}
+                    type="button"
                     variant="outline"
                     className="w-full whitespace-normal bg-white/10 border-white/20 text-white hover:bg-white/20 rounded-xl min-h-14 py-4 flex items-center justify-center gap-2"
                   >
@@ -244,8 +248,8 @@ export default function BarkTranslator() {
                     ref={fileInputRef}
                     onChange={handleFileUpload}
                     onClick={(e) => { (e.currentTarget as HTMLInputElement).value = ""; }}
-                    accept="video/*"
-                    className="absolute w-px h-px opacity-0 pointer-events-none"
+                    accept="video/mp4,video/quicktime,video/webm,video/*"
+                    className="sr-only"
                     data-testid="input-video-file"
                   />
                 </div>
