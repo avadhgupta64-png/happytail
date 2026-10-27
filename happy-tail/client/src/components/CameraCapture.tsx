@@ -42,26 +42,15 @@ export default function CameraCapture({ mode, onCapture, onClose }: CameraCaptur
     setReady(false);
     setError(null);
     try {
-      let stream: MediaStream;
-      if (mode === "video") {
-        try {
-          // Keep video recording usable if this Android WebView cannot open audio.
-          stream = await navigator.mediaDevices.getUserMedia({
-            video: { facingMode: facing, width: { ideal: 1280 }, height: { ideal: 720 } },
-            audio: true,
-          });
-        } catch {
-          stream = await navigator.mediaDevices.getUserMedia({
-            video: { facingMode: facing, width: { ideal: 1280 }, height: { ideal: 720 } },
-            audio: false,
-          });
-        }
-      } else {
-        stream = await navigator.mediaDevices.getUserMedia({
-          video: { facingMode: facing, width: { ideal: 1280 }, height: { ideal: 720 } },
-          audio: false,
-        });
+      if (!navigator.mediaDevices?.getUserMedia) {
+        throw new Error("Camera access is unavailable here. Open Happy Tail in an up-to-date browser over HTTPS.");
       }
+      // Start video without requesting microphone access. Microphone denial
+      // must never prevent the camera preview from opening.
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: facing, width: { ideal: 1280 }, height: { ideal: 720 } },
+        audio: false,
+      });
       streamRef.current = stream;
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
@@ -69,12 +58,14 @@ export default function CameraCapture({ mode, onCapture, onClose }: CameraCaptur
       }
       setReady(true);
     } catch (err: any) {
-      if (err.name === "NotAllowedError") {
-        setError("Camera permission denied. Please allow camera access in your browser settings.");
-      } else if (err.name === "NotFoundError") {
-        setError("No camera found on this device.");
+      if (err.name === "NotAllowedError" || err.name === "PermissionDeniedError") {
+        setError("Camera permission was denied. Allow camera access for this site in your browser settings, then try again.");
+      } else if (err.name === "NotFoundError" || err.name === "DevicesNotFoundError") {
+        setError("No camera was found on this device.");
+      } else if (err.name === "NotReadableError" || err.name === "TrackStartError") {
+        setError("The camera is busy in another app. Close other camera apps and try again.");
       } else {
-        setError("Could not start camera: " + (err.message || err.name));
+        setError("Could not start camera. Check site permissions and make sure no other app is using the camera.");
       }
     }
   }, [mode]);
