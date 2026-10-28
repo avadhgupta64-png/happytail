@@ -47,14 +47,30 @@ export default function CameraCapture({ mode, onCapture, onClose }: CameraCaptur
       }
       // Start video without requesting microphone access. Microphone denial
       // must never prevent the camera preview from opening.
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: facing, width: { ideal: 1280 }, height: { ideal: 720 } },
-        audio: false,
-      });
+      let stream: MediaStream;
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({
+          video: { facingMode: { ideal: facing }, width: { ideal: 1280 }, height: { ideal: 720 } },
+          audio: false,
+        });
+      } catch {
+        // Retry with basic constraints for mobile browsers that reject ideal constraints.
+        stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+      }
       streamRef.current = stream;
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-        await videoRef.current.play();
+      const video = videoRef.current;
+      if (!video) {
+        stream.getTracks().forEach((track) => track.stop());
+        throw new Error("Camera preview could not be attached. Close the camera and try again.");
+      }
+      video.muted = true;
+      video.playsInline = true;
+      video.setAttribute("playsinline", "true");
+      video.srcObject = stream;
+      try {
+        await video.play();
+      } catch {
+        // Some mobile browsers reject programmatic play; tapping the preview retries it.
       }
       setReady(true);
     } catch (err: any) {
@@ -213,7 +229,7 @@ export default function CameraCapture({ mode, onCapture, onClose }: CameraCaptur
             autoPlay
             playsInline
             muted
-            className={`w-full h-full object-cover ${preview ? "hidden" : ""}`}
+            className={`w-full h-full object-cover ${preview ? "hidden" : ""}`} onClick={() => { if (videoRef.current?.paused) void videoRef.current.play().catch(() => {}); }}
           />
 
           {/* Photo preview */}
