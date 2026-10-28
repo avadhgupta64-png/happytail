@@ -434,16 +434,16 @@ export default function EmotionDetector() {
                       <div className="flex flex-col gap-3 w-full max-w-xs mx-auto">
                         <Button
                           onClick={() => setShowEmotionCamera(true)}
-                          className="w-full whitespace-normal bg-primary hover:bg-primary/90 text-white rounded-xl min-h-14 py-4 flex items-center justify-center gap-2"
+                          className="w-full whitespace-normal bg-primary hover:bg-primary/90 text-white rounded-xl min-h-12 px-4 py-3 flex items-center justify-center gap-2"
                           data-testid="button-take-photo"
                         >
                           <Camera className="w-5 h-5" /> Take a Photo
                         </Button>
                         <Button
-                          onClick={() => fileInputRef.current?.click()}
+                          onClick={() => { const input = fileInputRef.current; if (!input) return; try { if (typeof input.showPicker === 'function') input.showPicker(); else input.click(); } catch { input.click(); } }}
                           type="button"
                           variant="outline"
-                          className="w-full whitespace-normal bg-white/10 border-white/20 text-white hover:bg-white/20 rounded-xl min-h-14 py-4 flex items-center justify-center gap-2"
+                          className="w-full whitespace-normal bg-white/10 border-white/20 text-white hover:bg-white/20 rounded-xl min-h-12 px-4 py-3 flex items-center justify-center gap-2"
                           data-testid="button-upload-photo"
                         >
                           <Upload className="w-5 h-5" /> {t.emotionDetector.uploadPrompt}
@@ -636,12 +636,12 @@ export default function EmotionDetector() {
                       <div className="flex flex-col gap-3 w-full max-w-xs">
                         <Button
                           onClick={() => setShowBehaviorCamera(true)}
-                          className="w-full whitespace-normal bg-purple-600 hover:bg-purple-700 text-white rounded-xl min-h-14 py-4 flex items-center justify-center gap-2"
+                          className="w-full whitespace-normal bg-purple-600 hover:bg-purple-700 text-white rounded-xl min-h-12 px-4 py-3 flex items-center justify-center gap-2"
                         >
                           <Video className="w-5 h-5" /> Record a Video
                         </Button>
                         <Button
-                          onClick={() => videoInputRef.current?.click()}
+                          onClick={() => { const input = videoInputRef.current; if (!input) return; try { if (typeof input.showPicker === 'function') input.showPicker(); else input.click(); } catch { input.click(); } }}
                           type="button"
                           variant="outline"
                           className="w-full whitespace-normal bg-white/10 border-white/20 text-white hover:bg-white/20 rounded-xl min-h-14 py-4 flex items-center justify-center gap-2"
