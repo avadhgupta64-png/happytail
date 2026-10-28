@@ -230,16 +230,16 @@ export default function BarkTranslator() {
                   <Button
                     data-testid="button-record-video"
                     onClick={() => setShowCamera(true)}
-                    className="w-full whitespace-normal bg-primary hover:bg-primary/90 text-white rounded-xl min-h-14 py-4 flex items-center justify-center gap-2"
+                    className="w-full whitespace-normal bg-primary hover:bg-primary/90 text-white rounded-xl min-h-12 px-4 py-3 flex items-center justify-center gap-2"
                   >
                     <Video className="w-5 h-5" /> Record a Video
                   </Button>
                   <Button
                     data-testid="button-upload-video"
-                    onClick={() => fileInputRef.current?.click()}
+                    onClick={() => { const input = fileInputRef.current; if (!input) return; try { if (typeof input.showPicker === 'function') input.showPicker(); else input.click(); } catch { input.click(); } }}
                     type="button"
                     variant="outline"
-                    className="w-full whitespace-normal bg-white/10 border-white/20 text-white hover:bg-white/20 rounded-xl min-h-14 py-4 flex items-center justify-center gap-2"
+                    className="w-full whitespace-normal bg-white/10 border-white/20 text-white hover:bg-white/20 rounded-xl min-h-12 px-4 py-3 flex items-center justify-center gap-2"
                   >
                     <Upload className="w-5 h-5" /> {t.barkTranslator.uploadVideo}
                   </Button>
