@@ -160,28 +160,6 @@ jobs:
                   print(f"Patched {p} to compile against Android 36")
           PY
 
-      - name: Align media plugin compile SDK with Android 36
-        run: |
-          python3 - <<'PY'
-          from pathlib import Path
-          import os
-          root = Path(os.environ.get("PUB_CACHE", str(Path.home() / ".pub-cache"))) / "hosted" / "pub.dev"
-          targets = ["file_picker-", "flutter_plugin_android_lifecycle-"]
-          changed = []
-          for package in targets:
-              for build in root.glob(package + "*/android/build.gradle*"):
-                  source = build.read_text()
-                  updated = source.replace("compileSdkVersion 34", "compileSdkVersion 36")
-                  updated = updated.replace("compileSdk = 34", "compileSdk = 36")
-                  updated = updated.replace("compileSdkVersion = 34", "compileSdkVersion = 36")
-                  if updated != source:
-                      build.write_text(updated)
-                      changed.append(str(build))
-          print("Updated plugin Android compile SDK files:", changed)
-          if not changed:
-              raise SystemExit("No media plugin compileSdk setting was changed; stopping instead of repeating a broken build.")
-          PY
-
       - name: Generate branded Android and iOS launcher icons
         run: dart run flutter_launcher_icons
 
