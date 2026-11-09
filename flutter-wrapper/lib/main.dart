@@ -130,7 +130,7 @@ class _HappyTailWebShellState extends State<HappyTailWebShell> {
         } else if (!acceptsAny && acceptsAudio && !acceptsImages && !acceptsVideos) {
           type = FileType.audio;
         }
-        final result = await FilePicker.platform.pickFiles(
+        final result = await FilePicker.pickFiles(
           type: type,
           allowMultiple: params.mode == FileSelectorMode.openMultiple,
         );
