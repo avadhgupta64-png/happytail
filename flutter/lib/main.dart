@@ -15,13 +15,13 @@ void main() async {
     DeviceOrientation.landscapeRight,
   ]);
 
-  // White status bar, dark icons — no orange anywhere
+  // Keep system chrome aligned with the branded startup screen
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
-      statusBarColor: Colors.white,
-      statusBarIconBrightness: Brightness.dark,
-      systemNavigationBarColor: Colors.white,
-      systemNavigationBarIconBrightness: Brightness.dark,
+      statusBarColor: const Color(0xFF081426),
+      statusBarIconBrightness: Brightness.light,
+      systemNavigationBarColor: const Color(0xFF081426),
+      systemNavigationBarIconBrightness: Brightness.light,
     ),
   );
 
