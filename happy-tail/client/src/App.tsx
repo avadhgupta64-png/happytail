@@ -25,6 +25,8 @@ import ExportData from "@/pages/ExportData";
 import AdminDashboard from "@/pages/AdminDashboard";
 import About from "@/pages/About";
 import Feedback from "@/pages/Feedback";
+import PrivacyPolicy from "@/pages/PrivacyPolicy";
+import TermsOfService from "@/pages/TermsOfService";
 import { HeartPulse, MessageSquare, ShieldAlert, BookOpen, Moon, Sun, Home as HomeIcon, MapPin, Users, Dog, Stethoscope, LogOut, LogIn, UserCircle, Clock, FileSpreadsheet, Shield, RefreshCw, ChevronDown, Info, Star } from "lucide-react";
 import { useTheme } from "./hooks/use-theme";
 import { Button } from "@/components/ui/button";
@@ -164,6 +166,8 @@ function Router() {
       <Route path="/feedback" component={Feedback} />
       <Route path="/profile" component={Profile} />
       <Route path="/about" component={About} />
+      <Route path="/privacy" component={PrivacyPolicy} />
+      <Route path="/terms" component={TermsOfService} />
       <Route component={NotFound} />
     </Switch>
   );
