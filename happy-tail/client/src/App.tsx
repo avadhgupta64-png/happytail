@@ -6,7 +6,6 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/not-found";
 import { SidebarProvider, SidebarTrigger, Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarMenu, SidebarMenuItem, SidebarMenuButton } from "@/components/ui/sidebar"
-import { SplashScreen } from "@/components/SplashScreen";
 import Home from "@/pages/Home";
 import EmotionDetector from "@/pages/EmotionDetector";
 import Emergency from "@/pages/Emergency";
@@ -338,12 +337,6 @@ function AuthErrorScreen({ type }: { type: "banned" | "removed" }) {
 }
 
 function AppContent() {
-  // showSplash starts true. The SplashScreen component itself decides whether
-  // to actually display (it skips instantly inside the Flutter wrapper and on
-  // repeat visits). We wait for onComplete before proceeding so auth has time
-  // to resolve during the splash duration.
-  const [splashDone, setSplashDone] = useState(false);
-  const handleSplashComplete = useCallback(() => setSplashDone(true), []);
 
   const { user, isLoading } = useAuth();
   const { isGuest } = useGuest();
@@ -360,27 +353,8 @@ function AppContent() {
     window.history.replaceState({}, "", "/");
   }
 
-  // Show splash until it completes (component self-skips when appropriate)
-  if (!splashDone) {
-    return <SplashScreen onComplete={handleSplashComplete} />;
-  }
-
-  // Auth is still resolving — show a minimal spinner. This is brief (<500ms)
-  // and only happens on first load since useAuth has staleTime: 5 minutes.
-  if (isLoading) {
-    return (
-      <div className="h-screen flex items-center justify-center bg-white dark:bg-gray-950">
-        <div className="flex flex-col items-center gap-3">
-          <img
-            src={logoImg}
-            alt="Happy Tail"
-            className="w-16 h-16 object-contain animate-pulse"
-            
-          />
-        </div>
-      </div>
-    );
-  }
+  // Render no branded/native-style loading overlay while authentication resolves.
+  if (isLoading) return <div className="min-h-screen bg-white dark:bg-gray-950" />;
 
   // Not authenticated and not in guest mode → show Landing
   if (!user && !isGuest) {
