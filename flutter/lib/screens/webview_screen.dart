@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -7,7 +6,6 @@ import 'package:webview_flutter/webview_flutter.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 
 import '../services/permission_service.dart';
-import '../services/file_chooser_service.dart';
 import '../widgets/no_connection_widget.dart';
 
 /// The production URL of the Happy Tail web app.
@@ -62,7 +60,7 @@ class _WebViewScreenState extends State<WebViewScreen> {
   void _initWebView() {
     _controller = WebViewController()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      ..setBackgroundColor(Colors.white)
+      ..setBackgroundColor(const Color(0xFF081426))
       ..enableZoom(false)
       ..setUserAgent(
         // Appending HappyTailApp/1.0 lets the web app detect it's running
@@ -151,10 +149,18 @@ class _WebViewScreenState extends State<WebViewScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: _onWillPop,
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) async {
+        if (didPop) return;
+        if (await _controller.canGoBack()) {
+          await _controller.goBack();
+        } else {
+          SystemNavigator.pop();
+        }
+      },
       child: Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: const Color(0xFF081426),
         body: _buildBody(),
       ),
     );
@@ -192,7 +198,7 @@ class _WebViewScreenState extends State<WebViewScreen> {
               minHeight: 3,
               backgroundColor: Colors.transparent,
               valueColor: const AlwaysStoppedAnimation<Color>(
-                Color(0xFFE07B39),
+                Color(0xFFFF5C8A),
               ),
             ),
           ),
