@@ -1,0 +1,47 @@
+name: happy_tail_app
+description: Happy Tail — AI-powered dog care companion (Android WebView wrapper)
+publish_to: "none"
+version: 1.0.0+1
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # WebView with full JS, file upload, camera support
+  webview_flutter: ^4.10.0
+
+  # Camera & microphone permissions
+  permission_handler: ^11.3.1
+
+  # File picker for uploads from gallery / file system
+  file_picker: ^8.1.2
+
+  # Image picker (camera + gallery)
+  image_picker: ^1.1.2
+
+  # Connectivity for offline detection
+  connectivity_plus: ^6.0.5
+
+  # Shared preferences for persisting state
+  shared_preferences: ^2.3.2
+
+  # URL launcher (for external links like maps, phone)
+  url_launcher: ^6.3.0
+
+  # Path utilities
+  path_provider: ^2.1.4
+  path: ^1.9.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/logo.png
+    - assets/splash_bg.png

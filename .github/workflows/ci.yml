@@ -1,0 +1,119 @@
+name: CI — Type Check & Lint
+
+on:
+  push:
+    branches: [main, fix]
+    paths:
+      - "happy-tail/**"
+      - ".github/workflows/ci.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "happy-tail/**"
+      - ".github/workflows/ci.yml"
+
+  # Allow manual trigger from Actions tab
+  workflow_dispatch:
+
+defaults:
+  run:
+    working-directory: happy-tail
+
+jobs:
+  typecheck:
+    name: TypeScript type check
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: happy-tail/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: TypeScript check (client + server + shared)
+        run: npm run check
+
+  lint:
+    name: ESLint (if configured)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    # Only run lint if an ESLint config exists
+    continue-on-error: true
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: happy-tail/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run ESLint (if config present)
+        run: |
+          if [ -f ".eslintrc*" ] || [ -f "eslint.config*" ]; then
+            npx eslint "client/src/**/*.{ts,tsx}" "server/**/*.ts" "shared/**/*.ts" \
+              --max-warnings 0
+          else
+            echo "No ESLint config found — skipping lint step"
+          fi
+
+  build:
+    name: Production build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs: typecheck
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: happy-tail/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build (client + server bundle)
+        env:
+          # Provide stub values so the build doesn't fail on env validation
+          DATABASE_URL: "postgresql://stub:stub@localhost/stub"
+          SESSION_SECRET: "ci-stub-secret-not-used-in-build"
+          GROQ_API_KEY: "gsk_stub"
+          GOOGLE_CLIENT_ID: "stub.apps.googleusercontent.com"
+          GOOGLE_CLIENT_SECRET: "stub"
+        run: npm run build
+
+      - name: Verify build output exists
+        run: |
+          echo "Checking dist/..."
+          ls -lh dist/
+          test -f dist/index.cjs || (echo "ERROR: dist/index.cjs missing" && exit 1)
+          test -d dist/public   || (echo "ERROR: dist/public missing" && exit 1)
+          echo "Build output verified ✓"
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: happy-tail-build-${{ github.sha }}
+          path: |
+            happy-tail/dist/
+          retention-days: 7

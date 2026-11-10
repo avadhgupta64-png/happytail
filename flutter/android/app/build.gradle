@@ -1,0 +1,97 @@
+plugins {
+    id "com.android.application"
+    id "kotlin-android"
+    // Flutter Gradle Plugin — must stay last
+    id "dev.flutter.flutter-gradle-plugin"
+}
+
+def localProperties = new Properties()
+def localPropertiesFile = rootProject.file('local.properties')
+if (localPropertiesFile.exists()) {
+    localPropertiesFile.withReader('UTF-8') { reader ->
+        localProperties.load(reader)
+    }
+}
+
+def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
+if (flutterVersionCode == null) flutterVersionCode = '1'
+
+def flutterVersionName = localProperties.getProperty('flutter.versionName')
+if (flutterVersionName == null) flutterVersionName = '1.0'
+
+android {
+    namespace "com.happytail.app"
+    // compileSdk must be >= 34 for Android 14 support (required by permission_handler 11+)
+    compileSdk 34
+    ndkVersion flutter.ndkVersion
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    kotlinOptions {
+        jvmTarget = '17'
+    }
+
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+    }
+
+    defaultConfig {
+        applicationId "com.happytail.app"
+        // minSdk 21 = Android 5.0 (covers ~99 % of active devices)
+        minSdk 21
+        targetSdk 34
+        versionCode flutterVersionCode.toInteger()
+        versionName flutterVersionName
+        // Enable multidex for larger dependency trees
+        multiDexEnabled true
+    }
+
+    buildTypes {
+        release {
+            // Shrink and obfuscate for release builds
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+
+            // Signing — reads from local.properties or environment.
+            // In CI, set KEYSTORE_PATH, KEY_ALIAS, KEY_PASSWORD, STORE_PASSWORD env vars.
+            def keystorePath = System.getenv('KEYSTORE_PATH') ?: localProperties.getProperty('keystore.path')
+            if (keystorePath) {
+                signingConfig signingConfigs.create("release").tap {
+                    storeFile file(keystorePath)
+                    storePassword System.getenv('STORE_PASSWORD') ?: localProperties.getProperty('keystore.storePassword')
+                    keyAlias System.getenv('KEY_ALIAS') ?: localProperties.getProperty('keystore.keyAlias')
+                    keyPassword System.getenv('KEY_PASSWORD') ?: localProperties.getProperty('keystore.keyPassword')
+                }
+            }
+        }
+        debug {
+            applicationIdSuffix ".debug"
+            versionNameSuffix "-debug"
+        }
+    }
+
+    packagingOptions {
+        // Avoid duplicate META-INF files from Kotlin stdlib
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/NOTICE.txt'
+    }
+}
+
+flutter {
+    source '../..'
+}
+
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    implementation 'androidx.multidex:multidex:2.0.1'
+    // FileProvider (for camera capture URI)
+    implementation 'androidx.core:core-ktx:1.13.1'
+    implementation 'androidx.appcompat:appcompat:1.7.0'
+}

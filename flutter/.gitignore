@@ -1,0 +1,48 @@
+# Flutter build output
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+build/
+
+# Android local files (never commit)
+android/local.properties
+android/.gradle/
+android/key.properties
+android/app/google-services.json
+*.keystore
+*.jks
+
+# iOS
+ios/.symlinks/
+ios/Pods/
+ios/Flutter/Flutter.framework
+ios/Flutter/Flutter.podspec
+ios/Runner.xcworkspace/xcshareddata/
+ios/Runner/GeneratedPluginRegistrant.*
+
+# macOS
+macos/Flutter/GeneratedPluginRegistrant.swift
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# IntelliJ
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# Misc
+*.class
+*.log
+*.pyc
+*.swp
+.DS_Store
+.atom/
+.editorconfig
+.vagrant/
+Thumbs.db
