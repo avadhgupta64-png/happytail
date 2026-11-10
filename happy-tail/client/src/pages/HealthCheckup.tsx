@@ -11,6 +11,8 @@ import { Badge } from "@/components/ui/badge";
 import { Link } from "wouter";
 import { useLanguage } from "@/lib/language-context";
 import { useGuest } from "@/lib/guest-context";
+import { AIUsageCounter } from "@/components/AIUsageCounter";
+import { AIUsageLimitRequest } from "@/components/AIUsageLimitRequest";
 
 interface HealthResult {
   breed: string;
@@ -118,6 +120,8 @@ export default function HealthCheckup() {
 
   return (
     <div className="max-w-6xl mx-auto">
+      <AIUsageCounter featureKey="health_scan" />
+      <AIUsageLimitRequest featureKey="health_scan" />
       {/* Header */}
       <div className="flex items-center gap-3 mb-6 sm:mb-8">
         <Link href="/health">

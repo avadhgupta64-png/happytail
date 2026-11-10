@@ -14,6 +14,8 @@ import { useToast } from "@/hooks/use-toast";
 import { useLanguage } from "@/lib/language-context";
 import { useGuest } from "@/lib/guest-context";
 import { useMutation } from "@tanstack/react-query";
+import { AIUsageCounter } from "@/components/AIUsageCounter";
+import { AIUsageLimitRequest } from "@/components/AIUsageLimitRequest";
 
 // ─── Emotion helpers ──────────────────────────────────────────────────────────
 const emotionColors: Record<string, string> = {
@@ -353,6 +355,9 @@ export default function EmotionDetector() {
 
   return (
     <div className="max-w-5xl mx-auto" data-testid="emotion-detector-page">
+      {/* Per-tab usage counter — switches featureKey when tab changes */}
+      <AIUsageCounter featureKey={activeTab === "behavior" ? "behavior_analysis" : "emotion_scan"} />
+      <AIUsageLimitRequest featureKey={activeTab === "behavior" ? "behavior_analysis" : "emotion_scan"} />
       {/* Always-mounted hidden inputs */}
       <input
         ref={emotionFileRef}
