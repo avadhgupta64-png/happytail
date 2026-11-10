@@ -2,10 +2,28 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import logoImg from "@assets/IMG-20260210-WA0048_1770744211559.jpg";
 
+// Detect if running as installed PWA or inside the Flutter WebView wrapper
+function isStandaloneOrNative() {
+  if (typeof window === "undefined") return false;
+  if (window.matchMedia("(display-mode: standalone)").matches) return true;
+  if ((navigator as any).standalone === true) return true; // iOS Safari
+  if (navigator.userAgent.includes("HappyTailApp")) return true; // Flutter wrapper
+  return false;
+}
+
 export function SplashScreen({ onComplete }: { onComplete: () => void }) {
   const [visible, setVisible] = useState(true);
 
   useEffect(() => {
+    // Skip splash entirely when running as an installed PWA or native wrapper —
+    // the OS already handles the launch experience; showing our own splash on top
+    // creates a double-splash and delays the user reaching the app.
+    if (isStandaloneOrNative()) {
+      setVisible(false);
+      onComplete();
+      return;
+    }
+
     const timer = window.setTimeout(() => {
       setVisible(false);
       window.setTimeout(onComplete, 380);
