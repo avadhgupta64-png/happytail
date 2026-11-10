@@ -1,7 +1,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { Download, X } from "lucide-react";
 import { usePwaInstall } from "@/hooks/use-pwa-install";
-import logoImg from "@assets/logo.png";
+import logoImg from "@assets/logo_transparent.png";
 
 export function PwaInstallBanner() {
   const { canInstall, install, dismiss } = usePwaInstall();
@@ -24,7 +24,7 @@ export function PwaInstallBanner() {
             <img
               src={logoImg}
               alt="Happy Tail"
-              className="shrink-0 h-11 w-11 object-contain"
+              className="shrink-0 h-14 w-14 object-contain bg-transparent"
             />
 
             {/* Text */}
