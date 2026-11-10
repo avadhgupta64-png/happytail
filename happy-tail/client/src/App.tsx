@@ -31,7 +31,7 @@ import { HeartPulse, MessageSquare, ShieldAlert, BookOpen, Moon, Sun, Home as Ho
 import { useTheme } from "./hooks/use-theme";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import logoImg from "@assets/IMG-20260210-WA0048_1770744211559.jpg";
+import logoImg from "@assets/logo.png";
 import { LanguageProvider } from "@/lib/language-context";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { useLanguage } from "@/lib/language-context";
@@ -102,7 +102,7 @@ function AppSidebar() {
               src={logoImg}
               alt="Happy Tail Logo"
               className="w-9 h-9 rounded-xl object-cover"
-              style={{ mixBlendMode: "multiply" }}
+              
               data-testid="img-sidebar-logo"
             />
             <h2 className="text-lg font-bold text-primary font-display">Happy Tail</h2>
@@ -214,7 +214,7 @@ function AuthenticatedApp() {
                   src={logoImg}
                   alt="Happy Tail Logo"
                   className="w-6 h-6 rounded-md object-cover"
-                  style={{ mixBlendMode: "multiply" }}
+                  
                   data-testid="img-header-logo"
                 />
                 <h1 className="text-lg font-bold font-display text-primary">Happy Tail</h1>
@@ -375,7 +375,7 @@ function AppContent() {
             src={logoImg}
             alt="Happy Tail"
             className="w-12 h-12 rounded-xl animate-pulse"
-            style={{ mixBlendMode: "multiply" }}
+            
           />
         </div>
       </div>

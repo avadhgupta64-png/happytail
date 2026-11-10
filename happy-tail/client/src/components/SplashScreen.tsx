@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import logoImg from "@assets/IMG-20260210-WA0048_1770744211559.jpg";
+import logoImg from "@assets/logo.png";
 
 // Detect if running as installed PWA or inside the Flutter WebView wrapper
 function isStandaloneOrNative() {
