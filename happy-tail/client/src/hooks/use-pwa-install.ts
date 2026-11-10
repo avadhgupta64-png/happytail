@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 
 // BeforeInstallPromptEvent is not in the standard TS lib yet
 interface BeforeInstallPromptEvent extends Event {
@@ -6,46 +6,78 @@ interface BeforeInstallPromptEvent extends Event {
   userChoice: Promise<{ outcome: "accepted" | "dismissed" }>;
 }
 
+// ── Module-level capture ────────────────────────────────────────────────────
+// beforeinstallprompt can fire before React mounts. We capture it immediately
+// at module-load time so the hook never misses it.
+let _deferredPrompt: BeforeInstallPromptEvent | null = null;
+const _listeners = new Set<() => void>();
+
+function notifyListeners() {
+  _listeners.forEach((fn) => fn());
+}
+
+if (typeof window !== "undefined") {
+  window.addEventListener("beforeinstallprompt", (e) => {
+    e.preventDefault();
+    _deferredPrompt = e as BeforeInstallPromptEvent;
+    notifyListeners();
+  });
+  window.addEventListener("appinstalled", () => {
+    _deferredPrompt = null;
+    notifyListeners();
+  });
+}
+
+// ── Hook ────────────────────────────────────────────────────────────────────
 export function usePwaInstall() {
-  const [prompt, setPrompt] = useState<BeforeInstallPromptEvent | null>(null);
-  const [isInstalled, setIsInstalled] = useState(false);
-  const [outcome, setOutcome] = useState<"accepted" | "dismissed" | null>(null);
+  const isStandalone =
+    typeof window !== "undefined" &&
+    (window.matchMedia("(display-mode: standalone)").matches ||
+      (navigator as any).standalone === true ||
+      navigator.userAgent.includes("HappyTailApp"));
+
+  const [prompt, setPrompt] = useState<BeforeInstallPromptEvent | null>(
+    isStandalone ? null : _deferredPrompt
+  );
+  const [isInstalled, setIsInstalled] = useState(isStandalone);
+  // Track manual dismissal per session
+  const [dismissed, setDismissed] = useState(() =>
+    sessionStorage.getItem("pwa-banner-dismissed") === "1"
+  );
 
   useEffect(() => {
-    // Already running as installed PWA
-    if (window.matchMedia("(display-mode: standalone)").matches) {
-      setIsInstalled(true);
-      return;
-    }
+    if (isStandalone) return;
 
-    const handler = (e: Event) => {
-      e.preventDefault();
-      setPrompt(e as BeforeInstallPromptEvent);
-    };
+    const sync = () => setPrompt(_deferredPrompt);
+    _listeners.add(sync);
 
-    window.addEventListener("beforeinstallprompt", handler);
-
-    // Fired when the user installs from the native browser prompt or our button
-    window.addEventListener("appinstalled", () => {
+    const onInstalled = () => {
       setIsInstalled(true);
       setPrompt(null);
-    });
+    };
+    window.addEventListener("appinstalled", onInstalled);
 
-    return () => window.removeEventListener("beforeinstallprompt", handler);
-  }, []);
+    return () => {
+      _listeners.delete(sync);
+      window.removeEventListener("appinstalled", onInstalled);
+    };
+  }, [isStandalone]);
 
-  const install = async () => {
+  const install = useCallback(async () => {
     if (!prompt) return;
     await prompt.prompt();
     const result = await prompt.userChoice;
-    setOutcome(result.outcome);
-    if (result.outcome === "accepted") {
-      setIsInstalled(true);
-    }
+    if (result.outcome === "accepted") setIsInstalled(true);
+    _deferredPrompt = null;
     setPrompt(null);
-  };
+  }, [prompt]);
 
-  const dismiss = () => setPrompt(null);
+  const dismiss = useCallback(() => {
+    sessionStorage.setItem("pwa-banner-dismissed", "1");
+    setDismissed(true);
+  }, []);
 
-  return { canInstall: !!prompt && !isInstalled, isInstalled, outcome, install, dismiss };
+  const canInstall = !!prompt && !isInstalled && !dismissed;
+
+  return { canInstall, isInstalled, install, dismiss };
 }

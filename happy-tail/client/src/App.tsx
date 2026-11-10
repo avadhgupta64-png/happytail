@@ -27,7 +27,7 @@ import About from "@/pages/About";
 import Feedback from "@/pages/Feedback";
 import PrivacyPolicy from "@/pages/PrivacyPolicy";
 import TermsOfService from "@/pages/TermsOfService";
-import { HeartPulse, MessageSquare, ShieldAlert, BookOpen, Moon, Sun, Home as HomeIcon, MapPin, Users, Dog, Stethoscope, LogOut, LogIn, UserCircle, Clock, FileSpreadsheet, Shield, RefreshCw, ChevronDown, Info, Star } from "lucide-react";
+import { HeartPulse, MessageSquare, ShieldAlert, BookOpen, Moon, Sun, Home as HomeIcon, MapPin, Users, Dog, Stethoscope, LogOut, LogIn, UserCircle, Clock, FileSpreadsheet, Shield, RefreshCw, ChevronDown, Info, Star, Download } from "lucide-react";
 import { useTheme } from "./hooks/use-theme";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
@@ -42,6 +42,7 @@ import { LoginPromptModal } from "@/components/LoginPromptModal";
 import { AuthModalProvider, useAuthModal } from "@/lib/auth-modal-context";
 import { useFeedbackNotification } from "@/hooks/use-feedback-notification";
 import { PwaInstallBanner } from "@/components/PwaInstallBanner";
+import { usePwaInstall } from "@/hooks/use-pwa-install";
 
 function ThemeToggle() {
   const { theme, setTheme } = useTheme();
@@ -178,6 +179,7 @@ function AuthenticatedApp() {
   const { user, logout } = useAuth();
   const { isGuest, exitGuestMode } = useGuest();
   const { openAuthModal } = useAuthModal();
+  const { canInstall, install } = usePwaInstall();
 
   const handleGuestLogin = () => {
     exitGuestMode();
@@ -224,6 +226,18 @@ function AuthenticatedApp() {
                   <Info className="w-4 h-4" />
                 </Button>
               </Link>
+              {canInstall && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={install}
+                  className="rounded-xl text-muted-foreground hover:text-primary"
+                  title="Install Happy Tail app"
+                  data-testid="button-pwa-install"
+                >
+                  <Download className="w-4 h-4" />
+                </Button>
+              )}
               <LanguageSwitcher />
               <ThemeToggle />
               {isGuest && (
@@ -377,7 +391,6 @@ function AppContent() {
     <>
       <AuthenticatedApp />
       <LoginPromptModal />
-      <PwaInstallBanner />
     </>
   );
 }
@@ -390,6 +403,7 @@ export default function App() {
           <GuestProvider>
             <AuthModalProvider>
               <AppContent />
+              <PwaInstallBanner />
             </AuthModalProvider>
           </GuestProvider>
         </LanguageProvider>
