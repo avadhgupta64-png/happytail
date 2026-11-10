@@ -41,6 +41,7 @@ import { LoginPromptModal } from "@/components/LoginPromptModal";
 import { AuthModalProvider, useAuthModal } from "@/lib/auth-modal-context";
 import { useFeedbackNotification } from "@/hooks/use-feedback-notification";
 import { PwaInstallBanner } from "@/components/PwaInstallBanner";
+import { SplashScreen } from "@/components/SplashScreen";
 import { usePwaInstall } from "@/hooks/use-pwa-install";
 
 function ThemeToggle() {
@@ -340,6 +341,8 @@ function AppContent() {
 
   const { user, isLoading } = useAuth();
   const { isGuest } = useGuest();
+  const [splashComplete, setSplashComplete] = useState(false);
+  const finishSplash = useCallback(() => setSplashComplete(true), []);
 
   // Check for auth error from login callback
   const authError = new URLSearchParams(window.location.search).get("auth_error");
@@ -353,7 +356,10 @@ function AppContent() {
     window.history.replaceState({}, "", "/");
   }
 
-  // Render no branded/native-style loading overlay while authentication resolves.
+  // Show the branded animated splash on every PWA launch before the app content.
+  if (!splashComplete) return <SplashScreen onComplete={finishSplash} />;
+
+  // Keep the app shell hidden until authentication has resolved.
   if (isLoading) return <div className="min-h-screen bg-white dark:bg-gray-950" />;
 
   // Not authenticated and not in guest mode → show Landing
