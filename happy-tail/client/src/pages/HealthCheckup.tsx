@@ -42,6 +42,14 @@ export default function HealthCheckup() {
       return;
     }
 
+    if (files.length > remaining) {
+      toast({
+        title: `Only ${remaining} photo${remaining === 1 ? "" : "s"} allowed`,
+        description: `You can add ${remaining} more photo${remaining === 1 ? "" : "s"} (max 5 total). Extra files were ignored.`,
+        variant: "destructive",
+      });
+    }
+
     const toProcess = files.slice(0, remaining);
     let loaded = 0;
     const newImages: string[] = [];
@@ -192,7 +200,12 @@ export default function HealthCheckup() {
             </Button>
 
             <p className="text-xs text-muted-foreground text-center mt-3">
-              Accepts JPG, PNG, WebP · Max 10 MB per photo · Up to 5 photos
+              Accepts JPG, PNG, WebP · Max 10 MB per photo
+              {images.length === 0
+                ? " · Upload 1–5 photos to start"
+                : images.length === 5
+                ? " · Maximum 5 photos reached"
+                : ` · ${5 - images.length} more photo${5 - images.length === 1 ? "" : "s"} allowed`}
             </p>
           </div>
 

@@ -24,10 +24,10 @@ const openai = new OpenAI({
   baseURL: "https://api.groq.com/openai/v1",
 });
 
-// Vision model: supports image inputs + JSON mode
-const VISION_MODEL = "meta-llama/llama-4-scout-17b-16e-instruct";
-// Text model: for non-vision tasks (fast, cheap)
-const TEXT_MODEL = "qwen/qwen3.8-27b";
+// qwen/qwen3.8-27b is the only model on this Groq account that accepts image
+// inputs — it handles both vision and text tasks.
+const VISION_MODEL = "qwen/qwen3.8-27b";
+const TEXT_MODEL   = "qwen/qwen3.8-27b";
 
 const LANGUAGE_NAMES: Record<string, string> = {
   en: "English", hi: "Hindi", ta: "Tamil", te: "Telugu", mr: "Marathi",
@@ -511,9 +511,11 @@ CRITICAL RULES:
   // === Health Checkup Route ===
   app.post("/api/health/checkup", isAuthenticated, async (req: any, res) => {
     try {
-      const { images: rawImages, language } = z.object({ images: z.array(z.string()), language: z.string().optional() }).parse(req.body);
-      // Groq vision supports max 5 images
-      const images = rawImages.slice(0, 5);
+      const { images: rawImages, language } = z.object({
+        images: z.array(z.string()).min(1, "At least 1 photo is required").max(5, "Maximum 5 photos allowed"),
+        language: z.string().optional()
+      }).parse(req.body);
+      const images = rawImages; // already validated 1–5
 
       // Check + increment AI usage limit
       const allowed = await checkAndIncrementUsage(req, res, "health_scan");
