@@ -1,5 +1,4 @@
 import { useState, useCallback, useEffect } from "react";
-import { motion } from "framer-motion";
 import { Switch, Route, Link, useLocation } from "wouter";
 import { queryClient } from "./lib/queryClient";
 import { QueryClientProvider, useQuery } from "@tanstack/react-query";
@@ -25,8 +24,6 @@ import History from "@/pages/History";
 import ExportData from "@/pages/ExportData";
 import AdminDashboard from "@/pages/AdminDashboard";
 import About from "@/pages/About";
-import PrivacyPolicy from "@/pages/PrivacyPolicy";
-import TermsOfService from "@/pages/TermsOfService";
 import Feedback from "@/pages/Feedback";
 import { HeartPulse, MessageSquare, ShieldAlert, BookOpen, Moon, Sun, Home as HomeIcon, MapPin, Users, Dog, Stethoscope, LogOut, LogIn, UserCircle, Clock, FileSpreadsheet, Shield, RefreshCw, ChevronDown, Info, Star } from "lucide-react";
 import { useTheme } from "./hooks/use-theme";
@@ -41,6 +38,7 @@ import { WSProvider } from "@/lib/ws-context";
 import { GuestProvider, useGuest } from "@/lib/guest-context";
 import { LoginPromptModal } from "@/components/LoginPromptModal";
 import { AuthModalProvider, useAuthModal } from "@/lib/auth-modal-context";
+import { useFeedbackNotification } from "@/hooks/use-feedback-notification";
 
 function ThemeToggle() {
   const { theme, setTheme } = useTheme();
@@ -56,35 +54,17 @@ function ThemeToggle() {
   );
 }
 
-function accessRequestTarget(featureKey: string) {
-  const routes: Record<string, string> = {
-    emotion_scan: "/detector",
-    behavior_analysis: "/detector",
-    location_search: "/locations",
-    geofencing: "/locations",
-    bark_translation: "/bark-translator",
-    health_scan: "/health/scan",
-    diet_plan: "/health/diet",
-    vet_chat: "/health/chat",
-  };
-  return routes[featureKey] || "/"; 
-}
-
 function AppSidebar() {
   const [location] = useLocation();
   const { t } = useLanguage();
-  const [readNotificationKeys, setReadNotificationKeys] = useState<string[]>(() => {
-    try { return JSON.parse(localStorage.getItem("happy-tail-read-notifications") || "[]"); }
-    catch { return []; }
-  });
+  const { hasUnread: hasFeedbackNotif, markAsRead: markFeedbackRead } = useFeedbackNotification();
 
-  const markNotificationKeysRead = useCallback((keys: string[]) => {
-    setReadNotificationKeys((current) => {
-      const next = Array.from(new Set([...current, ...keys]));
-      try { localStorage.setItem("happy-tail-read-notifications", JSON.stringify(next)); } catch {}
-      return next;
-    });
-  }, []);
+  // Mark feedback as read when the user visits /feedback
+  useEffect(() => {
+    if (location === "/feedback" && hasFeedbackNotif) {
+      markFeedbackRead();
+    }
+  }, [location, hasFeedbackNotif, markFeedbackRead]);
 
   const { data: adminCheck } = useQuery({
     queryKey: ["/api/admin/check"],
@@ -93,66 +73,6 @@ function AppSidebar() {
       return res.json();
     },
   });
-
-  const { data: pendingAccessRequests = [] } = useQuery({
-    queryKey: ["/api/admin/ai-access-requests"],
-    queryFn: async () => {
-      const res = await fetch("/api/admin/ai-access-requests", { credentials: "include" });
-      if (!res.ok) return [];
-      return res.json();
-    },
-    enabled: !!adminCheck?.isAdmin,
-    refetchInterval: 10000,
-  });
-
-  const { data: myAccessRequests = [] } = useQuery({
-    queryKey: ["/api/ai/access-requests/mine"],
-    queryFn: async () => {
-      const res = await fetch("/api/ai/access-requests/mine", { credentials: "include" });
-      if (!res.ok) return [];
-      return res.json();
-    },
-    enabled: !!adminCheck && !adminCheck?.isAdmin,
-    refetchInterval: 10000,
-  });
-
-  const { data: adminActivity = [] } = useQuery({
-    queryKey: ["/api/admin/all-activities"],
-    queryFn: async () => {
-      const res = await fetch("/api/admin/all-activities", { credentials: "include" });
-      if (!res.ok) return [];
-      return res.json();
-    },
-    enabled: !!adminCheck?.isAdmin,
-    refetchInterval: 10000,
-  });
-
-  const { data: feedbackItems = [] } = useQuery({
-    queryKey: [adminCheck?.isAdmin ? "/api/admin/feedback" : "/api/feedback"],
-    queryFn: async () => {
-      const endpoint = adminCheck?.isAdmin ? "/api/admin/feedback" : "/api/feedback";
-      const res = await fetch(endpoint, { credentials: "include" });
-      if (!res.ok) return [];
-      return res.json();
-    },
-    enabled: !!adminCheck,
-    refetchInterval: 10000,
-  });
-
-  const notificationItems = [
-    ...(adminCheck?.isAdmin ? pendingAccessRequests.map((request: any) => ({ key: `admin-access-${request.id}-${request.status || "pending"}`, url: "/admin" })) : []),
-    ...(adminCheck?.isAdmin ? feedbackItems.filter((item: any) => !item.resolved).map((item: any) => ({ key: `admin-feedback-${item.id}-${item.updatedAt || item.createdAt}`, url: "/feedback" })) : []),
-    ...(!adminCheck?.isAdmin ? myAccessRequests.filter((request: any) => ["approved", "denied", "revoked"].includes(request.status) && request.reviewedAt).map((request: any) => ({ key: `user-access-${request.id}-${request.status}-${request.reviewedAt}`, url: accessRequestTarget(request.featureKey) })) : []),
-    ...(!adminCheck?.isAdmin ? feedbackItems.filter((item: any) => item.adminComment || item.resolved).map((item: any) => ({ key: `user-feedback-${item.id}-${item.updatedAt || item.adminComment || item.resolved}`, url: "/feedback" })) : []),
-  ];
-  const unreadNotificationItems = notificationItems.filter((item: any) => !readNotificationKeys.includes(item.key));
-  const hasUnreadNotifications = unreadNotificationItems.length > 0;
-
-  useEffect(() => {
-    const targetUrl = location;
-    const keys = notificationItems.filter((item: any) => item.url === targetUrl).map((item: any) => item.key);
-    if (keys.length) markNotificationKeysRead(keys);
-  }, [location, notificationItems.map((item: any) => item.key).join("|"), markNotificationKeysRead]);
 
   const navItems = [
     { title: t.nav.home, url: "/", icon: HomeIcon },
@@ -164,7 +84,7 @@ function AppSidebar() {
     { title: t.nav.community, url: "/community", icon: Users },
     { title: t.nav.emergency, url: "/emergency", icon: ShieldAlert },
     { title: t.nav.history, url: "/history", icon: Clock },
-    { title: "Feedback", url: "/feedback", icon: Star },
+    { title: "Feedback", url: "/feedback", icon: Star, notification: hasFeedbackNotif },
     { title: t.nav.about, url: "/about", icon: Info },
     ...(adminCheck?.isAdmin ? [{ title: t.nav.admin, url: "/admin", icon: Shield }] : []),
   ];
@@ -195,15 +115,22 @@ function AppSidebar() {
                         className="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-colors"
                         data-testid={`nav-${item.url.replace(/\//g, '') || 'home'}`}
                       >
-                        <item.icon
-                          className={`w-4 h-4 shrink-0 ${isActive ? "!text-primary" : "!text-muted-foreground"}`}
-                        />
+                        <div className="relative shrink-0">
+                          <item.icon
+                            className={`w-4 h-4 ${isActive ? "!text-primary" : "!text-muted-foreground"}`}
+                          />
+                          {/* Feedback unread notification dot */}
+                          {"notification" in item && item.notification && (
+                            <span
+                              className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-red-500 ring-1 ring-white dark:ring-gray-950"
+                              data-testid="feedback-notification-dot"
+                              aria-label="Unread admin reply"
+                            />
+                          )}
+                        </div>
                         <span className={`text-sm ${isActive ? "font-semibold !text-primary" : "!text-sidebar-foreground"}`}>
                           {item.title}
                         </span>
-                        {unreadNotificationItems.some((notification: any) => notification.url === item.url) && (
-                          <span aria-label="Unread notification" className="ml-auto h-2.5 w-2.5 rounded-full bg-red-600" />
-                        )}
                       </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
@@ -237,72 +164,9 @@ function Router() {
       <Route path="/feedback" component={Feedback} />
       <Route path="/profile" component={Profile} />
       <Route path="/about" component={About} />
-      <Route path="/privacy" component={PrivacyPolicy} />
-      <Route path="/terms" component={TermsOfService} />
       <Route component={NotFound} />
     </Switch>
   );
-}
-
-function HeaderNotificationIndicator() {
-  const { data: adminCheck } = useQuery({
-    queryKey: ["/api/admin/check"],
-    queryFn: async () => {
-      const res = await fetch("/api/admin/check", { credentials: "include" });
-      if (!res.ok) return { isAdmin: false };
-      return res.json();
-    },
-  });
-  const { data: requests = [] } = useQuery({
-    queryKey: [adminCheck?.isAdmin ? "/api/admin/ai-access-requests" : "/api/ai/access-requests/mine"],
-    queryFn: async () => {
-      const endpoint = adminCheck?.isAdmin ? "/api/admin/ai-access-requests" : "/api/ai/access-requests/mine";
-      const res = await fetch(endpoint, { credentials: "include" });
-      if (!res.ok) return [];
-      const data = await res.json();
-      return Array.isArray(data) ? data : [];
-    },
-    enabled: !!adminCheck,
-    refetchInterval: 10000,
-  });
-  const { data: activities = [] } = useQuery({
-    queryKey: ["/api/admin/all-activities"],
-    queryFn: async () => {
-      const res = await fetch("/api/admin/all-activities", { credentials: "include" });
-      if (!res.ok) return [];
-      const data = await res.json();
-      return Array.isArray(data) ? data : [];
-    },
-    enabled: !!adminCheck?.isAdmin,
-    refetchInterval: 10000,
-  });
-  const { data: feedback = [] } = useQuery({
-    queryKey: [adminCheck?.isAdmin ? "/api/admin/feedback" : "/api/feedback"],
-    queryFn: async () => {
-      const endpoint = adminCheck?.isAdmin ? "/api/admin/feedback" : "/api/feedback";
-      const res = await fetch(endpoint, { credentials: "include" });
-      if (!res.ok) return [];
-      const data = await res.json();
-      return Array.isArray(data) ? data : [];
-    },
-    enabled: !!adminCheck,
-    refetchInterval: 10000,
-  });
-  const readKeys: string[] = (() => {
-    try {
-      const value = JSON.parse(localStorage.getItem("happy-tail-read-notifications") || "[]");
-      return Array.isArray(value) ? value : [];
-    } catch { return []; }
-  })();
-  const notifications = [
-    ...(adminCheck?.isAdmin ? requests.map((item: any) => ({ key: `admin-access-${item.id}-${item.status || "pending"}` })) : []),
-    ...(adminCheck?.isAdmin ? feedback.filter((item: any) => !item.resolved).map((item: any) => ({ key: `admin-feedback-${item.id}-${item.updatedAt || item.createdAt}` })) : []),
-    ...(!adminCheck?.isAdmin ? requests.filter((item: any) => ["approved", "denied", "revoked"].includes(item.status) && item.reviewedAt).map((item: any) => ({ key: `user-access-${item.id}-${item.status}-${item.reviewedAt}`, url: accessRequestTarget(item.featureKey) })) : []),
-    ...(!adminCheck?.isAdmin ? feedback.filter((item: any) => item.adminComment || item.resolved).map((item: any) => ({ key: `user-feedback-${item.id}-${item.updatedAt || item.adminComment || item.resolved}` })) : []),
-  ];
-  return notifications.some((item: any) => !readKeys.includes(item.key))
-    ? <span aria-label="Unread notifications" className="pointer-events-none absolute right-1 top-1 h-2.5 w-2.5 rounded-full border-2 border-white bg-red-600 dark:border-gray-950" />
-    : null;
 }
 
 function AuthenticatedApp() {
@@ -315,9 +179,14 @@ function AuthenticatedApp() {
     openAuthModal("login");
   };
 
-  useState(() => {
-    fetch("/api/visitors/log", { method: "POST", credentials: "include" }).catch(() => {});
-  });
+  // Log visit once per session (not on every render)
+  useEffect(() => {
+    const key = "ht_visit_logged";
+    if (!sessionStorage.getItem(key)) {
+      sessionStorage.setItem(key, "1");
+      fetch("/api/visitors/log", { method: "POST", credentials: "include" }).catch(() => {});
+    }
+  }, []);
 
   const style = {
     "--sidebar-width": "15rem",
@@ -327,16 +196,13 @@ function AuthenticatedApp() {
   return (
     <WSProvider>
     <SidebarProvider style={style as React.CSSProperties}>
-      <div className="flex h-dvh min-h-0 w-full overflow-hidden bg-gray-50 dark:bg-gray-950 text-foreground">
+      <div className="flex h-screen w-full bg-gray-50 dark:bg-gray-950 text-foreground">
         <AppSidebar />
-        <div className="flex min-h-0 min-w-0 flex-col flex-1 overflow-hidden">
-          <header className="sticky top-0 z-40 flex shrink-0 items-center justify-between px-3 sm:px-4 py-3 border-b border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-950">
-            <div className="flex min-w-0 items-center gap-2 sm:gap-3">
-              <span className="relative inline-flex shrink-0 rounded-lg border border-gray-200 dark:border-gray-700">
-                <SidebarTrigger className="h-10 w-10" data-testid="button-sidebar-toggle" />
-                <HeaderNotificationIndicator />
-              </span>
-              <div className="flex min-w-0 items-center gap-2">
+        <div className="flex flex-col flex-1 overflow-hidden">
+          <header className="flex items-center justify-between px-4 py-3 border-b border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-950">
+            <div className="flex items-center gap-3">
+              <SidebarTrigger data-testid="button-sidebar-toggle" />
+              <div className="flex items-center gap-2">
                 <img
                   src={logoImg}
                   alt="Happy Tail Logo"
@@ -344,10 +210,10 @@ function AuthenticatedApp() {
                   style={{ mixBlendMode: "multiply" }}
                   data-testid="img-header-logo"
                 />
-                <h1 className="hidden xs:block text-base sm:text-lg font-bold font-display text-primary whitespace-nowrap">Happy Tail</h1>
+                <h1 className="text-lg font-bold font-display text-primary">Happy Tail</h1>
               </div>
             </div>
-            <div className="flex shrink-0 items-center gap-0.5 sm:gap-1">
+            <div className="flex items-center gap-1">
               <Link href="/about">
                 <Button variant="ghost" size="icon" className="rounded-xl text-muted-foreground hover:text-primary" title="About Happy Tail" data-testid="button-about">
                   <Info className="w-4 h-4" />
@@ -355,11 +221,6 @@ function AuthenticatedApp() {
               </Link>
               <LanguageSwitcher />
               <ThemeToggle />
-              {user && (
-                <Button variant="ghost" size="icon" className="h-9 w-9 text-red-600 hover:text-red-700" title="Log out" aria-label="Log out" onClick={() => logout()} data-testid="button-header-logout">
-                  <LogOut className="h-4 w-4" />
-                </Button>
-              )}
               {isGuest && (
                 <Button
                   size="sm"
@@ -421,7 +282,10 @@ function AuthenticatedApp() {
               )}
             </div>
           </header>
-          <main className="min-h-0 flex-1 overflow-y-auto overscroll-y-contain p-3 sm:p-4 md:p-6 lg:p-8 pb-24 md:pb-8">
+          <main
+            className="main-scroll"
+            style={{ paddingBottom: "max(1rem, calc(1rem + env(safe-area-inset-bottom, 0px)))" }}
+          >
             <Router />
           </main>
         </div>
@@ -431,264 +295,75 @@ function AuthenticatedApp() {
   );
 }
 
-function AuthErrorScreen({ type, reason }: { type: "banned" | "removed"; reason?: string | null }) {
+function AuthErrorScreen({ type }: { type: "banned" | "removed" }) {
   const isBanned = type === "banned";
-  const adminEmail = "avadhgupta64@gmail.com";
-  const { lang } = useLanguage();
-  const copy: Record<string, Record<string, string>> = {
-    en: { suspended: "Account Suspended", removed: "Account Removed", bannedText: "Access to Happy Tail has been restricted by an administrator. The app is unavailable for this account while the suspension is active.", removedText: "Your Happy Tail account has been permanently removed. If you believe this happened in error, contact the administrator.", appealBanned: "If you believe this suspension is a mistake, contact the admin.", appealRemoved: "If you believe this removal happened in error, contact the admin.", contact: "Contact the admin", about: "About Happy Tail", logout: "Log Out", reason: "Reason provided" },
-    hi: { suspended: "खाता निलंबित", removed: "खाता हटाया गया", bannedText: "प्रशासक ने Happy Tail तक आपकी पहुँच सीमित कर दी है। निलंबन सक्रिय रहने तक यह खाता ऐप का उपयोग नहीं कर सकता।", removedText: "आपका Happy Tail खाता स्थायी रूप से हटा दिया गया है। यदि आपको लगता है कि यह गलती से हुआ है, तो प्रशासक से संपर्क करें।", appealBanned: "यदि आपको लगता है कि निलंबन गलत है, तो प्रशासक से संपर्क करें।", appealRemoved: "यदि आपको लगता है कि खाता गलती से हटाया गया है, तो प्रशासक से संपर्क करें।", contact: "प्रशासक से संपर्क करें", about: "Happy Tail के बारे में", logout: "लॉग आउट", reason: "दिया गया कारण" },
-    ta: { suspended: "கணக்கு இடைநிறுத்தப்பட்டது", removed: "கணக்கு நீக்கப்பட்டது", bannedText: "நிர்வாகியால் Happy Tail அணுகல் கட்டுப்படுத்தப்பட்டுள்ளது. இடைநிறுத்தம் இருக்கும் வரை இந்தக் கணக்கால் பயன்பாட்டைப் பயன்படுத்த முடியாது.", removedText: "உங்கள் Happy Tail கணக்கு நிரந்தரமாக நீக்கப்பட்டது. இது தவறுதலாக நடந்ததாக நினைத்தால் நிர்வாகியைத் தொடர்புகொள்ளவும்.", appealBanned: "இடைநிறுத்தம் தவறு என நினைத்தால் நிர்வாகியைத் தொடர்புகொள்ளவும்.", appealRemoved: "கணக்கு தவறுதலாக நீக்கப்பட்டதாக நினைத்தால் நிர்வாகியைத் தொடர்புகொள்ளவும்.", contact: "நிர்வாகியைத் தொடர்புகொள்ளவும்", about: "Happy Tail பற்றி", logout: "வெளியேறு", reason: "காரணம்" },
-    es: { suspended: "Cuenta suspendida", removed: "Cuenta eliminada", bannedText: "Un administrador ha restringido el acceso a Happy Tail. Esta cuenta no podrá usar la aplicación mientras dure la suspensión.", removedText: "Tu cuenta de Happy Tail se ha eliminado permanentemente. Si crees que ha sido un error, contacta con el administrador.", appealBanned: "Si crees que la suspensión es un error, contacta con el administrador.", appealRemoved: "Si crees que la eliminación fue un error, contacta con el administrador.", contact: "Contactar con administración", about: "Acerca de Happy Tail", logout: "Cerrar sesión", reason: "Motivo indicado" },
-    fr: { suspended: "Compte suspendu", removed: "Compte supprimé", bannedText: "Un administrateur a restreint l’accès à Happy Tail. Ce compte ne peut pas utiliser l’application pendant la suspension.", removedText: "Votre compte Happy Tail a été supprimé définitivement. Si vous pensez qu’il s’agit d’une erreur, contactez l’administrateur.", appealBanned: "Si cette suspension vous semble incorrecte, contactez l’administrateur.", appealRemoved: "Si cette suppression vous semble incorrecte, contactez l’administrateur.", contact: "Contacter l’administrateur", about: "À propos de Happy Tail", logout: "Déconnexion", reason: "Motif indiqué" },
-    de: { suspended: "Konto gesperrt", removed: "Konto entfernt", bannedText: "Ein Administrator hat den Zugriff auf Happy Tail eingeschränkt. Dieses Konto kann die App während der Sperre nicht nutzen.", removedText: "Dein Happy-Tail-Konto wurde dauerhaft entfernt. Wenn du einen Fehler vermutest, kontaktiere bitte den Administrator.", appealBanned: "Wenn du die Sperre für einen Fehler hältst, kontaktiere den Administrator.", appealRemoved: "Wenn du die Entfernung für einen Fehler hältst, kontaktiere den Administrator.", contact: "Administrator kontaktieren", about: "Über Happy Tail", logout: "Abmelden", reason: "Angegebener Grund" },
-    pt: { suspended: "Conta suspensa", removed: "Conta removida", bannedText: "Um administrador restringiu o acesso ao Happy Tail. Esta conta não pode usar o aplicativo enquanto a suspensão estiver ativa.", removedText: "Sua conta Happy Tail foi removida permanentemente. Se acredita que isso foi um erro, entre em contato com o administrador.", appealBanned: "Se acredita que a suspensão foi um erro, entre em contato com o administrador.", appealRemoved: "Se acredita que a remoção foi um erro, entre em contato com o administrador.", contact: "Contactar o administrador", about: "Sobre o Happy Tail", logout: "Sair", reason: "Motivo informado" },
-    ja: { suspended: "アカウント停止中", removed: "アカウント削除済み", bannedText: "管理者により Happy Tail へのアクセスが制限されています。停止中はこのアカウントでアプリを利用できません。", removedText: "Happy Tail アカウントは完全に削除されました。誤りだと思われる場合は管理者にお問い合わせください。", appealBanned: "停止が誤りだと思われる場合は管理者にお問い合わせください。", appealRemoved: "削除が誤りだと思われる場合は管理者にお問い合わせください。", contact: "管理者に連絡", about: "Happy Tail について", logout: "ログアウト", reason: "理由" },
-    zh: { suspended: "账户已暂停", removed: "账户已删除", bannedText: "管理员已限制您访问 Happy Tail。暂停期间，此账户无法使用应用。", removedText: "您的 Happy Tail 账户已被永久删除。如果您认为这是错误，请联系管理员。", appealBanned: "如果您认为暂停有误，请联系管理员。", appealRemoved: "如果您认为删除有误，请联系管理员。", contact: "联系管理员", about: "关于 Happy Tail", logout: "退出登录", reason: "提供的原因" },
-    ar: { suspended: "الحساب موقوف", removed: "تم حذف الحساب", bannedText: "قيّد المسؤول الوصول إلى Happy Tail. لا يمكن لهذا الحساب استخدام التطبيق أثناء الإيقاف.", removedText: "تم حذف حساب Happy Tail نهائيًا. إذا كنت تعتقد أن ذلك حدث عن طريق الخطأ، فاتصل بالمسؤول.", appealBanned: "إذا كنت تعتقد أن الإيقاف خطأ، فاتصل بالمسؤول.", appealRemoved: "إذا كنت تعتقد أن الحذف خطأ، فاتصل بالمسؤول.", contact: "اتصل بالمسؤول", about: "حول Happy Tail", logout: "تسجيل الخروج", reason: "السبب المذكور" }
-  };
-  const text = copy[lang] || copy.en;
-  const handleLogout = async () => {
-    try {
-      await fetch("/api/logout", { method: "POST", credentials: "include" });
-    } catch {
-      // Still return to the public landing page if the logout request fails.
-    }
-    window.location.replace("/");
-  };
-
   return (
-    <main className="relative flex min-h-[100dvh] items-center justify-center overflow-hidden bg-background px-6 py-12 text-foreground transition-colors">
-      <div className="absolute right-4 top-4 z-20 flex items-center gap-2 rounded-2xl border border-border bg-card/90 p-1.5 shadow-lg backdrop-blur sm:right-6 sm:top-6">
-        <LanguageSwitcher />
-        <ThemeToggle />
-      </div>
-      <div aria-hidden="true" className="pointer-events-none absolute inset-0 opacity-70">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_35%,rgba(236,72,153,0.12),transparent_42%),radial-gradient(ellipse_at_85%_85%,rgba(99,102,241,0.08),transparent_35%)]" />
-        <div className="absolute inset-0 opacity-[0.12] [background-image:linear-gradient(rgba(255,255,255,0.06)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.06)_1px,transparent_1px)] [background-size:48px_48px] [mask-image:radial-gradient(ellipse_at_center,black,transparent_80%)]" />
-      </div>
-
-      <motion.section
-        initial={{ opacity: 0, y: 16, filter: "blur(8px)" }}
-        animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-        transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
-        className="relative z-10 mt-12 w-full max-w-md rounded-3xl border border-border bg-card/95 p-7 text-center shadow-[0_0_80px_rgba(236,72,153,0.10)] backdrop-blur-xl sm:mt-8 sm:p-9"
-      >
-        <div className={`mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-2xl border ${isBanned ? "border-amber-300/20 bg-amber-400/10" : "border-red-300/20 bg-red-400/10"}`}>
-          <ShieldAlert className={`h-8 w-8 ${isBanned ? "text-amber-300" : "text-red-300"}`} />
+    <div className="h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-950 p-6">
+      <div className="max-w-md w-full text-center space-y-5">
+        <div className={`inline-flex items-center justify-center w-16 h-16 rounded-full ${isBanned ? "bg-amber-100 dark:bg-amber-900/30" : "bg-red-100 dark:bg-red-900/30"}`}>
+          <ShieldAlert className={`w-8 h-8 ${isBanned ? "text-amber-600 dark:text-amber-400" : "text-red-600 dark:text-red-400"}`} />
         </div>
-
-        <p className="text-[0.65rem] font-semibold uppercase tracking-[0.42em] text-muted-foreground">
-          HAPPY TAIL · ACCOUNT STATUS
-        </p>
-        <h1 className="mt-3 text-3xl font-bold tracking-tight text-foreground">
-          {isBanned ? text.suspended : text.removed}
-        </h1>
-        <p className="mt-4 text-sm leading-6 text-muted-foreground">
-          {isBanned
-            ? text.bannedText
-            : text.removedText}
-        </p>
-
-        {isBanned && reason && (
-          <div className="mt-5 rounded-xl border border-white/10 bg-white/[0.035] p-4 text-left">
-            <p className="text-[0.65rem] font-semibold uppercase tracking-[0.2em] text-white/40">{text.reason}</p>
-            <p className="mt-2 text-sm leading-6 text-white/80">{reason}</p>
-          </div>
-        )}
-
-        <div className="mt-6 border-t border-border pt-6">
-          <p className="text-sm text-muted-foreground">
-            {isBanned ? text.appealBanned : text.appealRemoved}
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+            {isBanned ? "Account Suspended" : "Account Removed"}
+          </h1>
+          <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">
+            {isBanned
+              ? "Your account has been suspended by an administrator. If you believe this is a mistake, please contact support."
+              : "Your account has been permanently removed and cannot be used to sign in."}
           </p>
-          <a
-            href={"mailto:" + adminEmail + "?subject=" + encodeURIComponent(isBanned ? "Happy Tail account suspension appeal" : "Happy Tail account removal appeal")}
-            className="mt-3 inline-flex max-w-full items-center justify-center gap-2 rounded-xl border border-pink-500/30 bg-pink-500/10 px-4 py-3 text-sm font-semibold text-pink-600 transition-colors hover:bg-pink-500/20 dark:text-pink-300"
-          >
-            {text.contact}
-          </a>
-          <p className="mt-3 break-all text-xs text-muted-foreground">{adminEmail}</p>
         </div>
-        <Link href="/about" className="mt-4 inline-flex items-center justify-center gap-2 rounded-xl border border-border px-4 py-2.5 text-sm font-medium text-foreground transition-colors hover:bg-muted">
-          <Info className="h-4 w-4" /> {text.about}
-        </Link>
-        <button
-          type="button"
-          onClick={handleLogout}
-          className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-xl border border-border bg-muted/50 px-4 py-3 text-sm font-semibold text-foreground transition-colors hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-pink-300"
-          data-testid="button-suspended-logout"
-        >
-          <LogOut className="h-4 w-4" /> {text.logout}
-        </button>
-        <p className="mt-7 text-[0.62rem] font-medium uppercase tracking-[0.28em] text-muted-foreground">SECURE · SMART · SIMPLE</p>
-      </motion.section>
-    </main>
+      </div>
+    </div>
   );
 }
 
 function AppContent() {
-  const [location] = useLocation();
-  const [showSplash, setShowSplash] = useState(true);
-  const handleSplashComplete = useCallback(() => setShowSplash(false), []);
+  // showSplash starts true. The SplashScreen component itself decides whether
+  // to actually display (it skips instantly inside the Flutter wrapper and on
+  // repeat visits). We wait for onComplete before proceeding so auth has time
+  // to resolve during the splash duration.
+  const [splashDone, setSplashDone] = useState(false);
+  const handleSplashComplete = useCallback(() => setSplashDone(true), []);
+
   const { user, isLoading } = useAuth();
   const { isGuest } = useGuest();
 
-  // Check for auth error from login callback, but keep the branded splash first.
+  // Check for auth error from login callback
   const authError = new URLSearchParams(window.location.search).get("auth_error");
+  if (authError === "banned" || authError === "removed") {
+    return <AuthErrorScreen type={authError as "banned" | "removed"} />;
+  }
 
-  // Show welcome toast after email verification
+  // Clean verified param without a full page reload
   const verified = new URLSearchParams(window.location.search).get("verified");
   if (verified === "1" && user) {
-    // Clean the URL without reloading
     window.history.replaceState({}, "", "/");
   }
 
-  if (showSplash) {
+  // Show splash until it completes (component self-skips when appropriate)
+  if (!splashDone) {
     return <SplashScreen onComplete={handleSplashComplete} />;
   }
 
-  // About now renders inside the standard app shell so navigation and header controls remain available.
-
-  // A banned account gets the branded status screen instead of any app UI.
-  if (authError === "banned" || user?.isBanned) {
-    return <AuthErrorScreen type="banned" reason={user?.banReason} />;
-  }
-  if (authError === "removed") {
-    return <AuthErrorScreen type="removed" />;
-  }
-
+  // Auth is still resolving — show a minimal spinner. This is brief (<500ms)
+  // and only happens on first load since useAuth has staleTime: 5 minutes.
   if (isLoading) {
     return (
-      <div
-        className="relative isolate flex min-h-[100dvh] w-full items-center justify-center overflow-hidden bg-[#fff9fc] px-6 text-slate-900 dark:bg-[#090711] dark:text-white"
-        role="status"
-        aria-live="polite"
-        aria-label="Loading Happy Tail"
-      >
-        <div className="pointer-events-none absolute inset-0 overflow-hidden">
-          <motion.div
-            className="absolute left-1/2 top-1/2 h-[min(62vw,22rem)] w-[min(62vw,22rem)] -translate-x-1/2 -translate-y-1/2 rounded-full bg-pink-300/15 dark:bg-fuchsia-600/15"
-            animate={{ opacity: [0.55, 0.8, 0.55] }}
-            transition={{ duration: 5.5, repeat: Infinity, ease: "easeInOut" }}
+      <div className="h-screen flex items-center justify-center bg-white dark:bg-gray-950">
+        <div className="flex flex-col items-center gap-3">
+          <img
+            src={logoImg}
+            alt="Happy Tail"
+            className="w-12 h-12 rounded-xl animate-pulse"
+            style={{ mixBlendMode: "multiply" }}
           />
-          <motion.div
-            className="absolute -left-20 top-[18%] h-40 w-40 rounded-full bg-rose-200/25 dark:bg-rose-500/10"
-            animate={{ opacity: [0.6, 0.9, 0.6] }}
-            transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
-          />
-          <motion.div
-            className="absolute -right-16 bottom-[14%] h-44 w-44 rounded-full bg-violet-200/25 dark:bg-violet-500/10"
-            animate={{ opacity: [0.55, 0.85, 0.55] }}
-            transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
-          />
-          {[0, 1, 2, 3].map((particle) => (
-            <motion.span
-              key={particle}
-              aria-hidden="true"
-              className="absolute left-1/2 top-1/2 h-1.5 w-1.5 rounded-full bg-pink-400/70 shadow-[0_0_14px_rgba(244,114,182,0.65)]"
-              animate={{
-                x: [Math.cos((particle / 4) * Math.PI * 2) * 75, Math.cos((particle / 4) * Math.PI * 2) * 155],
-                y: [Math.sin((particle / 4) * Math.PI * 2) * 75, Math.sin((particle / 4) * Math.PI * 2) * 155],
-                opacity: [0, 1, 0],
-                scale: [0.5, 1.25, 0.5],
-              }}
-              transition={{ duration: 2.8, repeat: Infinity, delay: particle * 0.22, ease: "easeInOut" }}
-            />
-          ))}
         </div>
-
-        <motion.div
-          className="relative z-10 flex w-full max-w-sm flex-col items-center text-center"
-          initial={{ opacity: 0, y: 10, scale: 0.99 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
-        >
-          <div className="relative mb-8 flex h-40 w-40 items-center justify-center">
-            <motion.div
-              aria-hidden="true"
-              className="absolute inset-0 rounded-full border border-pink-300/70 dark:border-fuchsia-300/25"
-              animate={{ rotate: 360, scale: [0.96, 1.04, 0.96] }}
-              transition={{ rotate: { duration: 12, repeat: Infinity, ease: "linear" }, scale: { duration: 3, repeat: Infinity, ease: "easeInOut" } }}
-            />
-            <motion.div
-              aria-hidden="true"
-              className="absolute inset-2 rounded-full border border-dashed border-rose-300/70 dark:border-pink-200/20"
-              animate={{ rotate: -360 }}
-              transition={{ duration: 18, repeat: Infinity, ease: "linear" }}
-            />
-            <motion.div
-              aria-hidden="true"
-              className="absolute inset-5 rounded-full bg-gradient-to-br from-pink-200/70 via-rose-100/30 to-violet-200/60 blur-xl dark:from-pink-500/20 dark:via-rose-400/10 dark:to-violet-500/20"
-              animate={{ opacity: [0.55, 1, 0.55], scale: [0.9, 1.08, 0.9] }}
-              transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}
-            />
-            <motion.div
-              className="relative flex h-24 w-24 items-center justify-center rounded-[2rem] border border-white/80 bg-white/75 shadow-[0_16px_55px_rgba(236,72,153,0.22)] backdrop-blur-xl dark:border-white/10 dark:bg-white/10 dark:shadow-[0_16px_55px_rgba(217,70,239,0.16)]"
-              animate={{ y: [0, -7, 0], rotate: [0, -2, 2, 0] }}
-              transition={{ duration: 3.2, repeat: Infinity, ease: "easeInOut" }}
-            >
-              <img
-                src={logoImg}
-                alt="Happy Tail"
-                className="h-[4.5rem] w-[4.5rem] rounded-[1.35rem] object-cover"
-                style={{ mixBlendMode: "multiply" }}
-              />
-            </motion.div>
-            <motion.span
-              aria-hidden="true"
-              className="absolute -right-0.5 top-5 text-xl drop-shadow-sm"
-              animate={{ y: [0, -8, 0], rotate: [0, 12, 0], scale: [0.9, 1.1, 0.9] }}
-              transition={{ duration: 2.1, repeat: Infinity, ease: "easeInOut" }}
-            >✦</motion.span>
-            <motion.span
-              aria-hidden="true"
-              className="absolute bottom-4 -left-1 text-lg text-pink-500"
-              animate={{ y: [0, 7, 0], rotate: [0, -15, 0], opacity: [0.55, 1, 0.55] }}
-              transition={{ duration: 2.6, repeat: Infinity, ease: "easeInOut", delay: 0.3 }}
-            >♥</motion.span>
-          </div>
-
-          <motion.p
-            className="text-[0.68rem] font-bold uppercase tracking-[0.38em] text-pink-600 dark:text-pink-300"
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.18, duration: 0.5 }}
-          >
-            TECH FOR PAWS
-          </motion.p>
-          <h1 className="mt-2 text-3xl font-bold tracking-tight text-slate-800 dark:text-white">
-            Happy <span className="bg-gradient-to-r from-pink-500 via-rose-500 to-violet-500 bg-clip-text text-transparent">Tail</span>
-          </h1>
-          <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
-            A little love is on its way.
-          </p>
-
-          <div className="mt-9 w-48">
-            <div className="h-1.5 overflow-hidden rounded-full bg-pink-100/90 dark:bg-white/10">
-              <motion.div
-                className="h-full w-2/5 rounded-full bg-gradient-to-r from-pink-500 via-rose-400 to-violet-500 shadow-[0_0_16px_rgba(236,72,153,0.45)]"
-                animate={{ x: ["-110%", "260%"] }}
-                transition={{ duration: 1.55, repeat: Infinity, ease: "easeInOut" }}
-              />
-            </div>
-            <motion.p
-              className="mt-3 text-[0.7rem] font-medium tracking-[0.18em] text-slate-400 dark:text-slate-500"
-              animate={{ opacity: [0.5, 1, 0.5] }}
-              transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
-            >
-              GETTING THINGS READY
-            </motion.p>
-          </div>
-        </motion.div>
       </div>
     );
   }
 
-  // Legal pages must remain publicly accessible before sign-in, including from the consent links.
-  if (!user && !isGuest && (window.location.pathname === "/privacy" || window.location.pathname === "/terms")) {
-    return <Router />;
-  }
-
+  // Not authenticated and not in guest mode → show Landing
   if (!user && !isGuest) {
     return <Landing />;
   }

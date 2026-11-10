@@ -4,27 +4,28 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ── Design tokens (light) ──────────────────────────────────────────────── */
 :root {
   --font-display: 'Fredoka', sans-serif;
   --font-body: 'Quicksand', sans-serif;
 
-  /* Playful Palette - Warm & Friendly */
-  --background: 40 50% 98%;      /* Soft cream */
-  --foreground: 220 15% 20%;     /* Soft charcoal */
+  /* Playful Palette – Warm & Friendly */
+  --background: 40 50% 98%;
+  --foreground: 220 15% 20%;
 
-  --primary: 35 100% 55%;        /* Cheerful Orange/Amber */
+  --primary: 35 100% 55%;
   --primary-foreground: 0 0% 100%;
 
-  --secondary: 195 85% 65%;      /* Sky Blue */
+  --secondary: 195 85% 65%;
   --secondary-foreground: 220 15% 20%;
 
   --muted: 40 20% 92%;
   --muted-foreground: 25 10% 50%;
 
-  --accent: 330 85% 70%;         /* Pink */
+  --accent: 330 85% 70%;
   --accent-foreground: 0 0% 100%;
 
-  --destructive: 0 85% 60%;      /* Soft Red */
+  --destructive: 0 85% 60%;
   --destructive-foreground: 0 0% 100%;
 
   --border: 40 20% 90%;
@@ -33,9 +34,11 @@
 
   --card: 0 0% 100%;
   --card-foreground: 220 15% 20%;
+  --card-border: 40 20% 90%;
 
   --popover: 0 0% 100%;
   --popover-foreground: 220 15% 20%;
+  --popover-border: 40 20% 88%;
 
   --radius: 1rem;
 
@@ -48,28 +51,102 @@
   --sidebar-accent-foreground: 35 100% 45%;
   --sidebar-primary: 35 100% 55%;
   --sidebar-primary-foreground: 0 0% 100%;
+
+  /* Charts */
+  --chart-1: 35 100% 55%;
+  --chart-2: 195 85% 50%;
+  --chart-3: 330 85% 60%;
+  --chart-4: 142 71% 45%;
+  --chart-5: 262 83% 58%;
 }
 
+/* ── Design tokens (dark) ───────────────────────────────────────────────── */
+.dark {
+  --background: 222 20% 10%;
+  --foreground: 210 20% 92%;
+
+  --primary: 35 100% 55%;
+  --primary-foreground: 0 0% 100%;
+
+  --secondary: 195 60% 40%;
+  --secondary-foreground: 0 0% 100%;
+
+  --muted: 220 15% 20%;
+  --muted-foreground: 215 15% 55%;
+
+  --accent: 330 65% 55%;
+  --accent-foreground: 0 0% 100%;
+
+  --destructive: 0 72% 51%;
+  --destructive-foreground: 0 0% 100%;
+
+  --border: 220 15% 22%;
+  --input: 220 15% 22%;
+  --ring: 35 100% 55%;
+
+  --card: 222 20% 13%;
+  --card-foreground: 210 20% 92%;
+  --card-border: 220 15% 22%;
+
+  --popover: 222 20% 12%;
+  --popover-foreground: 210 20% 92%;
+  --popover-border: 220 15% 20%;
+
+  /* Sidebar */
+  --sidebar: 222 20% 10%;
+  --sidebar-foreground: 215 15% 60%;
+  --sidebar-border: 220 15% 18%;
+  --sidebar-ring: 35 100% 55%;
+  --sidebar-accent: 220 15% 18%;
+  --sidebar-accent-foreground: 35 100% 60%;
+  --sidebar-primary: 35 100% 55%;
+  --sidebar-primary-foreground: 0 0% 100%;
+
+  /* Charts */
+  --chart-1: 35 100% 55%;
+  --chart-2: 195 60% 50%;
+  --chart-3: 330 65% 60%;
+  --chart-4: 142 55% 45%;
+  --chart-5: 262 60% 60%;
+}
+
+/* ── Base layer ─────────────────────────────────────────────────────────── */
 @layer base {
   * {
     @apply border-border;
+    box-sizing: border-box;
   }
+
+  html {
+    /* Respect safe areas on notch devices */
+    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+    padding: 0; /* reset — we handle per-element below */
+  }
+
   body {
     @apply bg-background text-foreground antialiased font-body selection:bg-primary/20;
     font-feature-settings: "ss01", "ss02", "cv01", "cv02";
+    /* Prevent overscroll bounce hijacking the layout */
+    overscroll-behavior: none;
   }
-  
+
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-display);
     @apply font-semibold tracking-wide text-foreground;
   }
+
+  /* Improve tap target size on mobile */
+  button, [role="button"] {
+    touch-action: manipulation;
+  }
 }
 
+/* ── Component layer ────────────────────────────────────────────────────── */
 @layer components {
   .btn-bounce {
     @apply transition-transform active:scale-95 hover:scale-105 duration-200 ease-out;
   }
-  
+
   .card-hover {
     @apply transition-all duration-300 hover:shadow-xl hover:-translate-y-1 hover:shadow-primary/10;
   }
@@ -77,15 +154,57 @@
   .glass-panel {
     @apply bg-white/80 backdrop-blur-md border border-white/20 shadow-lg;
   }
+
+  /* Safe area padding utilities */
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  .pt-safe {
+    padding-top: env(safe-area-inset-top, 0px);
+  }
+
+  /* Mobile bottom nav clearance — applied to main scroll container */
+  .main-scroll {
+    @apply flex-1 overflow-y-auto;
+    padding: 1rem;
+    padding-bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
+  }
+
+  @screen md {
+    .main-scroll {
+      padding: 1.5rem;
+    }
+  }
+
+  @screen lg {
+    .main-scroll {
+      padding: 2rem;
+    }
+  }
 }
 
-/* Custom scrollbar for a polished look */
+/* ── Utilities layer ────────────────────────────────────────────────────── */
+@layer utilities {
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* ── Custom scrollbar ───────────────────────────────────────────────────── */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
+  height: 6px;
 }
 ::-webkit-scrollbar-track {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  @apply bg-primary/20 rounded-full hover:bg-primary/40 transition-colors;
+  @apply bg-primary/20 rounded-full;
+}
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-primary/40;
 }
