@@ -3,7 +3,7 @@
  * Network-first for API/navigation, cache-first for static assets.
  */
 
-const CACHE_NAME = "happy-tail-shell-v4";
+const CACHE_NAME = "happy-tail-shell-v5";
 const APP_SHELL = ["/", "/manifest.webmanifest", "/icon-192.png", "/icon-512.png"];
 
 // ── Install ───────────────────────────────────────────────────────────────
