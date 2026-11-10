@@ -34,10 +34,10 @@ jobs:
         with:
           node-version: "20"
           cache: "npm"
-          cache-dependency-path: happy-tail/package-lock.json
+          cache-dependency-path: happy-tail/package.json
 
       - name: Install dependencies
-        run: npm ci
+        run: npm install
 
       - name: TypeScript check (client + server + shared)
         run: npm run check
@@ -58,10 +58,10 @@ jobs:
         with:
           node-version: "20"
           cache: "npm"
-          cache-dependency-path: happy-tail/package-lock.json
+          cache-dependency-path: happy-tail/package.json
 
       - name: Install dependencies
-        run: npm ci
+        run: npm install
 
       - name: Run ESLint (if config present)
         run: |
@@ -87,10 +87,10 @@ jobs:
         with:
           node-version: "20"
           cache: "npm"
-          cache-dependency-path: happy-tail/package-lock.json
+          cache-dependency-path: happy-tail/package.json
 
       - name: Install dependencies
-        run: npm ci
+        run: npm install
 
       - name: Build (client + server bundle)
         env:
