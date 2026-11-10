@@ -1,20 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Launch theme: white background, no title bar, no orange anywhere -->
-    <style name="LaunchTheme" parent="@android:style/Theme.Light.NoTitleBar">
-        <item name="android:windowBackground">@drawable/launch_background</item>
-        <item name="android:windowFullscreen">false</item>
-        <item name="android:statusBarColor">@android:color/white</item>
-        <item name="android:navigationBarColor">@android:color/white</item>
-        <item name="android:windowLightStatusBar">true</item>
-        <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
-    </style>
-
-    <!-- Normal theme applied after Flutter draws its first frame -->
-    <style name="NormalTheme" parent="@android:style/Theme.Light.NoTitleBar">
-        <item name="android:windowBackground">@android:color/white</item>
-        <item name="android:statusBarColor">@android:color/white</item>
-        <item name="android:navigationBarColor">@android:color/white</item>
-        <item name="android:windowLightStatusBar">true</item>
-    </style>
+<style name="LaunchTheme" parent="@android:style/Theme.Material.Light.NoTitleBar"><item name="android:windowBackground">@drawable/launch_background</item><item name="android:windowFullscreen">false</item><item name="android:statusBarColor">#081426</item><item name="android:navigationBarColor">#081426</item><item name="android:windowLightStatusBar">false</item><item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item></style>
+<style name="NormalTheme" parent="@android:style/Theme.Material.Light.NoTitleBar"><item name="android:windowBackground">#081426</item><item name="android:statusBarColor">#081426</item><item name="android:navigationBarColor">#081426</item><item name="android:windowLightStatusBar">false</item></style>
 </resources>
