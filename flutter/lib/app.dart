@@ -13,6 +13,6 @@ class _HappyTailAppState extends State<HappyTailApp>{
  void pageReady(){ready=true;hideIfReady();}
  void hideIfReady(){if(ready&&minTime&&show&&mounted)setState(()=>show=false);}
  @override Widget build(BuildContext context)=>MaterialApp(title:'Happy Tail',debugShowCheckedModeBanner:false,
- theme:ThemeData(colorScheme:ColorScheme.fromSeed(seedColor:const Color(0xFFFF5C8A)),scaffoldBackgroundColor:Colors.white,useMaterial3:true),
+ theme:ThemeData(colorScheme:ColorScheme.fromSeed(seedColor:const Color(0xFFFF5C8A)),scaffoldBackgroundColor:const Color(0xFF081426),useMaterial3:true),
  home:Stack(fit:StackFit.expand,children:[WebViewScreen(onPageReady:pageReady),if(show)AnimatedOpacity(opacity:show?1:0,duration:const Duration(milliseconds:650),child:const SplashScreen())]));
 }
