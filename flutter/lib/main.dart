@@ -7,7 +7,7 @@ import 'app.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Force portrait orientation (matches the web app)
+  // Allow all orientations — the web app handles its own layout
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
@@ -15,11 +15,13 @@ void main() async {
     DeviceOrientation.landscapeRight,
   ]);
 
-  // Transparent status bar so the web app can use full screen
+  // White status bar, dark icons — no orange anywhere
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
-      statusBarColor: Colors.transparent,
+      statusBarColor: Colors.white,
       statusBarIconBrightness: Brightness.dark,
+      systemNavigationBarColor: Colors.white,
+      systemNavigationBarIconBrightness: Brightness.dark,
     ),
   );
 

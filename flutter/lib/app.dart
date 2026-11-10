@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'screens/splash_screen.dart';
 import 'screens/webview_screen.dart';
 
 class HappyTailApp extends StatelessWidget {
@@ -13,25 +12,18 @@ class HappyTailApp extends StatelessWidget {
     return MaterialApp(
       title: 'Happy Tail',
       debugShowCheckedModeBanner: false,
+      // Use a neutral white/light theme — no orange anywhere in the shell
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFFE07B39), // Happy Tail primary amber
+          seedColor: const Color(0xFFE07B39),
           brightness: Brightness.light,
         ),
+        scaffoldBackgroundColor: Colors.white,
         useMaterial3: true,
       ),
-      darkTheme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFFE07B39),
-          brightness: Brightness.dark,
-        ),
-        useMaterial3: true,
-      ),
-      themeMode: ThemeMode.system,
-      home: SplashScreen(prefs: prefs),
-      routes: {
-        '/webview': (context) => const WebViewScreen(),
-      },
+      themeMode: ThemeMode.light,
+      // Go straight to the WebView — no splash screen
+      home: const WebViewScreen(),
     );
   }
 }

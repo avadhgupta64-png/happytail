@@ -153,10 +153,7 @@ class _WebViewScreenState extends State<WebViewScreen> {
       onWillPop: _onWillPop,
       child: Scaffold(
         backgroundColor: Colors.white,
-        body: SafeArea(
-          bottom: false,
-          child: _buildBody(),
-        ),
+        body: _buildBody(),
       ),
     );
   }
