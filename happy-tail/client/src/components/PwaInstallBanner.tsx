@@ -1,6 +1,7 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { Download, X, Smartphone } from "lucide-react";
+import { Download, X } from "lucide-react";
 import { usePwaInstall } from "@/hooks/use-pwa-install";
+import logoImg from "@assets/logo.png";
 
 export function PwaInstallBanner() {
   const { canInstall, install, dismiss } = usePwaInstall();
@@ -18,11 +19,13 @@ export function PwaInstallBanner() {
           role="alert"
           aria-label="Install Happy Tail app"
         >
-          <div className="flex items-center gap-3 rounded-2xl bg-white dark:bg-gray-900 border border-orange-200 dark:border-orange-800 shadow-2xl px-4 py-3">
-            {/* Icon */}
-            <div className="shrink-0 flex h-11 w-11 items-center justify-center rounded-xl bg-orange-500">
-              <Smartphone className="h-5 w-5 text-white" />
-            </div>
+          <div className="flex items-center gap-3 rounded-2xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 shadow-2xl px-4 py-3">
+            {/* App logo — no background, no border-radius clipping */}
+            <img
+              src={logoImg}
+              alt="Happy Tail"
+              className="shrink-0 h-11 w-11 object-contain"
+            />
 
             {/* Text */}
             <div className="flex-1 min-w-0">
@@ -37,7 +40,7 @@ export function PwaInstallBanner() {
             {/* Install button */}
             <button
               onClick={install}
-              className="shrink-0 flex items-center gap-1.5 rounded-xl bg-orange-500 hover:bg-orange-600 active:bg-orange-700 px-3 py-2 text-xs font-bold text-white transition-colors"
+              className="shrink-0 flex items-center gap-1.5 rounded-xl bg-primary hover:bg-primary/90 active:bg-primary/80 px-3 py-2 text-xs font-bold text-white transition-colors"
               aria-label="Install app"
             >
               <Download className="h-3.5 w-3.5" />

@@ -101,7 +101,7 @@ function AppSidebar() {
             <img
               src={logoImg}
               alt="Happy Tail Logo"
-              className="w-9 h-9 rounded-xl object-cover"
+            className="w-11 h-11 object-contain"
               
               data-testid="img-sidebar-logo"
             />
@@ -213,7 +213,7 @@ function AuthenticatedApp() {
                 <img
                   src={logoImg}
                   alt="Happy Tail Logo"
-                  className="w-6 h-6 rounded-md object-cover"
+                  className="w-8 h-8 object-contain"
                   
                   data-testid="img-header-logo"
                 />
@@ -374,7 +374,7 @@ function AppContent() {
           <img
             src={logoImg}
             alt="Happy Tail"
-            className="w-12 h-12 rounded-xl animate-pulse"
+            className="w-16 h-16 object-contain animate-pulse"
             
           />
         </div>
