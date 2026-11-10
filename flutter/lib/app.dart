@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'screens/webview_screen.dart';
+import 'screens/splash_screen.dart';
 
 class HappyTailApp extends StatelessWidget {
   final SharedPreferences prefs;
@@ -22,8 +22,8 @@ class HappyTailApp extends StatelessWidget {
         useMaterial3: true,
       ),
       themeMode: ThemeMode.light,
-      // Go straight to the WebView — no splash screen
-      home: const WebViewScreen(),
+      // Restore the animated native loading screen before opening the WebView.
+      home: SplashScreen(prefs: prefs),
     );
   }
 }
