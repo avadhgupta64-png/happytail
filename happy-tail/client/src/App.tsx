@@ -360,7 +360,7 @@ function AppContent() {
   if (!splashComplete) return <SplashScreen onComplete={finishSplash} />;
 
   // Keep the app shell hidden until authentication has resolved.
-  if (isLoading) return <div className="min-h-screen bg-white dark:bg-gray-950" />;
+  if (isLoading) return <div className="min-h-screen bg-[#081426] flex items-center justify-center"><div className="h-9 w-9 rounded-full border-[3px] border-white/20 border-t-[#FF5C8A] animate-spin" role="status" aria-label="Loading Happy Tail" /></div>;
 
   // Not authenticated and not in guest mode → show Landing
   if (!user && !isGuest) {
