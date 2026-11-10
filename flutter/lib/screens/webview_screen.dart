@@ -15,7 +15,8 @@ import '../widgets/no_connection_widget.dart';
 const String kAppUrl = 'https://happy-tail.onrender.com';
 
 class WebViewScreen extends StatefulWidget {
-  const WebViewScreen({super.key});
+  final VoidCallback? onPageReady;
+  const WebViewScreen({super.key, this.onPageReady});
 
   @override
   State<WebViewScreen> createState() => _WebViewScreenState();
@@ -39,8 +40,8 @@ class _WebViewScreenState extends State<WebViewScreen> {
   Future<void> _checkConnectivityAndInit() async {
     final results = await Connectivity().checkConnectivity();
     final offline = results.every((r) => r == ConnectivityResult.none);
-    setState(() => _isOffline = offline);
-    if (!offline) _initWebView();
+    if (mounted) setState(() => _isOffline = offline);
+    if (!offline) { _initWebView(); } else { widget.onPageReady?.call(); }
   }
 
   void _listenConnectivity() {
@@ -92,7 +93,7 @@ class _WebViewScreenState extends State<WebViewScreen> {
         _loadingProgress = 0;
       }),
       onProgress: (p) => setState(() => _loadingProgress = p / 100.0),
-      onPageFinished: (_) => setState(() => _isLoading = false),
+      onPageFinished: (_) { if (mounted) setState(() => _isLoading = false); widget.onPageReady?.call(); },
       onWebResourceError: (WebResourceError error) {
         // Ignore sub-resource errors (e.g. a failed image) —
         // only treat main-frame navigation failures as fatal.
@@ -101,6 +102,7 @@ class _WebViewScreenState extends State<WebViewScreen> {
             _hasError = true;
             _isLoading = false;
           });
+          widget.onPageReady?.call();
         }
       },
       onNavigationRequest: (NavigationRequest request) {
