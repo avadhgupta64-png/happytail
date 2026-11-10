@@ -1,129 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
-import 'webview_screen.dart';
-
-/// Native Flutter splash screen — shown ONLY for ~1.5 s on first cold start,
-/// then immediately hands off to the WebView. The web app has its own JS
-/// splash; we keep the native one short to avoid a double-splash effect.
-class SplashScreen extends StatefulWidget {
-  final SharedPreferences prefs;
-  const SplashScreen({super.key, required this.prefs});
-
-  @override
-  State<SplashScreen> createState() => _SplashScreenState();
-}
-
-class _SplashScreenState extends State<SplashScreen>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController _controller;
-  late final Animation<double> _fadeAnim;
-  late final Animation<double> _scaleAnim;
-
-  @override
-  void initState() {
-    super.initState();
-
-    _controller = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 800),
-    );
-
-    _fadeAnim = CurvedAnimation(parent: _controller, curve: Curves.easeOut);
-    _scaleAnim = Tween<double>(begin: 0.75, end: 1.0).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.elasticOut),
-    );
-
-    _controller.forward();
-
-    // Navigate to WebView after 1.5 s total so the web-app JS splash
-    // doesn't overlap the native one for too long.
-    Future.delayed(const Duration(milliseconds: 1500), _goToWebView);
-  }
-
-  void _goToWebView() {
-    if (!mounted) return;
-    Navigator.of(context).pushReplacement(
-      PageRouteBuilder(
-        pageBuilder: (_, __, ___) => const WebViewScreen(),
-        transitionsBuilder: (_, animation, __, child) =>
-            FadeTransition(opacity: animation, child: child),
-        transitionDuration: const Duration(milliseconds: 400),
-      ),
-    );
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: Center(
-        child: FadeTransition(
-          opacity: _fadeAnim,
-          child: ScaleTransition(
-            scale: _scaleAnim,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                // Logo — use asset if present, fallback to icon
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(28),
-                  child: Image.asset(
-                    'assets/logo.png',
-                    width: 110,
-                    height: 110,
-                    fit: BoxFit.cover,
-                    errorBuilder: (_, __, ___) => Container(
-                      width: 110,
-                      height: 110,
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFE07B39),
-                        borderRadius: BorderRadius.circular(28),
-                      ),
-                      child: const Icon(Icons.pets,
-                          color: Colors.white, size: 56),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 24),
-                const Text(
-                  'Happy Tail',
-                  style: TextStyle(
-                    fontSize: 32,
-                    fontWeight: FontWeight.bold,
-                    color: Color(0xFF1A1A2E),
-                    letterSpacing: -0.5,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                const Text(
-                  'Tech for Paws · Care for Life',
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: Color(0xFF9CA3AF),
-                    letterSpacing: 0.5,
-                  ),
-                ),
-                const SizedBox(height: 40),
-                const SizedBox(
-                  width: 24,
-                  height: 24,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2.5,
-                    valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFE07B39)),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
+class SplashScreen extends StatefulWidget{const SplashScreen({super.key});@override State<SplashScreen> createState()=>_SplashScreenState();}
+class _SplashScreenState extends State<SplashScreen> with TickerProviderStateMixin{
+ late final AnimationController intro,ambient;late final Animation<double> scale,fade,titleFade;late final Animation<Offset> slide;
+ static const navy=Color(0xFF081426),pink=Color(0xFFFF5C8A),gold=Color(0xFFFFD6A5);
+ @override void initState(){super.initState();intro=AnimationController(vsync:this,duration:const Duration(milliseconds:1450))..forward();ambient=AnimationController(vsync:this,duration:const Duration(milliseconds:2600))..repeat(reverse:true);scale=CurvedAnimation(parent:intro,curve:const Interval(.05,.78,curve:Curves.elasticOut));fade=CurvedAnimation(parent:intro,curve:const Interval(0,.35,curve:Curves.easeOut));titleFade=CurvedAnimation(parent:intro,curve:const Interval(.42,.88,curve:Curves.easeOut));slide=Tween<Offset>(begin:const Offset(0,.28),end:Offset.zero).animate(CurvedAnimation(parent:intro,curve:const Interval(.42,.95,curve:Curves.easeOutCubic)));}
+ @override void dispose(){intro.dispose();ambient.dispose();super.dispose();}
+ @override Widget build(BuildContext context)=>Scaffold(backgroundColor:navy,body:AnimatedBuilder(animation:Listenable.merge([intro,ambient]),builder:(context,_){final glow=.18+ambient.value*.13;return Stack(fit:StackFit.expand,children:[
+ const DecoratedBox(decoration:BoxDecoration(gradient:RadialGradient(center:Alignment(0,-.18),radius:1.05,colors:[Color(0xFF18314B),navy,Color(0xFF050B15)],stops:[0,.58,1]))),
+ Positioned(top:-130,right:-105,child:orb(270,pink.withOpacity(glow*.45))),Positioned(bottom:-170,left:-120,child:orb(330,gold.withOpacity(glow*.25))),
+ Center(child:Column(mainAxisSize:MainAxisSize.min,children:[
+ FadeTransition(opacity:fade,child:ScaleTransition(scale:scale,child:Container(width:154,height:154,padding:const EdgeInsets.all(8),decoration:BoxDecoration(shape:BoxShape.circle,border:Border.all(color:pink.withOpacity(.45+ambient.value*.35),width:1.5),boxShadow:[BoxShadow(color:pink.withOpacity(.16+ambient.value*.15),blurRadius:38+ambient.value*18,spreadRadius:2)]),child:ClipOval(child:Image.asset('assets/logo.png',fit:BoxFit.cover,errorBuilder:(_,__,___)=>const ColoredBox(color:pink,child:Icon(Icons.pets,color:Colors.white,size:76))))))),
+ const SizedBox(height:34),FadeTransition(opacity:titleFade,child:SlideTransition(position:slide,child:Column(children:[const Text('HAPPY TAIL',style:TextStyle(color:Colors.white,fontSize:31,fontWeight:FontWeight.w800,letterSpacing:4.2)),const SizedBox(height:11),Text('A happier world for dogs',style:TextStyle(color:Colors.white.withOpacity(.72),fontSize:14,letterSpacing:1.1))]))),
+ const SizedBox(height:48),FadeTransition(opacity:titleFade,child:SizedBox(width:112,child:ClipRRect(borderRadius:BorderRadius.circular(8),child:AnimatedBuilder(animation:intro,builder:(_,__)=>LinearProgressIndicator(value:intro.value.clamp(0.0,1.0),minHeight:3,backgroundColor:Colors.white.withOpacity(.12),valueColor:const AlwaysStoppedAnimation(pink)))))),
+ ])),Positioned(bottom:42,left:0,right:0,child:Text('MADE WITH LOVE FOR EVERY PAW',textAlign:TextAlign.center,style:TextStyle(color:Colors.white.withOpacity(.38),fontSize:9,letterSpacing:2.2,fontWeight:FontWeight.w600)))
+ ]);}));}
+ Widget orb(double size,Color color)=>Container(width:size,height:size,decoration:BoxDecoration(shape:BoxShape.circle,gradient:RadialGradient(colors:[color,color.withOpacity(0)])));
 }
