@@ -41,6 +41,7 @@ import { GuestProvider, useGuest } from "@/lib/guest-context";
 import { LoginPromptModal } from "@/components/LoginPromptModal";
 import { AuthModalProvider, useAuthModal } from "@/lib/auth-modal-context";
 import { useFeedbackNotification } from "@/hooks/use-feedback-notification";
+import { PwaInstallBanner } from "@/components/PwaInstallBanner";
 
 function ThemeToggle() {
   const { theme, setTheme } = useTheme();
@@ -376,6 +377,7 @@ function AppContent() {
     <>
       <AuthenticatedApp />
       <LoginPromptModal />
+      <PwaInstallBanner />
     </>
   );
 }
