@@ -10,7 +10,7 @@
   --font-body: 'Quicksand', sans-serif;
 
   /* Playful Palette – Warm & Friendly */
-  --background: 40 50% 98%;
+  --background: 0 0% 100%;
   --foreground: 220 15% 20%;
 
   --primary: 35 100% 55%;
@@ -118,13 +118,18 @@
   }
 
   html {
-    /* Respect safe areas on notch devices */
-    padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
-    padding: 0; /* reset — we handle per-element below */
+    width: 100%;
+    min-height: 100%;
+    margin: 0;
+    padding: 0;
+    background: #ffffff;
+    overscroll-behavior: none;
   }
 
   body {
-    @apply bg-background text-foreground antialiased font-body selection:bg-primary/20;
+    @apply bg-white text-foreground antialiased font-body selection:bg-primary/20;
+    background-color: #ffffff;
+    min-height: 100%;
     font-feature-settings: "ss01", "ss02", "cv01", "cv02";
     /* Prevent overscroll bounce hijacking the layout */
     overscroll-behavior: none;
