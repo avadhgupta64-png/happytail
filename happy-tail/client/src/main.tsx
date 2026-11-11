@@ -8,7 +8,7 @@ if (typeof window !== "undefined") {
   document.head.appendChild(manifest);
   const theme = document.createElement("meta");
   theme.name = "theme-color";
-  theme.content = "#101827";
+  theme.content = "#0d1b2a";
   document.head.appendChild(theme);
   if ("serviceWorker" in navigator && window.location.protocol === "https:") {
     window.addEventListener("load", () => {

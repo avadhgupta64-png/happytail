@@ -6,6 +6,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/not-found";
 import { SidebarProvider, SidebarTrigger, Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarMenu, SidebarMenuItem, SidebarMenuButton } from "@/components/ui/sidebar"
+import { SplashScreen } from "@/components/SplashScreen";
 import Home from "@/pages/Home";
 import EmotionDetector from "@/pages/EmotionDetector";
 import Emergency from "@/pages/Emergency";
@@ -41,7 +42,6 @@ import { LoginPromptModal } from "@/components/LoginPromptModal";
 import { AuthModalProvider, useAuthModal } from "@/lib/auth-modal-context";
 import { useFeedbackNotification } from "@/hooks/use-feedback-notification";
 import { PwaInstallBanner } from "@/components/PwaInstallBanner";
-import { SplashScreen } from "@/components/SplashScreen";
 import { usePwaInstall } from "@/hooks/use-pwa-install";
 
 function ThemeToggle() {
@@ -338,11 +338,23 @@ function AuthErrorScreen({ type }: { type: "banned" | "removed" }) {
 }
 
 function AppContent() {
+  // Show the splash only once per browser session (cold start / PWA launch).
+  // sessionStorage flag is set after the first completion so navigating back
+  // to "/" never re-triggers it, but closing and reopening the tab does.
+  const [splashDone, setSplashDone] = useState(() => {
+    try {
+      return sessionStorage.getItem("ht_splash_done") === "1";
+    } catch {
+      return false;
+    }
+  });
+  const handleSplashComplete = useCallback(() => {
+    try { sessionStorage.setItem("ht_splash_done", "1"); } catch { /* ignore */ }
+    setSplashDone(true);
+  }, []);
 
   const { user, isLoading } = useAuth();
   const { isGuest } = useGuest();
-  const [splashComplete, setSplashComplete] = useState(false);
-  const finishSplash = useCallback(() => setSplashComplete(true), []);
 
   // Check for auth error from login callback
   const authError = new URLSearchParams(window.location.search).get("auth_error");
@@ -356,11 +368,27 @@ function AppContent() {
     window.history.replaceState({}, "", "/");
   }
 
-  // Show the branded animated splash on every PWA launch before the app content.
-  if (!splashComplete) return <SplashScreen onComplete={finishSplash} />;
+  // Show splash until it completes (component self-skips when appropriate)
+  if (!splashDone) {
+    return <SplashScreen onComplete={handleSplashComplete} />;
+  }
 
-  // Keep the app shell hidden until authentication has resolved.
-  if (isLoading) return <div className="min-h-screen bg-[#081426] flex items-center justify-center"><div className="h-9 w-9 rounded-full border-[3px] border-white/20 border-t-[#FF5C8A] animate-spin" role="status" aria-label="Loading Happy Tail" /></div>;
+  // Auth is still resolving — show a minimal spinner. This is brief (<500ms)
+  // and only happens on first load since useAuth has staleTime: 5 minutes.
+  if (isLoading) {
+    return (
+      <div className="h-screen flex items-center justify-center bg-white dark:bg-gray-950">
+        <div className="flex flex-col items-center gap-3">
+          <img
+            src={logoImg}
+            alt="Happy Tail"
+            className="w-16 h-16 object-contain animate-pulse"
+            
+          />
+        </div>
+      </div>
+    );
+  }
 
   // Not authenticated and not in guest mode → show Landing
   if (!user && !isGuest) {
