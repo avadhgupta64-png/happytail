@@ -22,7 +22,7 @@ if (flutterVersionName == null) flutterVersionName = '1.0'
 android {
     namespace "com.happytail.app"
     // compileSdk must be >= 34 for Android 14 support (required by permission_handler 11+)
-    compileSdk 34
+    compileSdk 36
     ndkVersion flutter.ndkVersion
 
     compileOptions {
